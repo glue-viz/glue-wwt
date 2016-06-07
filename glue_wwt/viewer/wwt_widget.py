@@ -59,11 +59,11 @@ class WWTWidget(DataViewer):
     def __str__(self):
         return "WWTWidget"
 
-    def __init__(self, data, parent=None, webdriver_class=None):
-        super(WWTWidget, self).__init__(data, parent)
+    def __init__(self, session, parent=None, webdriver_class=None):
+        super(WWTWidget, self).__init__(session, parent=parent)
+
         self.option_panel = QtGui.QWidget()
-        self.ui = load_ui('wwt.ui', directory=os.path.dirname(__file__))
-        self.ui.setupUi(self.option_panel)
+        self.ui = load_ui('wwt.ui', self.option_panel, directory=os.path.dirname(__file__))
         self._worker_thread = QtCore.QThread()
 
         self._driver = WWTDriver(webdriver_class)

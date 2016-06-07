@@ -1,94 +1,30 @@
-from urllib import urlopen
-import logging
+from __future__ import absolute_import, division, print_function
 
+import os
 import numpy as np
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 
-from .data_viewer import DataViewer
-from ...core.client import Client
-from ...core.exceptions import IncompatibleAttribute
-from ...clients.layer_artist import LayerArtist
-from ..ui.wwt import Ui_WWT
-from .. import glue_qt_resources
+from glue.viewers.common.qt.data_viewer import DataViewer
+from glue.core.exceptions import IncompatibleAttribute
 
-from PyQt4.QtGui import QHBoxLayout, QWidget, QIcon, QPixmap, QLabel
-from PyQt4.QtCore import Qt, QTimer, QSize, QThread, QObject, pyqtSignal
+from glue.external.qt import QtCore, QtGui
+from glue.external.qt.QtCore import Qt
+from glue.external.six.moves.urllib.request import urlopen
+from glue.logger import logger
+from glue.utils.qt import load_ui
 
-
-def circle(x, y, label, color, radius=10):
-    result = """%(label)s = wwt.createCircle("%(color)s");
-    %(label)s.setCenter(%(x)f, %(y)f);
-    %(label)s.set_fillColor("%(color)s");
-    %(label)s.set_radius(%(radius)f);""" % {'x': x, 'y': y, 'label': label,
-                                            'color': color, 'radius': radius}
-    return result
+from .layer_artist import circle, WWTLayer
 
 
-class WWTLayer(LayerArtist):
-    def __init__(self, layer, context):
-        super(WWTLayer, self).__init__(layer, context)
-        self._driver = context  # base class stores as "axes"; misnomer here
-        self.xatt = None
-        self.yatt = None
-        self.markers = {}
-
-    @property
-    def visible(self):
-        return self._visible
-
-    @visible.setter
-    def visible(self, value):
-        self._visible = value
-        self.update()
-
-    def clear(self):
-        js = '\n'.join("wwt.removeAnnotation(%s);" % l
-                       for l in self.markers.keys())
-        self._driver.run_js(js)
-        self.markers = {}
-
-    def _sync_style(self):
-        pass
-
-    def update(self, view=None):
-        logging.getLogger(__name__).debug("updating WWT for %s" %
-                                          self.layer.label)
-        self.clear()
-        layer = self.layer
-        if not self.visible:
-            return
-
-        try:
-            ra = self.layer[self.xatt]
-            dec = self.layer[self.yatt]
-        except IncompatibleAttribute:
-            print "Cannot fetch attributes %s and %s" % (self.xatt, self.yatt)
-            return
-
-        for i in range(ra.size):
-            label = "%s_%i" % (layer.label.replace(' ', '_').replace('.', '_'),
-                               i)
-            cmd = circle(ra[i], dec[i], label, layer.style.color)
-            self.markers[label] = cmd
-
-        js = '\n'.join(self.markers.values())
-        js += '\n'.join(["wwt.addAnnotation(%s);" % l for l in self.markers])
-        self._driver.run_js(js)
-
-    def redraw(self):
-        """Override MPL superclass, do nothing"""
-        pass
-
-
-class WWTDriver(QObject):
+class WWTDriver(QtCore.QObject):
     def __init__(self, webdriver_class, parent=None):
         super(WWTDriver, self).__init__(parent)
         self._driver = None
         self._driver_class = webdriver_class or webdriver.Firefox
         self._last_opac = None
         self._opacity = 100
-        self._opac_timer = QTimer()
+        self._opac_timer = QtCore.QTimer()
 
     def setup(self):
         self._driver = self._driver_class()
@@ -107,7 +43,7 @@ class WWTDriver(QObject):
         self.run_js(js)
 
     def run_js(self, js, async=False):
-        print js
+        print(js)
         if async:
             try:
                 self._driver.execute_async_script(js)
@@ -118,17 +54,17 @@ class WWTDriver(QObject):
 
 
 class WWTWidget(DataViewer):
-    run_js = pyqtSignal(str)
+    run_js = QtCore.Signal(str)
 
     def __str__(self):
         return "WWTWidget"
 
     def __init__(self, data, parent=None, webdriver_class=None):
         super(WWTWidget, self).__init__(data, parent)
-        self.option_panel = QWidget()
-        self.ui = Ui_WWT()
+        self.option_panel = QtGui.QWidget()
+        self.ui = load_ui('wwt.ui', directory=os.path.dirname(__file__))
         self.ui.setupUi(self.option_panel)
-        self._worker_thread = QThread()
+        self._worker_thread = QtCore.QThread()
 
         self._driver = WWTDriver(webdriver_class)
         self._driver.moveToThread(self._worker_thread)
@@ -138,14 +74,14 @@ class WWTWidget(DataViewer):
         self._ra = '_RAJ2000'
         self._dec = '_DEJ2000'
 
-        l = QLabel("See browser")
-        pm = QPixmap(":/icons/wwt_icon.png")
+        l = QtGui.QLabel("See browser")
+        pm = QtGui.QPixmap(":/icons/wwt_icon.png")
         size = pm.size()
-        print size
+        print(size)
         l.setPixmap(pm)
         l.resize(size)
-        w = QWidget()
-        layout = QHBoxLayout()
+        w = QtGui.QWidget()
+        layout = QtGui.QHBoxLayout()
         layout.addWidget(l)
         layout.setContentsMargins(0, 0, 0, 0)
         w.setLayout(layout)
@@ -213,15 +149,15 @@ class WWTWidget(DataViewer):
             layer, text, thumb = row
             url = base % thumb
             data = urlopen(url).read()
-            pm = QPixmap()
+            pm = QtGui.QPixmap()
             pm.loadFromData(data)
-            icon = QIcon(pm)
+            icon = QtGui.QIcon(pm)
             self.ui.foreground.addItem(icon, text, layer)
             self.ui.foreground.setItemData(i, layer, role=Qt.ToolTipRole)
             self.ui.background.addItem(icon, text, layer)
             self.ui.background.setItemData(i, layer, role=Qt.ToolTipRole)
-        self.ui.foreground.setIconSize(QSize(60, 60))
-        self.ui.background.setIconSize(QSize(60, 60))
+        self.ui.foreground.setIconSize(QtCore.QSize(60, 60))
+        self.ui.background.setIconSize(QtCore.QSize(60, 60))
 
     def _connect(self):
         self.ui.foreground.currentIndexChanged.connect(self._update_foreground)
@@ -246,7 +182,7 @@ class WWTWidget(DataViewer):
         self._driver.set_opacity(value)
 
     def catalog(self, layer):
-        logging.getLogger(__name__).debug("adding %s" % layer.label)
+        logger.debug("adding %s" % layer.label)
         x = layer[self.ra]
         y = layer[self.dec]
         circles = []
@@ -264,7 +200,7 @@ class WWTWidget(DataViewer):
         return True
 
     def add_data(self, data, center=True):
-        print 'add data'
+        print('add data')
         if data in self:
             return
         self._add_layer(data, center)
@@ -274,7 +210,7 @@ class WWTWidget(DataViewer):
         return True
 
     def add_subset(self, subset, center=True):
-        print 'add subset'
+        print('add subset')
         if subset in self:
             return
         self._add_layer(subset, center)
@@ -325,9 +261,9 @@ class WWTWidget(DataViewer):
                       lambda msg: msg.subset.data in self)
 
     def _update_layer(self, layer):
-        print 'updating layer', layer
+        print('updating layer', layer)
         for a in self._container[layer]:
-            print 'updating', a
+            print('updating', a)
             a.xatt = self.ra
             a.yatt = self.dec
             a.update()
@@ -338,7 +274,7 @@ class WWTWidget(DataViewer):
 
     def _remove_layer(self, layer):
         for l in self._container[layer]:
-            print 'removing'
+            print('removing')
             self._container.remove(l)
         assert layer not in self
 
@@ -354,6 +290,7 @@ class WWTWidget(DataViewer):
 
 
 def main():
+
     from glue.core import Data, DataCollection
     from glue.qt import get_qapp
     import numpy as np

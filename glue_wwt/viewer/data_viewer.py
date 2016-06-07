@@ -7,6 +7,7 @@ from glue.core.exceptions import IncompatibleAttribute
 
 from glue.external.qt import QtCore, QtGui
 from glue.logger import logger
+from PyQt4.QtWebKit import QWebView
 
 from .layer_artist import circle, WWTLayer
 from .options_widget import WWTOptionPanel
@@ -31,28 +32,28 @@ class WWTDataViewer(DataViewer):
 
         # self._worker_thread = QtCore.QThread()
 
-        self._driver = WWTDriver(webdriver_class)
-        # self._driver.moveToThread(self._worker_thread)
-        # self._worker_thread.start()
-        self._driver.setup()
+        self._browser = QWebView()
+        self._browser.setUrl(QtCore.QUrl('http://localhost/~tom/wwt.html'))
+
+        self._driver = WWTDriver(self._browser)
 
         self._ra = '_RAJ2000'
         self._dec = '_DEJ2000'
 
-        l = QtGui.QLabel("See browser")
-        pm = QtGui.QPixmap(":/wwt_icon.png")
-        size = pm.size()
-        l.setPixmap(pm)
-        l.resize(size)
-        w = QtGui.QWidget()
-        layout = QtGui.QHBoxLayout()
-        layout.addWidget(l)
-        layout.setContentsMargins(0, 0, 0, 0)
-        w.setLayout(layout)
-        w.setContentsMargins(0, 0, 0, 0)
-        w.resize(size)
-        self.setCentralWidget(w)
-        self.resize(w.size())
+        # l = QtGui.QLabel("See browser")
+        # pm = QtGui.QPixmap(":/wwt_icon.png")
+        # size = pm.size()
+        # l.setPixmap(pm)
+        # l.resize(size)
+        # w = QtGui.QWidget()
+        # layout = QtGui.QHBoxLayout()
+        # layout.addWidget(l)
+        # layout.setContentsMargins(0, 0, 0, 0)
+        # w.setLayout(layout)
+        # w.setContentsMargins(0, 0, 0, 0)
+        # w.resize(size)
+        self.setCentralWidget(self._browser)
+        self.resize(self._browser.size())
         self.setWindowTitle("WWT")
 
         self.run_js.connect(self._driver.run_js)

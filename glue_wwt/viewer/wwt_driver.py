@@ -1,31 +1,18 @@
 from __future__ import absolute_import, division, print_function
 
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
-
 from glue.external.qt import QtCore
 
 __all__ = ['WWTDriver']
 
 
-class WWTDriver(QtCore.QObject):
+class WWTDriver(object):
 
-    def __init__(self, webdriver_class, parent=None):
-        super(WWTDriver, self).__init__(parent)
-        print("INIT WWTDriver")
-        self._driver = None
-        self._driver_class = webdriver_class or webdriver.Firefox
+    def __init__(self, browser, parent=None):
+        self._browser = browser
+        self._frame = self._browser.page().mainFrame()
         self._last_opac = None
         self._opacity = 100
         self._opac_timer = QtCore.QTimer()
-
-    def setup(self):
-        print("SETUP WWTDriver")
-        self._driver = self._driver_class()
-        self._driver.get('http://127.0.0.1/~tom/wwt.html')
-        # import time
-        # time.sleep(10)
-
         self._opac_timer.timeout.connect(self._update_opacity)
         self._opac_timer.start(200)
 
@@ -41,15 +28,4 @@ class WWTDriver(QtCore.QObject):
 
     def run_js(self, js, async=False):
         print("RUNNING JS", repr(js))
-        if async:
-            try:
-                self._driver.execute_async_script(js)
-            except TimeoutException:
-                pass
-        else:
-            # print("WAITING 5 seconds")
-            # import time
-            # time.sleep(5)
-            self._driver.execute_script(js)
-            # import time
-            # time.sleep(5)
+        self._frame.evaluateJavaScript(js)

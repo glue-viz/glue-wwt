@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 entry_points = """
 [glue.plugins]
-myplugin=myplugin:setup
+wwt=glue_wwt:setup
 """
 
 try:
@@ -16,14 +16,14 @@ except (IOError, ImportError):
     with open('README.md') as infile:
         LONG_DESCRIPTION = infile.read()
 
-with open('myplugin/version.py') as infile:
+with open('glue_wwt/version.py') as infile:
     exec(infile.read())
 
-setup(name='myplugin',
+setup(name='glue_wwt',
       version=__version__,
-      description='My example plugin',
+      description='Glue WorldWide Telescope plugin',
       long_description=LONG_DESCRIPTION,
-      url="https://github.com/glue-viz/glue-plugin-template",
+      url="https://github.com/glue-viz/glue-wwt",
       author='',
       author_email='',
       packages = find_packages(),

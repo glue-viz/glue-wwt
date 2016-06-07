@@ -42,29 +42,12 @@
       wwt.loadImageCollection('http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys');
       wwt.settings.set_showConstellationBoundries(false);
       wwt.settings.set_showConstellationFigures(false);
+      wwt.setForegroundImageByName('WISE All Sky (Infrared)');
       }
 
       // This is the initialization for Worldwide Telescope
 
       function initForWwt() {}
-
-
-      function PointCollection(x, y) {
-      var result = {
-      x: x,
-      y: y,
-
-      show: function() {
-      for ( i=0; i < this.x.length; i += 1 ) {
-		     wwt.addAnnotation(this.circles[i]);
-	}
-		     },
-
-
-
-      }
-
-
 
     </script>
 

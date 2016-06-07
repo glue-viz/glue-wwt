@@ -27,5 +27,4 @@ class WWTDriver(object):
         self.run_js(js)
 
     def run_js(self, js, async=False):
-        print("RUNNING JS", repr(js))
         self._frame.evaluateJavaScript(js)

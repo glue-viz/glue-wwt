@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+import os
 import numpy as np
 
 from glue.viewers.common.qt.data_viewer import DataViewer
@@ -31,31 +32,18 @@ class WWTDataViewer(DataViewer):
 
         self.option_panel = WWTOptionPanel(self)
 
-        # self._worker_thread = QtCore.QThread()
-
         self._browser = QWebView()
-        self._browser.setUrl(QtCore.QUrl('http://localhost/~tom/wwt.html'))
+        url = QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), 'wwt.html'))
+        self._browser.setUrl(url)
 
         self._browser.page().mainFrame().setScrollBarPolicy(Qt.Vertical, Qt.ScrollBarAlwaysOff)
         self._browser.page().mainFrame().setScrollBarPolicy(Qt.Horizontal, Qt.ScrollBarAlwaysOff)
 
         self._driver = WWTDriver(self._browser)
 
-        self._ra = '_RAJ2000'
-        self._dec = '_DEJ2000'
+        self._ra = 'RAJ2000'
+        self._dec = 'DEJ2000'
 
-        # l = QtGui.QLabel("See browser")
-        # pm = QtGui.QPixmap(":/wwt_icon.png")
-        # size = pm.size()
-        # l.setPixmap(pm)
-        # l.resize(size)
-        # w = QtGui.QWidget()
-        # layout = QtGui.QHBoxLayout()
-        # layout.addWidget(l)
-        # layout.setContentsMargins(0, 0, 0, 0)
-        # w.setLayout(layout)
-        # w.setContentsMargins(0, 0, 0, 0)
-        # w.resize(size)
         self.setCentralWidget(self._browser)
         self.resize(self._browser.size())
         self.setWindowTitle("WWT")
@@ -120,7 +108,6 @@ class WWTDataViewer(DataViewer):
         return True
 
     def add_data(self, data, center=True):
-        print('add data')
         if data in self:
             return
         self._add_layer(data, center)
@@ -130,7 +117,6 @@ class WWTDataViewer(DataViewer):
         return True
 
     def add_subset(self, subset, center=True):
-        print('add subset')
         if subset in self:
             return
         self._add_layer(subset, center)
@@ -157,7 +143,6 @@ class WWTDataViewer(DataViewer):
         self.move(x, y)
 
     def register_to_hub(self, hub):
-        print('registering to hub')
         from glue.core import message as m
         super(WWTDataViewer, self).register_to_hub(hub)
 
@@ -181,9 +166,7 @@ class WWTDataViewer(DataViewer):
                       lambda msg: self.add_subset(msg.subset))
 
     def _update_layer(self, layer):
-        print('updating layer', layer)
         for a in self._layer_artist_container[layer]:
-            print('updating', a)
             a.xatt = self.ra
             a.yatt = self.dec
             a.update()
@@ -194,7 +177,6 @@ class WWTDataViewer(DataViewer):
 
     def _remove_layer(self, layer):
         for l in self._layer_artist_container[layer]:
-            print('removing')
             self._layer_artist_container.remove(l)
         assert layer not in self
 

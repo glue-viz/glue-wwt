@@ -27,7 +27,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="foreground">
+      <widget class="QComboBox" name="combo_foreground">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -54,7 +54,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QSlider" name="opacity">
+      <widget class="QSlider" name="value_opacity">
        <property name="maximum">
         <number>100</number>
        </property>
@@ -91,7 +91,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="background">
+      <widget class="QComboBox" name="combo_background">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>

@@ -1,69 +1,32 @@
 from __future__ import absolute_import, division, print_function
 
-import os
 import numpy as np
-from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
 
 from glue.viewers.common.qt.data_viewer import DataViewer
 from glue.core.exceptions import IncompatibleAttribute
 
 from glue.external.qt import QtCore, QtGui
-from glue.external.qt.QtCore import Qt
-from glue.external.six.moves.urllib.request import urlopen
 from glue.logger import logger
-from glue.utils.qt import load_ui
 
 from .layer_artist import circle, WWTLayer
+from .options_widget import WWTOptionPanel
+from .wwt_driver import WWTDriver
+
+__all__ = ['WWTDataViewer']
 
 
-class WWTDriver(QtCore.QObject):
-    def __init__(self, webdriver_class, parent=None):
-        super(WWTDriver, self).__init__(parent)
-        self._driver = None
-        self._driver_class = webdriver_class or webdriver.Firefox
-        self._last_opac = None
-        self._opacity = 100
-        self._opac_timer = QtCore.QTimer()
+class WWTDataViewer(DataViewer):
 
-    def setup(self):
-        self._driver = self._driver_class()
-        self._driver.get('http://www.ifa.hawaii.edu/users/beaumont/wwt.html')
-        self._opac_timer.timeout.connect(self._update_opacity)
-        self._opac_timer.start(200)
-
-    def set_opacity(self, value):
-        self._opacity = value
-
-    def _update_opacity(self):
-        if self._opacity == self._last_opac:
-            return
-        self._last_opac = self._opacity
-        js = 'wwt.setForegroundOpacity(%i)' % self._opacity
-        self.run_js(js)
-
-    def run_js(self, js, async=False):
-        print(js)
-        if async:
-            try:
-                self._driver.execute_async_script(js)
-            except TimeoutException:
-                pass
-        else:
-            self._driver.execute_script(js)
-
-
-class WWTWidget(DataViewer):
     run_js = QtCore.Signal(str)
 
     def __str__(self):
-        return "WWTWidget"
+        return "WWTDataViewer"
 
     def __init__(self, session, parent=None, webdriver_class=None):
-        super(WWTWidget, self).__init__(session, parent=parent)
+        super(WWTDataViewer, self).__init__(session, parent=parent)
 
-        self.option_panel = QtGui.QWidget()
-        self.ui = load_ui('wwt.ui', self.option_panel, directory=os.path.dirname(__file__))
+        self.option_panel = WWTOptionPanel(self)
+
         self._worker_thread = QtCore.QThread()
 
         self._driver = WWTDriver(webdriver_class)
@@ -75,9 +38,8 @@ class WWTWidget(DataViewer):
         self._dec = '_DEJ2000'
 
         l = QtGui.QLabel("See browser")
-        pm = QtGui.QPixmap(":/icons/wwt_icon.png")
+        pm = QtGui.QPixmap(":/wwt_icon.png")
         size = pm.size()
-        print(size)
         l.setPixmap(pm)
         l.resize(size)
         w = QtGui.QWidget()
@@ -91,8 +53,10 @@ class WWTWidget(DataViewer):
         self.resize(w.size())
         self.setWindowTitle("WWT")
 
-        self._setup_combos()
-        self._connect()
+        self.run_js.connect(self._driver.run_js)
+
+        self._update_foreground()
+        self._update_background()
 
     def __contains__(self, layer):
         return layer in self._container
@@ -121,62 +85,11 @@ class WWTWidget(DataViewer):
     def options_widget(self):
         return self.option_panel
 
-    def _setup_combos(self):
-        layers = ['Digitized Sky Survey (Color)',
-                  'VLSS: VLA Low-frequency Sky Survey (Radio)',
-                  'WMAP ILC 5-Year Cosmic Microwave Background',
-                  'SFD Dust Map (Infrared)',
-                  'WISE All Sky (Infrared)',
-                  'GLIMPSE/MIPSGAL',
-                  'Hydrogen Alpha Full Sky Map']
-        labels = ['DSS',
-                  'VLSS',
-                  'WMAP',
-                  'SFD',
-                  'WISE',
-                  'GLIMPSE',
-                  'H Alpha']
-        thumbnails = ['DSS',
-                      'VLA',
-                      'wmap5yr_ilc_200uk',
-                      'dust',
-                      'glimpsemipsgaltn',
-                      'halpha']
-        base = ('http://www.worldwidetelescope.org/wwtweb/'
-                'thumbnail.aspx?name=%s')
-
-        for i, row in enumerate(zip(layers, labels, thumbnails)):
-            layer, text, thumb = row
-            url = base % thumb
-            data = urlopen(url).read()
-            pm = QtGui.QPixmap()
-            pm.loadFromData(data)
-            icon = QtGui.QIcon(pm)
-            self.ui.foreground.addItem(icon, text, layer)
-            self.ui.foreground.setItemData(i, layer, role=Qt.ToolTipRole)
-            self.ui.background.addItem(icon, text, layer)
-            self.ui.background.setItemData(i, layer, role=Qt.ToolTipRole)
-        self.ui.foreground.setIconSize(QtCore.QSize(60, 60))
-        self.ui.background.setIconSize(QtCore.QSize(60, 60))
-
-    def _connect(self):
-        self.ui.foreground.currentIndexChanged.connect(self._update_foreground)
-        self.ui.background.currentIndexChanged.connect(self._update_background)
-        self.ui.opacity.valueChanged.connect(self._update_opacity)
-        self.ui.opacity.setValue(100)
-        self._update_foreground()
-        self._update_background()
-        self.run_js.connect(self._driver.run_js)
-
     def _update_foreground(self):
-        layer = str(self.ui.foreground.itemData(
-            self.ui.foreground.currentIndex()))
-        self._run_js('wwt.setForegroundImageByName("%s");' % layer)
+        self._run_js('wwt.setForegroundImageByName("%s");' % self.option_panel.foreground)
 
     def _update_background(self):
-        layer = str(self.ui.background.itemData(
-            self.ui.background.currentIndex()))
-        self._run_js('wwt.setBackgroundImageByName("%s");' % layer)
+        self._run_js('wwt.setBackgroundImageByName("%s");' % self.option_panel.background)
 
     def _update_opacity(self, value):
         self._driver.set_opacity(value)
@@ -238,7 +151,7 @@ class WWTWidget(DataViewer):
 
     def register_to_hub(self, hub):
         from ...core import message as m
-        super(WWTWidget, self).register_to_hub(hub)
+        super(WWTDataViewer, self).register_to_hub(hub)
 
         hub.subscribe(self, m.DataUpdateMessage,
                       lambda msg: self._update_layer(msg.sender),
@@ -301,7 +214,7 @@ def main():
              _DEJ2000=np.random.random((100)) + 85)
     dc = DataCollection([d])
 
-    wwt = WWTWidget(dc)
+    wwt = WWTDataViewer(dc)
     wwt.show()
     app.exec_()
 

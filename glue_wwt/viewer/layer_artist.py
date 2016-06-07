@@ -19,9 +19,9 @@ def circle(x, y, label, color, radius=10):
 
 class WWTLayer(LayerArtistBase):
 
-    def __init__(self, layer, context):
-        super(WWTLayer, self).__init__(layer, context)
-        self._driver = context  # base class stores as "axes"; misnomer here
+    def __init__(self, layer, driver):
+        super(WWTLayer, self).__init__(layer)
+        self._driver = driver  # base class stores as "axes"; misnomer here
         self.xatt = None
         self.yatt = None
         self.markers = {}

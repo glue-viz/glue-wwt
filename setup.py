@@ -27,6 +27,6 @@ setup(name='glue_wwt',
       author='',
       author_email='',
       packages = find_packages(),
-      package_data={},
+      package_data = {'glue_wwt.viewer': ['*.ui']},
       entry_points=entry_points
     )

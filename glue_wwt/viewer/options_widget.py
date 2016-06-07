@@ -35,20 +35,20 @@ class WWTOptionPanel(QtGui.QWidget):
                   'SFD Dust Map (Infrared)',
                   'WISE All Sky (Infrared)',
                   'GLIMPSE/MIPSGAL',
-                  'Hydrogen Alpha Full Sky Map']
+                  'Hydrogen Alpha Full Sky Map'][3:]
         labels = ['DSS',
                   'VLSS',
                   'WMAP',
                   'SFD',
                   'WISE',
                   'GLIMPSE',
-                  'H Alpha']
+                  'H Alpha'][3:]
         thumbnails = ['DSS',
                       'VLA',
                       'wmap5yr_ilc_200uk',
                       'dust',
                       'glimpsemipsgaltn',
-                      'halpha']
+                      'halpha'][3:]
         base = ('http://www.worldwidetelescope.org/wwtweb/'
                 'thumbnail.aspx?name=%s')
 

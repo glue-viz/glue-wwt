@@ -12,6 +12,7 @@ class WWTDriver(QtCore.QObject):
 
     def __init__(self, webdriver_class, parent=None):
         super(WWTDriver, self).__init__(parent)
+        print("INIT WWTDriver")
         self._driver = None
         self._driver_class = webdriver_class or webdriver.Firefox
         self._last_opac = None
@@ -19,8 +20,12 @@ class WWTDriver(QtCore.QObject):
         self._opac_timer = QtCore.QTimer()
 
     def setup(self):
+        print("SETUP WWTDriver")
         self._driver = self._driver_class()
-        self._driver.get('http://www.ifa.hawaii.edu/users/beaumont/wwt.html')
+        self._driver.get('http://127.0.0.1/~tom/wwt.html')
+        # import time
+        # time.sleep(10)
+
         self._opac_timer.timeout.connect(self._update_opacity)
         self._opac_timer.start(200)
 
@@ -35,11 +40,16 @@ class WWTDriver(QtCore.QObject):
         self.run_js(js)
 
     def run_js(self, js, async=False):
-        print(js)
+        print("RUNNING JS", repr(js))
         if async:
             try:
                 self._driver.execute_async_script(js)
             except TimeoutException:
                 pass
         else:
+            # print("WAITING 5 seconds")
+            # import time
+            # time.sleep(5)
             self._driver.execute_script(js)
+            # import time
+            # time.sleep(5)

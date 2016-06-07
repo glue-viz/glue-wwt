@@ -17,6 +17,8 @@ __all__ = ['WWTDataViewer']
 
 class WWTDataViewer(DataViewer):
 
+    LABEL = 'WorldWideTelescope (WWT)'
+
     run_js = QtCore.Signal(str)
 
     def __str__(self):
@@ -27,11 +29,11 @@ class WWTDataViewer(DataViewer):
 
         self.option_panel = WWTOptionPanel(self)
 
-        self._worker_thread = QtCore.QThread()
+        # self._worker_thread = QtCore.QThread()
 
         self._driver = WWTDriver(webdriver_class)
-        self._driver.moveToThread(self._worker_thread)
-        self._worker_thread.start()
+        # self._driver.moveToThread(self._worker_thread)
+        # self._worker_thread.start()
         self._driver.setup()
 
         self._ra = '_RAJ2000'
@@ -59,10 +61,10 @@ class WWTDataViewer(DataViewer):
         self._update_background()
 
     def __contains__(self, layer):
-        return layer in self._container
+        return layer in self._layer_artist_container
 
     def __len__(self):
-        return len(self._container)
+        return len(self._layer_artist_container)
 
     @property
     def ra(self):
@@ -133,8 +135,8 @@ class WWTDataViewer(DataViewer):
         if layer in self:
             return
         artist = WWTLayer(layer, self._driver)
-        self._container.append(artist)
-        assert len(self._container[layer]) > 0, self._container[layer]
+        self._layer_artist_container.append(artist)
+        assert len(self._layer_artist_container[layer]) > 0, self._layer_artist_container[layer]
         self._update_layer(layer)
         if center:
             self._center_on(layer)
@@ -150,7 +152,8 @@ class WWTDataViewer(DataViewer):
         self.move(x, y)
 
     def register_to_hub(self, hub):
-        from ...core import message as m
+        print('registering to hub')
+        from glue.core import message as m
         super(WWTDataViewer, self).register_to_hub(hub)
 
         hub.subscribe(self, m.DataUpdateMessage,
@@ -170,25 +173,24 @@ class WWTDataViewer(DataViewer):
                       lambda msg: msg.subset in self)
 
         hub.subscribe(self, m.SubsetCreateMessage,
-                      lambda msg: self.add_subset(msg.subset),
-                      lambda msg: msg.subset.data in self)
+                      lambda msg: self.add_subset(msg.subset))
 
     def _update_layer(self, layer):
         print('updating layer', layer)
-        for a in self._container[layer]:
+        for a in self._layer_artist_container[layer]:
             print('updating', a)
             a.xatt = self.ra
             a.yatt = self.dec
             a.update()
 
     def _update_all(self):
-        for l in self._container.layers:
+        for l in self._layer_artist_container.layers:
             self._update_layer(l)
 
     def _remove_layer(self, layer):
-        for l in self._container[layer]:
+        for l in self._layer_artist_container[layer]:
             print('removing')
-            self._container.remove(l)
+            self._layer_artist_container.remove(l)
         assert layer not in self
 
     def unregister(self, hub):

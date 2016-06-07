@@ -5,7 +5,8 @@ import numpy as np
 from glue.viewers.common.qt.data_viewer import DataViewer
 from glue.core.exceptions import IncompatibleAttribute
 
-from glue.external.qt import QtCore, QtGui
+from glue.external.qt import QtCore
+from glue.external.qt.QtCore import Qt
 from glue.logger import logger
 from PyQt4.QtWebKit import QWebView
 
@@ -34,6 +35,9 @@ class WWTDataViewer(DataViewer):
 
         self._browser = QWebView()
         self._browser.setUrl(QtCore.QUrl('http://localhost/~tom/wwt.html'))
+
+        self._browser.page().mainFrame().setScrollBarPolicy(Qt.Vertical, Qt.ScrollBarAlwaysOff)
+        self._browser.page().mainFrame().setScrollBarPolicy(Qt.Horizontal, Qt.ScrollBarAlwaysOff)
 
         self._driver = WWTDriver(self._browser)
 

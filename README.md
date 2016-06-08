@@ -2,7 +2,7 @@ Experimental Glue WWT plugin
 ==============================
 
 [![Build Status](https://travis-ci.org/glue-viz/glue-wwt.svg)](https://travis-ci.org/glue-viz/glue-wwt?branch=master)
-[![Build status](https://ci.appveyor.com/api/projects/status/1gov2vtuesjnij69/branch/master?svg=true)](https://ci.appveyor.com/project/astrofrog/glue-wwt/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/01ftgoixkj5yssig/branch/master?svg=true)](https://ci.appveyor.com/project/astrofrog/glue-wwt/branch/master)
 
 **Note:** this plugin is still under development, and is not yet functional
 

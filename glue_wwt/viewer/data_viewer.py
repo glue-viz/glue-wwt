@@ -30,8 +30,6 @@ class WWTDataViewer(DataViewer):
     def __init__(self, session, parent=None, webdriver_class=None):
         super(WWTDataViewer, self).__init__(session, parent=parent)
 
-        self.option_panel = WWTOptionPanel(self)
-
         self._browser = QWebView()
         url = QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), 'wwt.html'))
         self._browser.setUrl(url)
@@ -41,8 +39,7 @@ class WWTDataViewer(DataViewer):
 
         self._driver = WWTDriver(self._browser)
 
-        self._ra = 'RAJ2000'
-        self._dec = 'DEJ2000'
+        self.option_panel = WWTOptionPanel(self)
 
         self.setCentralWidget(self._browser)
         self.resize(self._browser.size())
@@ -58,24 +55,6 @@ class WWTDataViewer(DataViewer):
 
     def __len__(self):
         return len(self._layer_artist_container)
-
-    @property
-    def ra(self):
-        return self._ra
-
-    @ra.setter
-    def ra(self, value):
-        self._ra = value
-        self._update_all()
-
-    @property
-    def dec(self):
-        return self._dec
-
-    @dec.setter
-    def dec(self, value):
-        self._dec = value
-        self._update_all()
 
     def options_widget(self):
         return self.option_panel
@@ -94,8 +73,8 @@ class WWTDataViewer(DataViewer):
 
     def catalog(self, layer):
         logger.debug("adding %s" % layer.label)
-        x = layer[self.ra]
-        y = layer[self.dec]
+        x = layer[self.option_panel.ra]
+        y = layer[self.option_panel.dec]
         circles = []
         for i in range(x.size):
             label = "%s_%i" % (layer.label.replace(' ', '_').replace('.', '_'),
@@ -117,12 +96,16 @@ class WWTDataViewer(DataViewer):
 
         for s in data.subsets:
             self.add_subset(s, center=False)
+
+        self.option_panel.add_data(data)
+
         return True
 
     def add_subset(self, subset, center=True):
         if subset in self:
             return
         self._add_layer(subset, center)
+
         return True
 
     def _add_layer(self, layer, center=True):
@@ -139,8 +122,8 @@ class WWTDataViewer(DataViewer):
     def _center_on(self, layer):
         """Center view on data"""
         try:
-            x = np.median(layer[self.ra])
-            y = np.median(layer[self.dec])
+            x = np.median(layer[self.option_panel.ra])
+            y = np.median(layer[self.option_panel.dec])
         except IncompatibleAttribute:
             return
         self.move(x, y)
@@ -170,8 +153,8 @@ class WWTDataViewer(DataViewer):
 
     def _update_layer(self, layer):
         for a in self._layer_artist_container[layer]:
-            a.xatt = self.ra
-            a.yatt = self.dec
+            a.xatt = self.option_panel.ra
+            a.yatt = self.option_panel.dec
             a.update()
 
     def _update_all(self):

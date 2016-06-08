@@ -59,7 +59,7 @@ class WWTLayer(LayerArtistBase):
             return
 
         for i in range(ra.size):
-            label = "%s_%i" % (layer.label.replace(' ', '_').replace('.', '_'),
+            label = "marker_%s_%i" % (layer.label.replace(' ', '_').replace('.', '_'),
                                i)
             cmd = circle(ra[i], dec[i], label, layer.style.color)
             self.markers[label] = cmd

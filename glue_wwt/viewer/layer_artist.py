@@ -8,7 +8,7 @@ from glue.core.exceptions import IncompatibleAttribute
 __all__ = ['WWTLayer', 'circle']
 
 
-def circle(x, y, label, color, radius=10):
+def circle(x, y, label, color, radius=3):
     result = """%(label)s = wwt.createCircle("%(color)s");
     %(label)s.setCenter(%(x)f, %(y)f);
     %(label)s.set_fillColor("%(color)s");

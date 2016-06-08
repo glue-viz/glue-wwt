@@ -89,6 +89,9 @@ class WWTDataViewer(DataViewer):
     def _update_opacity(self, value):
         self._driver.set_opacity(value)
 
+    def _update_galactic_plane_mode(self, mode):
+        self._driver.set_galactic_plane_mode(mode)
+
     def catalog(self, layer):
         logger.debug("adding %s" % layer.label)
         x = layer[self.ra]

@@ -6,7 +6,7 @@ from glue.external.qt import QtCore, QtGui
 from glue.external.qt.QtCore import Qt
 from glue.external.six.moves.urllib.request import urlopen
 from glue.utils.qt import load_ui
-from glue.utils.qt.widget_properties import ValueProperty, CurrentComboDataProperty
+from glue.utils.qt.widget_properties import ValueProperty, CurrentComboDataProperty, ButtonProperty
 
 __all__ = ['WWTOptionPanel']
 
@@ -16,6 +16,7 @@ class WWTOptionPanel(QtGui.QWidget):
     background = CurrentComboDataProperty('ui.combo_background')
     foreground = CurrentComboDataProperty('ui.combo_foreground')
     options = ValueProperty('ui.value_opacity')
+    galactic_plane = ButtonProperty('ui.checkbox_galactic_plane')
 
     def __init__(self, viewer, parent=None):
 
@@ -35,20 +36,20 @@ class WWTOptionPanel(QtGui.QWidget):
                   'SFD Dust Map (Infrared)',
                   'WISE All Sky (Infrared)',
                   'GLIMPSE/MIPSGAL',
-                  'Hydrogen Alpha Full Sky Map'][3:]
+                  'Hydrogen Alpha Full Sky Map']
         labels = ['DSS',
                   'VLSS',
                   'WMAP',
                   'SFD',
                   'WISE',
                   'GLIMPSE',
-                  'H Alpha'][3:]
+                  'H Alpha']
         thumbnails = ['DSS',
                       'VLA',
                       'wmap5yr_ilc_200uk',
                       'dust',
                       'glimpsemipsgaltn',
-                      'halpha'][3:]
+                      'halpha']
         base = ('http://www.worldwidetelescope.org/wwtweb/'
                 'thumbnail.aspx?name=%s')
 
@@ -73,5 +74,6 @@ class WWTOptionPanel(QtGui.QWidget):
         self.ui.combo_foreground.currentIndexChanged.connect(self.viewer._update_foreground)
         self.ui.combo_background.currentIndexChanged.connect(self.viewer._update_background)
         self.ui.value_opacity.valueChanged.connect(self.viewer._update_opacity)
+        self.ui.checkbox_galactic_plane.toggled.connect(self.viewer._update_galactic_plane_mode)
 
         self.opacity = 100

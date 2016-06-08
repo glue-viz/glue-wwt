@@ -19,6 +19,10 @@ class WWTDriver(object):
     def set_opacity(self, value):
         self._opacity = value
 
+    def set_galactic_plane_mode(self, mode):
+        js = 'wwt.settings.set_galacticMode({0});'.format(str(mode).lower())
+        self.run_js(js)
+
     def _update_opacity(self):
         if self._opacity == self._last_opac:
             return

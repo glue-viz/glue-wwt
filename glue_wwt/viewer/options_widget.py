@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 import os
 
 from glue.core import Subset
-from glue.external.qt import QtCore, QtGui
-from glue.external.qt.QtCore import Qt
+from qtpy import QtCore, QtWidgets, QtGui
+from qtpy.QtCore import Qt
 from glue.external.six.moves.urllib.request import urlopen
 from glue.utils.qt import load_ui
 from glue.utils.qt.widget_properties import ValueProperty, CurrentComboDataProperty, ButtonProperty
@@ -13,7 +13,7 @@ from glue.core.qt.data_combo_helper import ComponentIDComboHelper
 __all__ = ['WWTOptionPanel']
 
 
-class WWTOptionPanel(QtGui.QWidget):
+class WWTOptionPanel(QtWidgets.QWidget):
 
     ra_att = CurrentComboDataProperty('ui.combo_ra_att')
     dec_att = CurrentComboDataProperty('ui.combo_dec_att')

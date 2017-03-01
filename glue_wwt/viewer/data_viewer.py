@@ -6,14 +6,15 @@ import numpy as np
 from glue.viewers.common.qt.data_viewer import DataViewer
 from glue.core.exceptions import IncompatibleAttribute
 
-from glue.external.qt import QtCore
-from glue.external.qt.QtCore import Qt
+from qtpy import QtCore
+from qtpy.QtCore import Qt
 from glue.logger import logger
 from PyQt4.QtWebKit import QWebView
 
 from .layer_artist import circle, WWTLayer
 from .options_widget import WWTOptionPanel
 from .wwt_driver import WWTDriver
+from glue.viewers.common.qt.toolbar import BasicToolbar
 
 __all__ = ['WWTDataViewer']
 
@@ -21,6 +22,7 @@ __all__ = ['WWTDataViewer']
 class WWTDataViewer(DataViewer):
 
     LABEL = 'WorldWideTelescope (WWT)'
+    _toolbar_cls = BasicToolbar
 
     run_js = QtCore.Signal(str)
 

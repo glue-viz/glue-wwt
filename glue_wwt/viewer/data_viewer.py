@@ -5,11 +5,11 @@ import numpy as np
 
 from glue.viewers.common.qt.data_viewer import DataViewer
 from glue.core.exceptions import IncompatibleAttribute
+from glue.logger import logger
 
 from qtpy import QtCore
 from qtpy.QtCore import Qt
-from glue.logger import logger
-from PyQt4.QtWebKit import QWebView
+from qtpy.QtWebEngineWidgets import QWebEngineView
 
 from .layer_artist import circle, WWTLayer
 from .options_widget import WWTOptionPanel
@@ -32,12 +32,12 @@ class WWTDataViewer(DataViewer):
     def __init__(self, session, parent=None, webdriver_class=None):
         super(WWTDataViewer, self).__init__(session, parent=parent)
 
-        self._browser = QWebView()
+        self._browser = QWebEngineView()
         url = QtCore.QUrl.fromLocalFile(os.path.join(os.path.dirname(__file__), 'wwt.html'))
         self._browser.setUrl(url)
 
-        self._browser.page().mainFrame().setScrollBarPolicy(Qt.Vertical, Qt.ScrollBarAlwaysOff)
-        self._browser.page().mainFrame().setScrollBarPolicy(Qt.Horizontal, Qt.ScrollBarAlwaysOff)
+        # self._browser.page().setScrollBarPolicy(Qt.Vertical, Qt.ScrollBarAlwaysOff)
+        # self._browser.page().setScrollBarPolicy(Qt.Horizontal, Qt.ScrollBarAlwaysOff)
 
         self._driver = WWTDriver(self._browser)
 
@@ -49,8 +49,12 @@ class WWTDataViewer(DataViewer):
 
         self.run_js.connect(self._driver.run_js)
 
+        self._browser.page().loadFinished.connect(self._on_load_finish)
+
+    def _on_load_finish(self, event):
         self._update_foreground()
         self._update_background()
+        self._update_opacity(100)
 
     def __contains__(self, layer):
         return layer in self._layer_artist_container
@@ -182,7 +186,8 @@ class WWTDataViewer(DataViewer):
 def main():
 
     from glue.core import Data, DataCollection
-    from glue.qt import get_qapp
+    from glue.utils.qt import get_qapp
+    from glue.core.session import Session
     import numpy as np
 
     app = get_qapp()
@@ -190,8 +195,9 @@ def main():
     d = Data(label="data", _RAJ2000=np.random.random((100)) + 0,
              _DEJ2000=np.random.random((100)) + 85)
     dc = DataCollection([d])
+    session = Session(data_collection=dc)
 
-    wwt = WWTDataViewer(dc)
+    wwt = WWTDataViewer(session)
     wwt.show()
     app.exec_()
 

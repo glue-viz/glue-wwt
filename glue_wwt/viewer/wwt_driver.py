@@ -9,12 +9,10 @@ class WWTDriver(object):
 
     def __init__(self, browser, parent=None):
         self._browser = browser
-        self._frame = self._browser.page().mainFrame()
+        self._page = browser.page()
+        # self._frame = self._browser.page().mainFrame()
         self._last_opac = None
-        self._opacity = 100
-        self._opac_timer = QtCore.QTimer()
-        self._opac_timer.timeout.connect(self._update_opacity)
-        self._opac_timer.start(200)
+        self._opacity = None
 
     def set_opacity(self, value):
         self._opacity = value
@@ -31,4 +29,4 @@ class WWTDriver(object):
         self.run_js(js)
 
     def run_js(self, js, async=False):
-        self._frame.evaluateJavaScript(js)
+        self._page.runJavaScript(js)

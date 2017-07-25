@@ -105,19 +105,19 @@ class WWTOptionPanel(QtWidgets.QWidget):
         # datasets/subsets with the same components, we only want to show those
         # once.
         if isinstance(data, Subset):
-            self.ra_att_helper.append(data.data)
-            self.dec_att_helper.append(data.data)
+            self.ra_att_helper.append_data(data.data)
+            self.dec_att_helper.append_data(data.data)
         else:
-            self.ra_att_helper.append(data)
-            self.dec_att_helper.append(data)
+            self.ra_att_helper.append_data(data)
+            self.dec_att_helper.append_data(data)
 
     def remove_data(self, data):
         if isinstance(data, Subset):
-            self.ra_att_helper.remove(data.data)
-            self.dec_att_helper.remove(data.data)
+            self.ra_att_helper.remove_data(data.data)
+            self.dec_att_helper.remove_data(data.data)
         else:
-            self.ra_att_helper.remove(data)
-            self.dec_att_helper.remove(data)
+            self.ra_att_helper.remove_data(data)
+            self.dec_att_helper.remove_data(data)
 
     def _connect(self):
 

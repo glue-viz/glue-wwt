@@ -11,15 +11,15 @@ environment:
                         # of 32 bit and 64 bit builds are needed, move this
                         # to the matrix section.
 
-      CONDA_CHANNELS: "conda-forge"
+      CONDA_CHANNELS: "glueviz"
       CONDA_DEPENDENCIES: "glueviz pytest mock"
 
   matrix:
       - PYTHON_VERSION: "2.7"
-      - PYTHON_VERSION: "3.5"
+      - PYTHON_VERSION: "3.6"
       - PYTHON_VERSION: "2.7"
         PIP_DEPENDENCIES: "https://github.com/glue-viz/glue/archive/master.zip"
-      - PYTHON_VERSION: "3.5"
+      - PYTHON_VERSION: "3.6"
         PIP_DEPENDENCIES: "https://github.com/glue-viz/glue/archive/master.zip"
         
 platform:

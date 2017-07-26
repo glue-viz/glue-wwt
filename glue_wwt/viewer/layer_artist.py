@@ -1,9 +1,17 @@
 from __future__ import absolute_import, division, print_function
 
+import numpy as np
+
 from glue.logger import logger
 from glue.core.layer_artist import LayerArtistBase
 from glue.core.exceptions import IncompatibleAttribute
+from glue.external.echo import CallbackProperty, keep_in_sync
 
+from astropy import units as u
+from astropy.coordinates import SkyCoord
+
+from .state import WWTLayerState
+from .wwt_widget import WWTMarkerCollection
 
 __all__ = ['WWTLayer', 'circle']
 
@@ -19,54 +27,76 @@ def circle(x, y, label, color, radius=3):
 
 class WWTLayer(LayerArtistBase):
 
-    def __init__(self, layer, driver):
+    zorder = CallbackProperty()
+    visible = CallbackProperty()
+
+    def __init__(self, wwt_widget, viewer_state, layer_state=None, layer=None):
+
         super(WWTLayer, self).__init__(layer)
-        self._driver = driver  # base class stores as "axes"; misnomer here
-        self.xatt = None
-        self.yatt = None
-        self.markers = {}
 
-    @property
-    def visible(self):
-        return self._visible
+        self.layer = layer or layer_state.layer
 
-    @visible.setter
-    def visible(self, value):
-        self._visible = value
-        self.update()
+        self._wwt_widget = wwt_widget
+        self._viewer_state = viewer_state
+
+        # Set up a state object for the layer artist
+        self.state = layer_state or WWTLayerState(viewer_state=viewer_state,
+                                                  layer=self.layer)
+        if self.state not in self._viewer_state.layers:
+            self._viewer_state.layers.append(self.state)
+
+        self.markers = WWTMarkerCollection(self._wwt_widget)
+
+        self.zorder = self.state.zorder
+        self.visible = self.state.visible
+
+        self._sync_zorder = keep_in_sync(self, 'zorder', self.state, 'zorder')
+        self._sync_visible = keep_in_sync(self, 'visible', self.state, 'visible')
+
+        self.state.add_global_callback(self.update)
 
     def clear(self):
-        js = '\n'.join("wwt.removeAnnotation(%s);" % l
-                       for l in self.markers.keys())
-        self._driver.run_js(js)
-        self.markers = {}
+        self.markers.clear()
 
-    def _sync_style(self):
-        pass
+    def update(self, **kwargs):
 
-    def update(self, view=None):
         logger.debug("updating WWT for %s" % self.layer.label)
-        self.clear()
-        layer = self.layer
+
+        self.markers.clear()
+
         if not self.visible:
             return
 
         try:
-            ra = self.layer[self.xatt]
-            dec = self.layer[self.yatt]
+            ra = self.layer[self.state.ra_att]
         except IncompatibleAttribute:
-            print("Cannot fetch attributes %s and %s" % (self.xatt, self.yatt))
+            self.disable_invalid_attributes(self.state.ra_att)
             return
 
-        for i in range(ra.size):
-            label = "marker_%s_%i" % (layer.label.replace(' ', '_').replace('.', '_'), i)
-            cmd = circle(ra[i], dec[i], label, layer.style.color)
-            self.markers[label] = cmd
+        try:
+            dec = self.layer[self.state.dec_att]
+        except IncompatibleAttribute:
+            self.disable_invalid_attributes(self.state.dec_att)
+            return
 
-        js = '\n'.join(self.markers.values())
-        js += '\n'.join(["wwt.addAnnotation(%s);" % l for l in self.markers])
-        self._driver.run_js(js)
+        if len(ra) == 0:
+            self.disable('No data in layer')
+            return
+
+        try:
+            coord = SkyCoord(ra, dec, unit=(u.deg, u.deg))
+        except ValueError as exc:
+            self.disable(str(exc))
+            return
+
+        self.enable()
+
+        self.markers.draw(coord, color=self.state.color)
+
+        ra_med = np.nanmedian(ra)
+        dec_med = np.nanmedian(dec)
+        coord_med = SkyCoord(ra_med, dec_med, unit=(u.deg, u.deg))
+        self._wwt_widget.move(coord_med)
 
     def redraw(self):
-        """Override MPL superclass, do nothing"""
         pass

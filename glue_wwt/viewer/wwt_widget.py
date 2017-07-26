@@ -19,6 +19,7 @@ CIRCLE_JS = """
 {label:s} = wwt.createCircle("{color:s}");
 {label:s}.setCenter({ra:f}, {dec:f});
 {label:s}.set_fillColor("{color:s}");
+{label:s}.set_lineColor("{color:s}");
 {label:s}.set_radius({radius:d});
 wwt.addAnnotation({label:s});
 """
@@ -26,36 +27,27 @@ wwt.addAnnotation({label:s});
 SURVEYS_URL = 'http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys'
 
 
-class WWTImageryLayers(object):
+def get_imagery_layers():
 
-    def __init__(self):
-        self._available_layers = {}
-        self.fetch_available_layers()
+    available_layers = {}
 
-    def fetch_available_layers(self):
+    # Get the XML describing the available surveys
+    response = requests.get(SURVEYS_URL)
+    assert response.ok
+    b = BytesIO(response.content)
+    e = ElementTree()
+    t = e.parse(b)
 
-        # Get the XML describing the available surveys
-        response = requests.get(SURVEYS_URL)
-        assert response.ok
-        b = BytesIO(response.content)
-        e = ElementTree()
-        t = e.parse(b)
+    # For now only look at the ImageSets at the root of the
+    # XML since these seem to be the main surveys.
+    for survey in t.findall('ImageSet'):
+        name = survey.attrib['Name']
+        thumbnail_url = survey.find('ThumbnailUrl').text
+        if not thumbnail_url:
+            thumbnail_url = None
+        available_layers[name] = {'thumbnail': thumbnail_url}
 
-        # For now only look at the ImageSets at the root of the
-        # XML since these seem to be the main surveys.
-        for survey in t.findall('ImageSet'):
-            name = survey.attrib['Name']
-            thumbnail_url = survey.find('ThumbnailUrl').text
-            if not thumbnail_url:
-                thumbnail_url = None
-            self._available_layers[name] = thumbnail_url
-
-    def iter_name_thumbnail(self):
-        for name, thumbnail in self._available_layers.items():
-            yield name, thumbnail
-
-    def __contains__(self, name):
-        return name in self._available_layers
+    return available_layers
 
 
 class WWTMarkerCollection(object):
@@ -133,14 +125,17 @@ class WWTQtWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
         layout.addWidget(self.web)
-        self.imagery_layers = WWTImageryLayers()
+        self.imagery_layers = get_imagery_layers()
+        self._wwt_ready = False
+        self._js_queue = ""
+        self.page.wwt_ready.connect(self._on_wwt_ready)
 
     @property
-    def opacity(self):
+    def foreground_opacity(self):
         return self._opacity
 
-    @opacity.setter
-    def opacity(self, value):
+    @foreground_opacity.setter
+    def foreground_opacity(self, value):
         if value < 0 or value > 100:
             raise ValueError('opacity should be in the range [0:100]')
         self.run_js('wwt.setForegroundOpacity({0})'.format(value))
@@ -176,6 +171,23 @@ class WWTQtWidget(QtWidgets.QWidget):
             raise ValueError('unknown background: {0}'.format(value))
         self.run_js('wwt.setBackgroundImageByName("{0}");'.format(value))
 
+    def move(self, coord, fov=60):
+        coord_icrs = coord.icrs
+        ra = coord_icrs.ra.deg
+        dec = coord_icrs.dec.deg
+        self.run_js("wwt.gotoRaDecZoom({0}, {1}, {2}, true);".format(ra, dec, fov))
+
+    def _on_wwt_ready(self):
+        self._wwt_ready = True
+        self.run_js(self._js_queue)
+        self._js_queue = ""
+
     def run_js(self, js):
-        logger.debug("Running javascript: %s" % js)
-        self.page.runJavaScript(js)
+        if not js:
+            return
+        if self._wwt_ready:
+            logger.debug('Running javascript: %s' % js)
+            self.page.runJavaScript(js)
+        else:
+            logger.debug('Caching javascript: %s' % js)
+            self._js_queue += js + '\n'

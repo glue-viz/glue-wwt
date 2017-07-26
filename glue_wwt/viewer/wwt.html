@@ -9,6 +9,11 @@
     <script src="http://www.worldwidetelescope.org/scripts/wwtsdk.aspx"></script>
     <script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
 
+    <!-- The following is to avoid scrollbars -->
+    <style type="text/css">
+      body {overflow:hidden;}
+    </style>
+
     <script>
         $(document).ready(sizeContent);
         $(window).resize(sizeContent);
@@ -22,21 +27,13 @@
 
     <script>
 
-      // declare global Worldwide Telescope object
-
       var wwt;
       var wwt_ready = 0;
-
-      // This function initializes the wwt object and once it is done
-      // it fires the wwtReady event
 
       function initialize() {
         wwt = wwtlib.WWTControl.initControl("WWTCanvas");
         wwt.add_ready(wwtReady);
       }
-
-      // This function is where you would put your custom code for WWT
-      // following the initForWwt() call
 
       function wwtReady() {
         initForWwt();
@@ -46,8 +43,6 @@
         wwt.setForegroundImageByName('WISE All Sky (Infrared)');
         wwt_ready = 1;
       }
-
-      // This is the initialization for Worldwide Telescope
 
       function initForWwt() {}
 

@@ -13,7 +13,7 @@ class TestWWTDataViewer(object):
         self.dc = DataCollection([self.d])
         self.hub = self.dc.hub
         self.session = Session(data_collection=self.dc, hub=self.hub)
-        self.widget = WWTDataViewer(self.session, webdriver_class=MagicMock)
+        self.widget = WWTDataViewer(self.session)
         self.options = self.widget.options_widget()
 
     def register(self):
@@ -21,16 +21,15 @@ class TestWWTDataViewer(object):
 
     def test_add_data(self):
         self.widget.add_data(self.d)
-        self.options.ra_att = self.d.id['x'], self.d
-        self.options.dec_att = self.d.id['y'], self.d
-        assert self.d in self.widget
+        self.widget.state.layers[0].ra_att = self.d.id['x']
+        self.widget.state.layers[0].dec_att = self.d.id['y']
 
     def test_double_add_ignored(self):
-        assert len(self.widget) == 0
+        assert len(self.widget.layers) == 0
         self.widget.add_data(self.d)
-        assert len(self.widget) == 1
+        assert len(self.widget.layers) == 1
         self.widget.add_data(self.d)
-        assert len(self.widget) == 1
+        assert len(self.widget.layers) == 1
 
     def test_updated_on_data_update_message(self):
         self.register()
@@ -60,7 +59,7 @@ class TestWWTDataViewer(object):
         # TODO: the following currently fails but is not critical, so we
         #       skip for now.
         # assert layer.clear.call_count == 1
-        assert self.d not in self.widget
+        assert self.d not in self.widget._layer_artist_container
 
     def test_remove_subset(self):
         self.register()
@@ -73,18 +72,18 @@ class TestWWTDataViewer(object):
         self.hub.broadcast(message.SubsetDeleteMessage(s))
 
         assert layer.clear.call_count == 1
-        assert self.d not in self.widget
+        assert self.d not in self.widget._layer_artist_container
 
     def test_subsets_added_with_data(self):
         s = self.d.new_subset()
         self.widget.add_data(self.d)
-        assert s in self.widget
+        assert s in self.widget._layer_artist_container
 
     def test_subsets_live_added(self):
         self.register()
         self.widget.add_data(self.d)
         s = self.d.new_subset()
-        assert s in self.widget
+        assert s in self.widget._layer_artist_container
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):
@@ -92,19 +91,12 @@ class TestWWTDataViewer(object):
     #     s = self.d.new_subset()
     #     assert s not in self.widget
 
-    def test_updated_on_add(self):
-        self.register()
-        self.widget._update_layer = MagicMock()
-        self.widget.add_data(self.d)
-        # TODO: ideally, the following should be called exactly once
-        assert self.widget._update_layer.call_count >= 1
-
-    def test_updated_on_coordinate_change(self):
-        self.register()
-        self.widget.add_data(self.d)
-        self.options.ra_att = self.d.id['x'], self.d
-        self.options.dec_att = self.d.id['y'], self.d
-        artist = self.widget._layer_artist_container[self.d][0]
-        self.widget._update_layer = MagicMock()
-        self.options.ra_att = self.d.id['y'], self.d
-        self.widget._update_layer.call_count > 0
+    # def test_updated_on_coordinate_change(self):
+    #     self.register()
+    #     self.widget.add_data(self.d)
+    #     self.widget.state.layers[0].ra_att = self.d.id['x']
+    #     self.widget.state.layers[0].dec_att = self.d.id['y']
+    #     artist = self.widget._layer_artist_container[self.d][0]
+    #     self.widget._update_layer = MagicMock()
+    #     self.widget.state.layers[0].ra_att = self.d.id['y']
+    #     self.widget._update_layer.call_count > 0

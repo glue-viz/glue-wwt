@@ -65,18 +65,6 @@ class WWTDataViewer(DataViewer):
     def options_widget(self):
         return self.option_panel
 
-    def _update_foreground(self):
-        self._run_js('wwt.setForegroundImageByName("%s");' % self.option_panel.foreground)
-
-    def _update_background(self):
-        self._run_js('wwt.setBackgroundImageByName("%s");' % self.option_panel.background)
-
-    def _update_opacity(self, value):
-        self._driver.set_opacity(value)
-
-    def _update_galactic_plane_mode(self, mode):
-        self._driver.set_galactic_plane_mode(mode)
-
     def catalog(self, layer):
         logger.debug("adding %s" % layer.label)
         x = layer[self.option_panel.ra]

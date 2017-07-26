@@ -1,21 +1,13 @@
 from __future__ import absolute_import, division, print_function
 
-import os
-import numpy as np
-
 from glue.viewers.common.qt.data_viewer import DataViewer
-from glue.core.exceptions import IncompatibleAttribute
 from glue.core import message as m
 
-from qtpy import QtCore
-from qtpy.QtCore import Qt
-from qtpy.QtWebEngineWidgets import QWebEngineView
-
-from .layer_artist import circle, WWTLayer
+from .layer_artist import WWTLayer
 from .options_widget import WWTOptionPanel
 from .wwt_widget import WWTQtWidget
 from glue.viewers.common.qt.toolbar import BasicToolbar
-from .state import WWTDataViewerState, WWTLayerState
+from .state import WWTDataViewerState
 from .layer_style_editor import WWTLayerStyleEditor
 
 __all__ = ['WWTDataViewer']
@@ -108,7 +100,7 @@ class WWTDataViewer(DataViewer):
 
     def _update_layer(self, layer):
         for a in self._layer_artist_container[layer]:
-            a.update()
+            a.update(force=True)
 
     def _update_all(self):
         for l in self._layer_artist_container.layers:

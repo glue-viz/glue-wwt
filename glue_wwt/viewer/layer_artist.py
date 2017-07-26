@@ -1,7 +1,10 @@
 from __future__ import absolute_import, division, print_function
 
+import random
+
 import numpy as np
 
+from glue.core import Data
 from glue.logger import logger
 from glue.core.layer_artist import LayerArtistBase
 from glue.core.exceptions import IncompatibleAttribute
@@ -11,18 +14,8 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 
 from .state import WWTLayerState
-from .wwt_widget import WWTMarkerCollection
 
-__all__ = ['WWTLayer', 'circle']
-
-
-def circle(x, y, label, color, radius=3):
-    result = """%(label)s = wwt.createCircle("%(color)s");
-    %(label)s.setCenter(%(x)f, %(y)f);
-    %(label)s.set_fillColor("%(color)s");
-    %(label)s.set_radius(%(radius)f);""" % {'x': x, 'y': y, 'label': label,
-                                            'color': color, 'radius': radius}
-    return result
+__all__ = ['WWTLayer']
 
 
 class WWTLayer(LayerArtistBase):
@@ -45,7 +38,9 @@ class WWTLayer(LayerArtistBase):
         if self.state not in self._viewer_state.layers:
             self._viewer_state.layers.append(self.state)
 
-        self.markers = WWTMarkerCollection(self._wwt_widget)
+        self.layer_id = "{0:08x}".format(random.getrandbits(32))
+        self.markers = self._wwt_widget.markers
+        self.markers.allocate(self.layer_id)
 
         self.zorder = self.state.zorder
         self.visible = self.state.visible
@@ -55,48 +50,62 @@ class WWTLayer(LayerArtistBase):
 
         self.state.add_global_callback(self.update)
 
-    def clear(self):
-        self.markers.clear()
+        self._initial_zoom = False
 
-    def update(self, **kwargs):
+        self.update(force=True)
+
+    def clear(self):
+        self.markers.set(self.layer_id, visible=False)
+
+    def update(self, force=False, **kwargs):
 
         logger.debug("updating WWT for %s" % self.layer.label)
 
-        self.markers.clear()
+        coords = {}
 
-        if not self.visible:
-            return
+        if force or 'ra_att' in kwargs or 'dec_att' in kwargs:
 
-        try:
-            ra = self.layer[self.state.ra_att]
-        except IncompatibleAttribute:
-            self.disable_invalid_attributes(self.state.ra_att)
-            return
+            try:
+                ra = self.layer[self.state.ra_att]
+            except IncompatibleAttribute:
+                self.disable_invalid_attributes(self.state.ra_att)
+                return
 
-        try:
-            dec = self.layer[self.state.dec_att]
-        except IncompatibleAttribute:
-            self.disable_invalid_attributes(self.state.dec_att)
-            return
+            try:
+                dec = self.layer[self.state.dec_att]
+            except IncompatibleAttribute:
+                self.disable_invalid_attributes(self.state.dec_att)
+                return
 
-        if len(ra) == 0:
-            self.disable('No data in layer')
-            return
+            try:
+                coord = SkyCoord(ra, dec, unit=(u.deg, u.deg))
+            except ValueError as exc:
+                self.disable(str(exc))
+                return
 
-        try:
-            coord = SkyCoord(ra, dec, unit=(u.deg, u.deg))
-        except ValueError as exc:
-            self.disable(str(exc))
-            return
+            coord_icrs = coord.icrs
+            ra = coord_icrs.ra.degree
+            dec = coord_icrs.dec.degree
+
+            coords['ra'] = ra
+            coords['dec'] = dec
+
+        else:
+
+            coords = {}
 
         self.enable()
 
-        self.markers.draw(coord, color=self.state.color)
+        self.markers.set(self.layer_id, color=self.state.color,
+                         alpha=self.state.alpha, visible=self.visible,
+                         zorder=self.zorder, size=self.state.size, **coords)
 
-        ra_med = np.nanmedian(ra)
-        dec_med = np.nanmedian(dec)
-        coord_med = SkyCoord(ra_med, dec_med, unit=(u.deg, u.deg))
-        self._wwt_widget.move(coord_med)
+        if not self._initial_zoom and isinstance(self.state.layer, Data) and coords and len(ra) > 0:
+            ra_med = np.nanmedian(ra)
+            dec_med = np.nanmedian(dec)
+            coord_med = SkyCoord(ra_med, dec_med, unit=(u.deg, u.deg))
+            self._wwt_widget.move(coord_med)
+            self._initial_zoom = True
 
     def redraw(self):
         pass

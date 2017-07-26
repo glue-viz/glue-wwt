@@ -1,7 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-import random
 from io import BytesIO
 from xml.etree.ElementTree import ElementTree
 
@@ -11,18 +10,11 @@ from glue.logger import logger
 from qtpy.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
 from qtpy import QtWidgets, QtCore
 
+from .wwt_markers_helper import WWTMarkersHelper
+
 __all__ = ['WWTQtWidget']
 
 WWT_HTML_FILE = os.path.join(os.path.dirname(__file__), 'wwt.html')
-
-CIRCLE_JS = """
-{label:s} = wwt.createCircle("{color:s}");
-{label:s}.setCenter({ra:f}, {dec:f});
-{label:s}.set_fillColor("{color:s}");
-{label:s}.set_lineColor("{color:s}");
-{label:s}.set_radius({radius:d});
-wwt.addAnnotation({label:s});
-"""
 
 SURVEYS_URL = 'http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys'
 
@@ -48,37 +40,6 @@ def get_imagery_layers():
         available_layers[name] = {'thumbnail': thumbnail_url}
 
     return available_layers
-
-
-class WWTMarkerCollection(object):
-
-    def __init__(self, wwt_widget=None):
-        self.wwt_widget = wwt_widget
-        self.markers = {}
-        self.layer_id = "{0:08x}".format(random.getrandbits(32))
-        self.labels = []
-
-    def draw(self, skycoord, color, radius=3):
-
-        skycoord_icrs = skycoord.icrs
-        ra = skycoord_icrs.ra.degree
-        dec = skycoord_icrs.dec.degree
-
-        js_code = ""
-
-        for i in range(ra.size):
-            label = "marker_{0}_{1}".format(self.layer_id, i)
-            js_code += CIRCLE_JS.format(ra=ra[i], dec=dec[i],
-                                        label=label, color=color,
-                                        radius=radius)
-            self.labels.append(label)
-
-        self.wwt_widget.run_js(js_code)
-
-    def clear(self):
-        js_code = '\n'.join("wwt.removeAnnotation({0});".format(l)
-                            for l in self.labels)
-        self.wwt_widget.run_js(js_code)
 
 
 class WWTQWebEnginePage(QWebEnginePage):
@@ -126,6 +87,7 @@ class WWTQtWidget(QtWidgets.QWidget):
         self.setLayout(layout)
         layout.addWidget(self.web)
         self.imagery_layers = get_imagery_layers()
+        self.markers = WWTMarkersHelper(self)
         self._wwt_ready = False
         self._js_queue = ""
         self.page.wwt_ready.connect(self._on_wwt_ready)

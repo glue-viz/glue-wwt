@@ -11,8 +11,8 @@ from glue.core.data_combo_helper import ComponentIDComboHelper
 
 class WWTDataViewerState(State):
 
-    foreground = SelectionCallbackProperty()
-    background = SelectionCallbackProperty()
+    foreground = SelectionCallbackProperty(default_index=0)
+    background = SelectionCallbackProperty(default_index=1)
     foreground_opacity = CallbackProperty(50)
     galactic = CallbackProperty(False)
 
@@ -59,9 +59,10 @@ class WWTDataViewerState(State):
 class WWTLayerState(State):
 
     layer = CallbackProperty()
-    ra_att = SelectionCallbackProperty()
-    dec_att = SelectionCallbackProperty()
+    ra_att = SelectionCallbackProperty(default_index=0)
+    dec_att = SelectionCallbackProperty(default_index=1)
     color = CallbackProperty()
+    size = CallbackProperty()
     alpha = CallbackProperty()
     zorder = CallbackProperty(0)
     visible = CallbackProperty(True)
@@ -90,9 +91,11 @@ class WWTLayerState(State):
 
         self.color = self.layer.style.color
         self.alpha = self.layer.style.alpha
+        self.size = self.layer.style.markersize
 
         self._sync_color = keep_in_sync(self, 'color', self.layer.style, 'color')
         self._sync_alpha = keep_in_sync(self, 'alpha', self.layer.style, 'alpha')
+        self._sync_size = keep_in_sync(self, 'size', self.layer.style, 'markersize')
 
     def _layer_changed(self, layer):
         self.ra_att_helper.set_multiple_data([self.layer])

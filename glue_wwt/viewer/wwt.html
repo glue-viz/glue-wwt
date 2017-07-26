@@ -25,24 +25,26 @@
       // declare global Worldwide Telescope object
 
       var wwt;
+      var wwt_ready = 0;
 
       // This function initializes the wwt object and once it is done
       // it fires the wwtReady event
 
       function initialize() {
-      wwt = wwtlib.WWTControl.initControl("WWTCanvas");
-      wwt.add_ready(wwtReady);
+        wwt = wwtlib.WWTControl.initControl("WWTCanvas");
+        wwt.add_ready(wwtReady);
       }
 
       // This function is where you would put your custom code for WWT
       // following the initForWwt() call
 
       function wwtReady() {
-      initForWwt();
-      wwt.loadImageCollection('http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys');
-      wwt.settings.set_showConstellationBoundries(false);
-      wwt.settings.set_showConstellationFigures(false);
-      wwt.setForegroundImageByName('WISE All Sky (Infrared)');
+        initForWwt();
+        wwt.loadImageCollection('http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys');
+        wwt.settings.set_showConstellationBoundries(false);
+        wwt.settings.set_showConstellationFigures(false);
+        wwt.setForegroundImageByName('WISE All Sky (Infrared)');
+        wwt_ready = 1;
       }
 
       // This is the initialization for Worldwide Telescope

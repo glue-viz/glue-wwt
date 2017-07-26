@@ -85,27 +85,20 @@ class WWTQWebEnginePage(QWebEnginePage):
         self._check_running = False
         self._console = ''
 
-    def _js_callback(self, result):
-        print("CALLBACK", repr(result))
-        self._callback = True
+    def _wwt_ready_callback(self, result):
+        if result == 1:
+            self._timer.stop()
+            self.wwt_ready.emit()
+        self._check_running = False
 
     def javaScriptConsoleMessage(self, level, message, line_number, source_id):
-        self._console += message + '\n'
+        if not self._check_running or 'wwt_ready' not in message:
+            print(message)
 
     def _check_ready(self):
-        if self._check_running:
-            if self._callback:
-                if 'wwt is not defined' in self._console:
-                    self._console = ''
-                    self._callback = False
-                    self.runJavaScript('wwt;', self._js_callback)
-                else:
-                    self._check_running = False
-                    self._timer.stop()
-                    self.wwt_ready.emit()
-        else:
+        if not self._check_running:
             self._check_running = True
-            self.runJavaScript('wwt;', self._js_callback)
+            self.runJavaScript('wwt_ready;', self._wwt_ready_callback)
 
 
 class WWTQtWidget(QtWidgets.QWidget):
@@ -121,7 +114,6 @@ class WWTQtWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
         layout.addWidget(self.web)
-        # self.javaScriptConsoleMessage.connect(self._console_log)
 
     @property
     def opacity(self):
@@ -164,7 +156,6 @@ class WWTQtWidget(QtWidgets.QWidget):
             raise ValueError('unknown background: {0}'.format(value))
         self.run_js('wwt.setBackgroundImageByName("{0}");'.format(LAYERS[value]['name']))
 
-    def run_js(self, js, async=False):
-        print("Running javascript: %s" % js)
+    def run_js(self, js):
         logger.debug("Running javascript: %s" % js)
         self.page.runJavaScript(js)

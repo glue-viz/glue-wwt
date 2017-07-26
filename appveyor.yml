@@ -15,8 +15,8 @@ environment:
       CONDA_DEPENDENCIES: "glueviz pytest mock"
 
   matrix:
-      - PYTHON_VERSION: "2.7"
-      - PYTHON_VERSION: "3.6"
+      #- PYTHON_VERSION: "2.7"
+      #- PYTHON_VERSION: "3.6"
       - PYTHON_VERSION: "2.7"
         PIP_DEPENDENCIES: "https://github.com/glue-viz/glue/archive/master.zip"
       - PYTHON_VERSION: "3.6"

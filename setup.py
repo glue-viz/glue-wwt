@@ -19,6 +19,11 @@ except (IOError, ImportError):
 with open('glue_wwt/version.py') as infile:
     exec(infile.read())
 
+install_requires = ['numpy',
+                    'glue-core>=0.10',
+                    'qtpy',
+                    'requests']
+
 setup(name='glue-wwt',
       version=__version__,
       description='Glue WorldWide Telescope plugin',
@@ -28,5 +33,6 @@ setup(name='glue-wwt',
       author_email='thomas.robitaille@gmail.com',
       packages = find_packages(),
       package_data = {'glue_wwt.viewer': ['*.ui', '*.html', '*.js', '*.png']},
+      install_requires=install_requires,
       entry_points=entry_points
     )

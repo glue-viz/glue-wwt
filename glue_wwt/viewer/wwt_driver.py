@@ -2,7 +2,10 @@ from __future__ import absolute_import, division, print_function
 
 import os
 import random
+from io import BytesIO
+from xml.etree.ElementTree import ElementTree
 
+import requests
 from glue.logger import logger
 
 from qtpy.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
@@ -12,22 +15,6 @@ __all__ = ['WWTQtWidget']
 
 WWT_HTML_FILE = os.path.join(os.path.dirname(__file__), 'wwt.html')
 
-LAYERS = {'DSS': {'name': 'Digitized Sky Survey (Color)',
-                  'thumbnail': 'DSS'},
-          'VLSS': {'name': 'VLSS: VLA Low-frequency Sky Survey (Radio)',
-                   'thumbnail': 'VLA'},
-          'WMAP': {'name': 'WMAP ILC 5-Year Cosmic Microwave Background',
-                   'thumbnail': 'wmap5yr_ilc_200uk'},
-          'SFD': {'name': 'SFD Dust Map (Infrared)',
-                  'thumbnail': 'dust'},
-          # 'WISE': {'name': 'WISE  Sky (Infrared)',
-          #          'thumbnail': ???},
-          'GLIMPSE': {'name': 'GLIMPSE/MIPSGAL',
-                      'thumbnail': 'glimpsemipsgaltn'},
-          'H Alpha': {'name': 'Hydrogen Alpha Full Sky Map',
-                      'thumbnail': 'halpha'}}
-
-
 CIRCLE_JS = """
 {label:s} = wwt.createCircle("{color:s}");
 {label:s}.setCenter({ra:f}, {dec:f});
@@ -35,6 +22,40 @@ CIRCLE_JS = """
 {label:s}.set_radius({radius:d});
 wwt.addAnnotation({label:s});
 """
+
+SURVEYS_URL = 'http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys'
+
+
+class WWTImageryLayers(object):
+
+    def __init__(self):
+        self._available_layers = {}
+        self.fetch_available_layers()
+
+    def fetch_available_layers(self):
+
+        # Get the XML describing the available surveys
+        response = requests.get(SURVEYS_URL)
+        assert response.ok
+        b = BytesIO(response.content)
+        e = ElementTree()
+        t = e.parse(b)
+
+        # For now only look at the ImageSets at the root of the
+        # XML since these seem to be the main surveys.
+        for survey in t.findall('ImageSet'):
+            name = survey.attrib['Name']
+            thumbnail_url = survey.find('ThumbnailUrl').text
+            if not thumbnail_url:
+                thumbnail_url = None
+            self._available_layers[name] = thumbnail_url
+
+    def iter_name_thumbnail(self):
+        for name, thumbnail in self._available_layers.items():
+            yield name, thumbnail
+
+    def __contains__(self, name):
+        return name in self._available_layers
 
 
 class WWTMarkerCollection(object):
@@ -81,9 +102,7 @@ class WWTQWebEnginePage(QWebEnginePage):
         self._timer = QtCore.QTimer()
         self._timer.timeout.connect(self._check_ready)
         self._timer.start(500)
-        self._callback = False
         self._check_running = False
-        self._console = ''
 
     def _wwt_ready_callback(self, result):
         if result == 1:
@@ -114,6 +133,7 @@ class WWTQtWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
         layout.addWidget(self.web)
+        self.imagery_layers = WWTImageryLayers()
 
     @property
     def opacity(self):
@@ -142,9 +162,9 @@ class WWTQtWidget(QtWidgets.QWidget):
 
     @foreground.setter
     def foreground(self, value):
-        if value not in LAYERS:
+        if value not in self.imagery_layers:
             raise ValueError('unknown foreground: {0}'.format(value))
-        self.run_js('wwt.setForegroundImageByName("{0}");'.format(LAYERS[value]['name']))
+        self.run_js('wwt.setForegroundImageByName("{0}");'.format(value))
 
     @property
     def background(self):
@@ -152,9 +172,9 @@ class WWTQtWidget(QtWidgets.QWidget):
 
     @background.setter
     def background(self, value):
-        if value not in LAYERS:
+        if value not in self.imagery_layers:
             raise ValueError('unknown background: {0}'.format(value))
-        self.run_js('wwt.setBackgroundImageByName("{0}");'.format(LAYERS[value]['name']))
+        self.run_js('wwt.setBackgroundImageByName("{0}");'.format(value))
 
     def run_js(self, js):
         logger.debug("Running javascript: %s" % js)

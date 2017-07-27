@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 from collections import defaultdict
 
+from matplotlib.colors import to_hex
+
 from .utils import center_fov
 
 __all__ = ['WWTMarkersHelper']
@@ -111,7 +113,7 @@ class WWTMarkersHelper(object):
                 js_code += '{0}.set_radius({1});\n'.format(marker, size)
 
         if force_update or 'color' in kwargs:
-            color = self.layers[label]['color']
+            color = to_hex(self.layers[label]['color'])
             for marker in self.markers[label]:
                 js_code += '{0}.set_fillColor("{1}");\n'.format(marker, color)
                 js_code += '{0}.set_lineColor("{1}");\n'.format(marker, color)

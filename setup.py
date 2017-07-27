@@ -23,6 +23,7 @@ install_requires = ['numpy',
                     'glue-core>=0.10',
                     'qtpy',
                     'astropy',
+                    'matplotlib',
                     'requests']
 
 setup(name='glue-wwt',

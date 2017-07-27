@@ -9,15 +9,11 @@ entry_points = """
 wwt=glue_wwt:setup
 """
 
-try:
-    import pypandoc
-    LONG_DESCRIPTION = pypandoc.convert('README.md', 'rst')
-except (IOError, ImportError):
-    with open('README.md') as infile:
-        LONG_DESCRIPTION = infile.read()
-
 with open('glue_wwt/version.py') as infile:
     exec(infile.read())
+
+with open('README.rst') as infile:
+    LONG_DESCRIPTION = infile.read()
 
 install_requires = ['numpy',
                     'glue-core>=0.10',

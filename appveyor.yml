@@ -18,9 +18,9 @@ environment:
       #- PYTHON_VERSION: "2.7"
       #- PYTHON_VERSION: "3.6"
       - PYTHON_VERSION: "2.7"
-        PIP_DEPENDENCIES: "https://github.com/glue-viz/glue/archive/master.zip"
+        CONDA_CHANNELS: "glueviz/label/dev"
       - PYTHON_VERSION: "3.6"
-        PIP_DEPENDENCIES: "https://github.com/glue-viz/glue/archive/master.zip"
+        CONDA_CHANNELS: "glueviz/label/dev"
         
 platform:
     -x64

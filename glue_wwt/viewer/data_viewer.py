@@ -35,7 +35,15 @@ class WWTDataViewer(DataViewer):
 
         self.state.add_global_callback(self._update_wwt_widget)
 
+        self.option_panel.setEnabled(False)
+        self._view.setEnabled(False)
+        self._wwt_widget.page.wwt_ready.connect(self._on_wwt_ready)
+
         self._update_wwt_widget(force=True)
+
+    def _on_wwt_ready(self):
+        self.option_panel.setEnabled(True)
+        self._view.setEnabled(True)
 
     def _update_wwt_widget(self, force=False, **kwargs):
 

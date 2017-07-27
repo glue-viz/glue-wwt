@@ -50,8 +50,6 @@ class WWTLayer(LayerArtistBase):
 
         self.state.add_global_callback(self.update)
 
-        self._initial_zoom = False
-
         self.update(force=True)
 
     def clear(self):
@@ -100,12 +98,8 @@ class WWTLayer(LayerArtistBase):
                          alpha=self.state.alpha, visible=self.visible,
                          zorder=self.zorder, size=self.state.size, **coords)
 
-        if not self._initial_zoom and isinstance(self.state.layer, Data) and coords and len(ra) > 0:
-            ra_med = np.nanmedian(ra)
-            dec_med = np.nanmedian(dec)
-            coord_med = SkyCoord(ra_med, dec_med, unit=(u.deg, u.deg))
-            self._wwt_widget.move(coord_med)
-            self._initial_zoom = True
+    def center(self, *args):
+        self.markers.center(self.layer_id)
 
     def redraw(self):
         pass

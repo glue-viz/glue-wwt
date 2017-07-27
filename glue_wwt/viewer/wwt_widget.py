@@ -110,6 +110,7 @@ class WWTQtWidget(QtWidgets.QWidget):
         self._wwt_ready = False
         self._js_queue = ""
         self.page.wwt_ready.connect(self._on_wwt_ready)
+        self._opacity = 50
 
     @property
     def foreground_opacity(self):
@@ -119,8 +120,11 @@ class WWTQtWidget(QtWidgets.QWidget):
     def foreground_opacity(self, value):
         if value < 0 or value > 100:
             raise ValueError('opacity should be in the range [0:100]')
-        self.run_js('wwt.setForegroundOpacity({0})'.format(value))
         self._opacity = value
+        self._update_opacity()
+
+    def _update_opacity(self):
+        self.run_js('wwt.setForegroundOpacity({0})'.format(self.foreground_opacity))
 
     @property
     def galactic(self):
@@ -141,6 +145,7 @@ class WWTQtWidget(QtWidgets.QWidget):
         if value not in self.imagery_layers:
             raise ValueError('unknown foreground: {0}'.format(value))
         self.run_js('wwt.setForegroundImageByName("{0}");'.format(value))
+        self._update_opacity()
 
     @property
     def background(self):
@@ -151,12 +156,7 @@ class WWTQtWidget(QtWidgets.QWidget):
         if value not in self.imagery_layers:
             raise ValueError('unknown background: {0}'.format(value))
         self.run_js('wwt.setBackgroundImageByName("{0}");'.format(value))
-
-    def move(self, coord, fov=60):
-        coord_icrs = coord.icrs
-        ra = coord_icrs.ra.deg
-        dec = coord_icrs.dec.deg
-        self.run_js("wwt.gotoRaDecZoom({0}, {1}, {2}, true);".format(ra, dec, fov))
+        self._update_opacity()
 
     def _on_wwt_ready(self):
         self._wwt_ready = True

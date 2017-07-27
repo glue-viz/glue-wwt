@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 from collections import defaultdict
 
+from .utils import center_fov
+
 __all__ = ['WWTMarkersHelper']
 
 
@@ -48,6 +50,15 @@ class WWTMarkersHelper(object):
 
     def deallocate(self, label):
         self.layers.pop(label)
+
+    def center(self, label):
+        ra = self.layers[label]['ra']
+        dec = self.layers[label]['dec']
+        if ra is None or dec is None or len(ra) == 0:
+            return
+        ra_cen, dec_cen, sep_max = center_fov(ra, dec)
+        fov = min(60, sep_max * 3)
+        self.run_js("wwt.gotoRaDecZoom({0}, {1}, {2}, true);".format(ra_cen, dec_cen, fov))
 
     def set(self, label, **kwargs):
         changed = {}

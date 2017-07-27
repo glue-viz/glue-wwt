@@ -22,6 +22,7 @@ with open('glue_wwt/version.py') as infile:
 install_requires = ['numpy',
                     'glue-core>=0.10',
                     'qtpy',
+                    'astropy',
                     'requests']
 
 setup(name='glue-wwt',

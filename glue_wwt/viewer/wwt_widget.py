@@ -2,12 +2,13 @@ from __future__ import absolute_import, division, print_function
 
 import os
 from io import BytesIO
+from collections import OrderedDict
 from xml.etree.ElementTree import ElementTree
 
 import requests
 from glue.logger import logger
 
-from qtpy.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
+from qtpy.QtWebEngineWidgets import QWebEngineView, QWebEnginePage, WEBENGINE
 from qtpy import QtWidgets, QtCore
 
 from .wwt_markers_helper import WWTMarkersHelper
@@ -21,7 +22,7 @@ SURVEYS_URL = 'http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys'
 
 def get_imagery_layers():
 
-    available_layers = {}
+    available_layers = OrderedDict()
 
     # Get the XML describing the available surveys
     response = requests.get(SURVEYS_URL)
@@ -56,21 +57,37 @@ class WWTQWebEnginePage(QWebEnginePage):
         self._timer.timeout.connect(self._check_ready)
         self._timer.start(500)
         self._check_running = False
+        if not WEBENGINE:
+            self._frame = self.mainFrame()
 
-    def _wwt_ready_callback(self, result):
-        if result == 1:
-            self._timer.stop()
-            self.wwt_ready.emit()
-        self._check_running = False
+    if WEBENGINE:
 
-    def javaScriptConsoleMessage(self, level, message, line_number, source_id):
-        if not self._check_running or 'wwt_ready' not in message:
-            print(message)
+        def _wwt_ready_callback(self, result):
+            if result == 1:
+                self._timer.stop()
+                self.wwt_ready.emit()
+            self._check_running = False
 
-    def _check_ready(self):
-        if not self._check_running:
-            self._check_running = True
-            self.runJavaScript('wwt_ready;', self._wwt_ready_callback)
+        def javaScriptConsoleMessage(self, level=None, message=None, line_number=None, source_id=None):
+            if not self._check_running or 'wwt_ready' not in message:
+                print(message)
+
+        def _check_ready(self):
+            if not self._check_running:
+                self._check_running = True
+                self.runJavaScript('wwt_ready;', self._wwt_ready_callback)
+
+    else:
+
+        def runJavaScript(self, code):
+            result = self._frame.evaluateJavaScript(code)
+            return result
+
+        def _check_ready(self):
+            result = self.runJavaScript('wwt_ready;')
+            if result == 1:
+                self._timer.stop()
+                self.wwt_ready.emit()
 
 
 class WWTQtWidget(QtWidgets.QWidget):

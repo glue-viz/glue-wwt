@@ -68,7 +68,7 @@
       </font>
      </property>
      <property name="text">
-      <string>transparency:</string>
+      <string>Opacity:</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -100,7 +100,7 @@
       </font>
      </property>
      <property name="text">
-      <string>color:</string>
+      <string>Color:</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -140,7 +140,7 @@
       </font>
      </property>
      <property name="text">
-      <string>size:</string>
+      <string>Size:</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

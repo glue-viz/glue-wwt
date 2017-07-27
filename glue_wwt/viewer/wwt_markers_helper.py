@@ -2,7 +2,12 @@ from __future__ import absolute_import, division, print_function
 
 from collections import defaultdict
 
-from matplotlib.colors import to_hex
+try:
+    from matplotlib.colors import to_hex
+except ImportError:
+    from matplotlib.colors import rgb2hex, colorConverter
+    def to_hex(color):  # noqa
+        return str(rgb2hex(colorConverter.to_rgb(color)))
 
 from .utils import center_fov
 
@@ -60,7 +65,7 @@ class WWTMarkersHelper(object):
             return
         ra_cen, dec_cen, sep_max = center_fov(ra, dec)
         fov = min(60, sep_max * 3)
-        self.run_js("wwt.gotoRaDecZoom({0}, {1}, {2}, true);".format(ra_cen, dec_cen, fov))
+        self.run_js("wwt.gotoRaDecZoom({0}, {1}, {2}, false);".format(ra_cen, dec_cen, fov))
 
     def set(self, label, **kwargs):
         changed = {}

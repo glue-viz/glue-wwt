@@ -17,6 +17,9 @@ __all__ = ['WWTQtWidget']
 
 WWT_HTML_FILE = os.path.join(os.path.dirname(__file__), 'wwt.html')
 
+with open(WWT_HTML_FILE) as f:
+    WWT_HTML = f.read()
+
 SURVEYS_URL = 'http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys'
 
 
@@ -98,8 +101,7 @@ class WWTQtWidget(QtWidgets.QWidget):
         self.page = WWTQWebEnginePage()
         self.page.setView(self.web)
         self.web.setPage(self.page)
-        url = QtCore.QUrl.fromLocalFile(WWT_HTML_FILE)
-        self.web.setUrl(url)
+        self.web.setHtml(WWT_HTML)
         layout = QtWidgets.QVBoxLayout()
         self.setLayout(layout)
         layout.addWidget(self.web)

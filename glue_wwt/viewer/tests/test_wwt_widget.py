@@ -14,6 +14,7 @@ class TestWWTDataViewer(object):
         self.hub = self.dc.hub
         self.session = Session(data_collection=self.dc, hub=self.hub)
         self.widget = WWTDataViewer(self.session)
+        self.widget.register_to_hub(self.hub)
         self.options = self.widget.options_widget()
 
     def register(self):
@@ -23,6 +24,16 @@ class TestWWTDataViewer(object):
         self.widget.add_data(self.d)
         self.widget.state.layers[0].ra_att = self.d.id['x']
         self.widget.state.layers[0].dec_att = self.d.id['y']
+
+    def test_new_subset_group(self):
+        # Make sure only the subset for data that is already inside the viewer
+        # is added.
+        d2 = Data(a=[4, 5, 6])
+        self.dc.append(d2)
+        self.widget.add_data(self.d)
+        assert len(self.widget.layers) == 1
+        self.dc.new_subset_group(subset_state=self.d.id['x'] > 1, label='A')
+        assert len(self.widget.layers) == 2
 
     def test_double_add_ignored(self):
         assert len(self.widget.layers) == 0

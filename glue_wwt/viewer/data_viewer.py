@@ -104,7 +104,8 @@ class WWTDataViewer(DataViewer):
                       lambda msg: msg.subset in self._layer_artist_container)
 
         hub.subscribe(self, m.SubsetCreateMessage,
-                      lambda msg: self.add_subset(msg.subset))
+                      lambda msg: self.add_subset(msg.subset),
+                      lambda msg: msg.subset.data in self._layer_artist_container)
 
     def _update_layer(self, layer):
         for a in self._layer_artist_container[layer]:

@@ -87,7 +87,8 @@ class WWTMarkersHelper(object):
             if (key == 'coords' and value is not None) or value != self.layers[label][key]:
                 self.layers[label][key] = value
                 changed[key] = value
-        if 'zorder' in changed:
+
+        if 'zorder' in changed or 'visible' in changed or 'coords' in changed:
             for label in sorted(self.layers, key=lambda x: self.layers[x]['zorder']):
                 self._update_layer(label, force_update=True)
         else:

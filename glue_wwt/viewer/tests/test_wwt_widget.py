@@ -25,6 +25,12 @@ class TestWWTDataViewer(object):
         self.widget.state.layers[0].ra_att = self.d.id['x']
         self.widget.state.layers[0].dec_att = self.d.id['y']
 
+    def test_center(self):
+        self.widget.add_data(self.d)
+        self.widget.state.layers[0].ra_att = self.d.id['x']
+        self.widget.state.layers[0].dec_att = self.d.id['y']
+        self.widget.layers[0].center()
+
     def test_new_subset_group(self):
         # Make sure only the subset for data that is already inside the viewer
         # is added.

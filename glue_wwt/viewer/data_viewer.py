@@ -111,10 +111,6 @@ class WWTDataViewer(DataViewer):
         for a in self._layer_artist_container[layer]:
             a.update(force=True)
 
-    def _update_all(self):
-        for l in self._layer_artist_container.layers:
-            self._update_layer(l)
-
     def _remove_layer(self, layer):
         for l in self._layer_artist_container[layer]:
             self._layer_artist_container.remove(l)

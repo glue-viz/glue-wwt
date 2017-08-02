@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 from collections import defaultdict
 
+import numpy as np
+
 try:
     from matplotlib.colors import to_hex
 except ImportError:
@@ -47,8 +49,7 @@ class WWTMarkersHelper(object):
         if label in self.layers:
             raise ValueError("Layer {0} already exists".format(label))
         else:
-            self.layers[label] = {'ra': None,
-                                  'dec': None,
+            self.layers[label] = {'coords': None,
                                   'color': '0.5',
                                   'alpha': 1.,
                                   'zorder': 0,
@@ -59,18 +60,31 @@ class WWTMarkersHelper(object):
         self.layers.pop(label)
 
     def center(self, label):
-        ra = self.layers[label]['ra']
-        dec = self.layers[label]['dec']
-        if ra is None or dec is None or len(ra) == 0:
+        if self.layers[label]['coords'] is None:
             return
+        ra, dec = self.layers[label]['coords']
         ra_cen, dec_cen, sep_max = center_fov(ra, dec)
+        if ra_cen is None:
+            return
         fov = min(60, sep_max * 3)
         self.run_js("wwt.gotoRaDecZoom({0}, {1}, {2}, false);".format(ra_cen, dec_cen, fov))
 
     def set(self, label, **kwargs):
         changed = {}
         for key, value in kwargs.items():
-            if key in ('ra', 'dec') or value != self.layers[label][key]:
+
+            # Get rid of any values that are not finite or in valid coordinate
+            # range since these may cause issues.
+            if key == 'coords' and value is not None:
+                ra, dec = value
+                keep = ((ra >= -360) & (ra <= 360) &
+                        (dec >= -90) & (dec <= 90))
+                if np.any(keep):
+                    value = ra[keep], dec[keep]
+                else:
+                    value = None
+
+            if (key == 'coords' and value is not None) or value != self.layers[label][key]:
                 self.layers[label][key] = value
                 changed[key] = value
         if 'zorder' in changed:
@@ -83,7 +97,7 @@ class WWTMarkersHelper(object):
 
         js_code = ""
 
-        if force_update or 'zorder' in kwargs or 'visible' in kwargs or 'ra' in kwargs or 'dev' in kwargs:
+        if force_update or 'zorder' in kwargs or 'visible' in kwargs or 'coords' in kwargs:
 
             for marker in self.markers[label]:
                 js_code += 'wwt.removeAnnotation({0});\n'.format(marker)
@@ -94,11 +108,11 @@ class WWTMarkersHelper(object):
                 self.run_js(js_code)
                 return
 
-            if self.layers[label]['ra'] is None or self.layers[label]['dec'] is None:
+            if self.layers[label]['coords'] is None:
                 self.run_js(js_code)
                 return
 
-            for imarker, marker in enumerate(range(len(self.layers[label]['ra']))):
+            for imarker, marker in enumerate(range(len(self.layers[label]['coords'][0]))):
                 marker_name = "marker_{0}_{1}".format(label, imarker)
                 js_code += '{0} = wwt.createCircle(true);\n'.format(marker_name)
                 js_code += 'wwt.addAnnotation({0});\n'.format(marker_name)
@@ -106,9 +120,8 @@ class WWTMarkersHelper(object):
 
             force_update = True
 
-        if force_update or 'ra' in kwargs or 'dec' in kwargs:
-            ra = self.layers[label]['ra']
-            dec = self.layers[label]['dec']
+        if force_update or 'coords' in kwargs:
+            ra, dec = self.layers[label]['coords']
             for imarker, marker in enumerate(self.markers[label]):
                 js_code += '{0}.setCenter({1}, {2});\n'.format(marker, ra[imarker], dec[imarker])
 

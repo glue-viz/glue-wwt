@@ -75,22 +75,19 @@ class WWTLayer(LayerArtistBase):
                 self.disable_invalid_attributes(self.state.dec_att)
                 return
 
-            try:
-                coord = SkyCoord(ra, dec, unit=(u.deg, u.deg))
-            except ValueError as exc:
-                self.disable(str(exc))
-                return
+            if len(ra) > 0:
 
-            coord_icrs = coord.icrs
-            ra = coord_icrs.ra.degree
-            dec = coord_icrs.dec.degree
+                try:
+                    coord = SkyCoord(ra, dec, unit=(u.deg, u.deg))
+                except ValueError as exc:
+                    self.disable(str(exc))
+                    return
 
-            coords['ra'] = ra
-            coords['dec'] = dec
+                coord_icrs = coord.icrs
+                ra = coord_icrs.ra.degree
+                dec = coord_icrs.dec.degree
 
-        else:
-
-            coords = {}
+                coords = {'coords': (ra, dec)}
 
         self.enable()
 

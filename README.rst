@@ -1,7 +1,7 @@
-Experimental Glue WWT plugin
-============================
+Glue WorldWide Telescope plugin (experimental)
+==============================================
 
-|Build Status| |Build status|
+|Travis Status| |AppVeyor Status|
 
 Requirements
 ------------
@@ -39,7 +39,7 @@ To run the tests, do::
 at the root of the repository. This requires the
 `pytest <http://pytest.org>`__ module to be installed.
 
-.. |Build Status| image:: https://travis-ci.org/glue-viz/glue-wwt.svg
+.. |Travis Status| image:: https://travis-ci.org/glue-viz/glue-wwt.svg
    :target: https://travis-ci.org/glue-viz/glue-wwt?branch=master
-.. |Build status| image:: https://ci.appveyor.com/api/projects/status/8cxo7uvxd8avuj7p/branch/master?svg=true
+.. |AppVeyor Status| image:: https://ci.appveyor.com/api/projects/status/8cxo7uvxd8avuj7p/branch/master?svg=true
    :target: https://ci.appveyor.com/project/glue-viz/glue-wwt/branch/master

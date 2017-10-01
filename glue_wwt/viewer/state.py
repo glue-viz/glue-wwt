@@ -75,10 +75,16 @@ class WWTLayerState(State):
 
         self.ra_att_helper = ComponentIDComboHelper(self, 'ra_att',
                                                     numeric=True,
-                                                    categorical=False)
+                                                    categorical=False,
+                                                    world_coord=True,
+                                                    pixel_coord=False,
+                                                    visible=False)
         self.dec_att_helper = ComponentIDComboHelper(self, 'dec_att',
                                                      numeric=True,
-                                                     categorical=False)
+                                                     categorical=False,
+                                                     world_coord=True,
+                                                     pixel_coord=False,
+                                                     visible=False)
 
         self.add_callback('layer', self._layer_changed)
 

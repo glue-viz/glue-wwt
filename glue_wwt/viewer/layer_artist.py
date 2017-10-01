@@ -80,7 +80,7 @@ class WWTLayer(LayerArtistBase):
                 try:
                     coord = SkyCoord(ra, dec, unit=(u.deg, u.deg))
                 except ValueError as exc:
-                    self.disable(str(exc))
+                    # self.disable(str(exc))
                     return
 
                 coord_icrs = coord.icrs

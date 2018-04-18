@@ -11,9 +11,9 @@ from glue.core.data_combo_helper import ComponentIDComboHelper
 
 class WWTDataViewerState(State):
 
-    foreground = SelectionCallbackProperty(default_index=0)
-    background = SelectionCallbackProperty(default_index=1)
-    foreground_opacity = CallbackProperty(50)
+    foreground = SelectionCallbackProperty(default_index=0) 
+    background = SelectionCallbackProperty(default_index=4) /*Planck Dust and Gas */
+    foreground_opacity = CallbackProperty(100)
     galactic = CallbackProperty(False)
 
     layers = ListCallbackProperty()

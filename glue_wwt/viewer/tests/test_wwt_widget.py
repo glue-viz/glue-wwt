@@ -75,7 +75,7 @@ class TestWWTDataViewer(object):
                                                                data=self.d))
         # TODO: the following currently fails but is not critical, so we
         #       skip for now.
-        # assert layer.clear.call_count == 1
+        assert layer.clear.call_count == 2
         assert self.d not in self.widget._layer_artist_container
 
     def test_remove_subset(self):
@@ -87,8 +87,8 @@ class TestWWTDataViewer(object):
         layer.clear = MagicMock()
 
         self.hub.broadcast(message.SubsetDeleteMessage(s))
-
-        assert layer.clear.call_count == 1
+		# Shouldn't this be 2, as you add 2 items above?
+        assert layer.clear.call_count == 2
         assert self.d not in self.widget._layer_artist_container
 
     def test_subsets_added_with_data(self):

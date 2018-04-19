@@ -110,7 +110,7 @@ class WWTQtWidget(QtWidgets.QWidget):
         self._wwt_ready = False
         self._js_queue = ""
         self.page.wwt_ready.connect(self._on_wwt_ready)
-        self._opacity = 50
+        self._opacity = 100
 
     @property
     def foreground_opacity(self):

@@ -117,3 +117,4 @@ class TestWWTDataViewer(object):
     #     self.widget._update_layer = MagicMock()
     #     self.widget.state.layers[0].ra_att = self.d.id['y']
     #     self.widget._update_layer.call_count > 0
+    

@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 from mock import MagicMock
 
 from glue.core import Data, DataCollection, message, Session
+from glue.core.tests.test_state import clone
+
 from ..data_viewer import WWTDataViewer
 
 
@@ -101,6 +103,17 @@ class TestWWTDataViewer(object):
         self.widget.add_data(self.d)
         s = self.d.new_subset()
         assert s in self.widget._layer_artist_container
+
+    def test_clone(self):
+
+        self.widget.add_data(self.d)
+        self.widget.state.layers[0].ra_att = self.d.id['y']
+        self.widget.state.layers[0].dec_att = self.d.id['x']
+
+        widget2 = clone(self.widget)
+
+
+
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):

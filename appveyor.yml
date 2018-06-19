@@ -11,8 +11,8 @@ environment:
                         # of 32 bit and 64 bit builds are needed, move this
                         # to the matrix section.
 
-      CONDA_CHANNELS: "glueviz wwt"
-      CONDA_DEPENDENCIES: "glue-core pytest mock pywwt"
+      CONDA_CHANNELS: "glueviz"
+      CONDA_DEPENDENCIES: "glue-core pytest mock"
       PIP_DEPENDENCIES: "pytest-faulthandler"
 
   matrix:
@@ -31,6 +31,10 @@ install:
     - "powershell ci-helpers/appveyor/install-miniconda.ps1"
     - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
     - "activate test"
+
+    # For now we need to install pywwt here because if we install it sooner,
+    # the post-hook install runs before numpy is correctly set up
+    - "conda install -c wwt pywwt"
 
 build: false
 

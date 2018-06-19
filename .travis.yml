@@ -8,8 +8,8 @@ notifications:
 env:
   global:
     - SETUP_XVFB=True
-    - CONDA_CHANNELS="glueviz wwt"
-    - CONDA_DEPENDENCIES="glueviz pytest mock pywwt"
+    - CONDA_CHANNELS="glueviz"
+    - CONDA_DEPENDENCIES="glueviz pytest mock"
     - PIP_DEPENDENCIES="pytest-faulthandler"
   matrix:
     # - PYTHON_VERSION=2.7
@@ -18,8 +18,13 @@ env:
     - PYTHON_VERSION=3.6 CONDA_CHANNELS="glueviz/label/dev wwt"
 
 install:
+
   - git clone git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
+
+  # For now we need to install pywwt here because if we install it sooner,
+  # the post-hook install runs before numpy is correctly set up
+  - conda install -c wwt pywwt
 
 script:
   - pytest glue_wwt

@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 from mock import MagicMock
 
 from glue.app.qt import GlueApplication
-from glue.core import Data, DataCollection, message, Session
+from glue.core import Data, message
 from glue.core.tests.test_state import clone
 
 from ..data_viewer import WWTDataViewer

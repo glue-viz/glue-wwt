@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-from pywwt.qt import WWTQtClient
-
 from glue.viewers.common.qt.data_viewer import DataViewer
 
 from .layer_artist import WWTLayer
@@ -30,6 +28,7 @@ class WWTDataViewer(DataViewer):
 
         super(WWTDataViewer, self).__init__(session, parent=parent)
 
+        from pywwt.qt import WWTQtClient
         self._wwt_client = WWTQtClient()
 
         self._wwt_client.markers = WWTMarkersHelper(self._wwt_client)

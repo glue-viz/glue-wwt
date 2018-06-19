@@ -102,7 +102,7 @@ class WWTLayerState(LayerState):
 
         self.update_from_dict(kwargs)
 
-        if isinstance(self.layer, Subset):
+        if isinstance(self.layer, Subset) and self.viewer_state is not None:
             for layer_state in self.viewer_state.layers:
                 if self.layer.data is layer_state.layer:
                     self.viewer_state._sync_attributes_single(layer_state, self)

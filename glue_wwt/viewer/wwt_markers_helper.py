@@ -87,7 +87,7 @@ class WWTMarkersHelper(object):
             # Adjust the number of Circle objects accordingly
             if len(self.markers[label]) < n_markers:
                 for imarker in range(n_markers - len(self.markers[label])):
-                    self.markers[label].append(self._wwt_client.add_circle())
+                    self.markers[label].append(self._wwt_client.add_circle(fill=True))
             elif len(self.markers[label]) > n_markers:
                 for imarker in range(len(self.markers[label]) - n_markers):
                     self.markers[label][imarker].remove()

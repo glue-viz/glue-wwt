@@ -11,8 +11,8 @@ from glue.viewers.common.state import ViewerState, LayerState
 
 class WWTDataViewerState(ViewerState):
 
-    foreground = SelectionCallbackProperty(default_index=0)
-    background = SelectionCallbackProperty(default_index=4)
+    foreground = SelectionCallbackProperty(default_index=1)
+    background = SelectionCallbackProperty(default_index=8)
     foreground_opacity = CallbackProperty(1)
     galactic = CallbackProperty(False)
 

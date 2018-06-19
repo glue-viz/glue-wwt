@@ -29,14 +29,14 @@ class WWTLayer(LayerArtist):
         self.zorder = self.state.zorder
         self.visible = self.state.visible
 
-        self.state.add_global_callback(self.update)
+        self.state.add_global_callback(self._update_markers)
 
-        self.update(force=True)
+        self._update_markers(force=True)
 
     def clear(self):
         self.markers.set(self.layer_id, visible=False)
 
-    def update(self, force=False, **kwargs):
+    def _update_markers(self, force=False, **kwargs):
 
         logger.debug("updating WWT for %s" % self.layer.label)
 
@@ -81,3 +81,6 @@ class WWTLayer(LayerArtist):
 
     def redraw(self):
         pass
+
+    def update(self):
+        self._update_markers(force=True)

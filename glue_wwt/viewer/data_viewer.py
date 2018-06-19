@@ -24,6 +24,8 @@ class WWTDataViewer(DataViewer):
     _options_cls = WWTOptionPanel
     _layer_style_widget_cls = WWTLayerStyleEditor
 
+    large_data_size = 100
+
     def __init__(self, session, parent=None, state=None):
 
         super(WWTDataViewer, self).__init__(session, parent=parent)
@@ -46,6 +48,10 @@ class WWTDataViewer(DataViewer):
         self._wwt_client.widget.page.wwt_ready.connect(self._on_wwt_ready)
 
         self._update_wwt_client(force=True)
+
+    def closeEvent(self, event):
+        self._wwt_client.widget.close()
+        return super(WWTDataViewer, self).closeEvent(event)
 
     def _on_wwt_ready(self):
         self.options_widget().setEnabled(True)

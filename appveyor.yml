@@ -12,7 +12,8 @@ environment:
                         # to the matrix section.
 
       CONDA_CHANNELS: "glueviz wwt"
-      CONDA_DEPENDENCIES: "glueviz pytest mock pywwt"
+      CONDA_DEPENDENCIES: "glue-core pytest mock pywwt"
+      PIP_DEPENDENCIES: "pytest-faulthandler"
 
   matrix:
       #- PYTHON_VERSION: "2.7"

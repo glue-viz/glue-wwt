@@ -11,7 +11,7 @@ __all__ = ['WWTOptionPanel']
 
 class WWTOptionPanel(QtWidgets.QWidget):
 
-    def __init__(self, viewer_state, parent=None):
+    def __init__(self, viewer_state, session=None, parent=None):
 
         super(WWTOptionPanel, self).__init__(parent=parent)
 
@@ -20,6 +20,6 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self.ui = load_ui('options_widget.ui', self,
                           directory=os.path.dirname(__file__))
 
-        connect_kwargs = {'foreground_opacity': dict(value_range=(0, 100))}
+        connect_kwargs = {'foreground_opacity': dict(value_range=(0, 1))}
 
         autoconnect_callbacks_to_qt(self._viewer_state, self.ui, connect_kwargs)

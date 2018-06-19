@@ -19,8 +19,7 @@ install_requires = ['numpy',
                     'glue-core>=0.10',
                     'qtpy',
                     'astropy',
-                    'matplotlib',
-                    'requests']
+                    'pywwt']
 
 setup(name='glue-wwt',
       version=__version__,
@@ -29,8 +28,8 @@ setup(name='glue-wwt',
       url="https://github.com/glue-viz/glue-wwt",
       author='Thomas Robitaille',
       author_email='thomas.robitaille@gmail.com',
-      packages = find_packages(),
-      package_data = {'glue_wwt.viewer': ['*.ui', '*.html', '*.js', '*.png']},
+      packages=find_packages(),
+      package_data={'glue_wwt.viewer': ['*.ui', '*.html', '*.js', '*.png']},
       install_requires=install_requires,
       entry_points=entry_points
     )

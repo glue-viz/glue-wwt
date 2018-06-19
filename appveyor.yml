@@ -11,17 +11,17 @@ environment:
                         # of 32 bit and 64 bit builds are needed, move this
                         # to the matrix section.
 
-      CONDA_CHANNELS: "glueviz"
-      CONDA_DEPENDENCIES: "glueviz pytest mock"
+      CONDA_CHANNELS: "glueviz wwt"
+      CONDA_DEPENDENCIES: "glueviz pytest mock pywwt"
 
   matrix:
       #- PYTHON_VERSION: "2.7"
       #- PYTHON_VERSION: "3.6"
       - PYTHON_VERSION: "2.7"
-        CONDA_CHANNELS: "glueviz/label/dev"
+        CONDA_CHANNELS: "glueviz/label/dev wwt"
       - PYTHON_VERSION: "3.6"
-        CONDA_CHANNELS: "glueviz/label/dev"
-        
+        CONDA_CHANNELS: "glueviz/label/dev wwt"
+
 platform:
     -x64
 
@@ -34,5 +34,4 @@ install:
 build: false
 
 test_script:
-  - "%CMD_IN_ENV% py.test glue_wwt"
-
+  - "%CMD_IN_ENV% pytest glue_wwt"

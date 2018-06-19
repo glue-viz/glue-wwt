@@ -37,14 +37,18 @@
 
       function wwtReady() {
         initForWwt();
-        wwt.loadImageCollection('http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys');
-        wwt.settings.set_showConstellationBoundries(false);
-        wwt.settings.set_showConstellationFigures(false);
-        wwt.setForegroundImageByName('WISE All Sky (Infrared)');
         wwt_ready = 1;
       }
 
-      function initForWwt() {}
+      function initForWwt() {
+        wwt.loadImageCollection('http://www.worldwidetelescope.org/wwtweb/catalog.aspx?W=surveys');
+        wwt.settings.set_showConstellationBoundries(false);
+        wwt.settings.set_showConstellationFigures(false);
+    
+      	wwt.setForegroundImageByName("Digitized Sky Survey (Color)");
+		wwt.setBackgroundImageByName("Planck Dust &amp; Gas");
+		wwt.setForegroundOpacity(0.99);
+      }
 
     </script>
 

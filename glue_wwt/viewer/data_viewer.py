@@ -1,15 +1,12 @@
-#Sarah edits
 from __future__ import absolute_import, division, print_function
 
 from glue.viewers.common.qt.data_viewer import DataViewer
-from glue.core import message as m
 
 from .layer_artist import WWTLayer
 from .options_widget import WWTOptionPanel
-from .wwt_widget import WWTQtWidget
-from glue.viewers.common.qt.toolbar import BasicToolbar
 from .state import WWTDataViewerState
 from .layer_style_editor import WWTLayerStyleEditor
+from .wwt_markers_helper import WWTMarkersHelper
 
 __all__ = ['WWTDataViewer']
 
@@ -17,104 +14,61 @@ __all__ = ['WWTDataViewer']
 class WWTDataViewer(DataViewer):
 
     LABEL = 'WorldWideTelescope (WWT)'
-    _toolbar_cls = BasicToolbar
+
+    _state_cls = WWTDataViewerState
+    _data_artist_cls = WWTLayer
+    _subset_artist_cls = WWTLayer
+
+    _options_cls = WWTOptionPanel
     _layer_style_widget_cls = WWTLayerStyleEditor
+
+    large_data_size = 100
 
     def __init__(self, session, parent=None, state=None):
 
         super(WWTDataViewer, self).__init__(session, parent=parent)
 
-        self._wwt_widget = WWTQtWidget()
-        self.setCentralWidget(self._wwt_widget)
-        self.resize(self._wwt_widget.size())
+        from pywwt.qt import WWTQtClient
+        self._wwt_client = WWTQtClient()
+
+        self._wwt_client.markers = WWTMarkersHelper(self._wwt_client)
+
+        self.setCentralWidget(self._wwt_client.widget)
+        self.resize(self._wwt_client.widget.size())
         self.setWindowTitle("WorldWideTelescope")
 
-        self.state = state or WWTDataViewerState()
-        self.state.set_imagery_layers(list(self._wwt_widget.imagery_layers))
+        self.state.imagery_layers = list(self._wwt_client.available_layers)
 
-        self.option_panel = WWTOptionPanel(self.state)
+        self.state.add_global_callback(self._update_wwt_client)
 
-        self.state.add_global_callback(self._update_wwt_widget)
+        self.options_widget().setEnabled(False)
+        self.layer_view().setEnabled(False)
 
-        self.option_panel.setEnabled(False)
-        self._view.setEnabled(False)
-        self._wwt_widget.page.wwt_ready.connect(self._on_wwt_ready)
+        self._wwt_client.widget.page.wwt_ready.connect(self._on_wwt_ready)
 
-        self._update_wwt_widget(force=True)
+        self._update_wwt_client(force=True)
+
+    def closeEvent(self, event):
+        self._wwt_client.widget.close()
+        return super(WWTDataViewer, self).closeEvent(event)
 
     def _on_wwt_ready(self):
-        self.option_panel.setEnabled(True)
-        self._view.setEnabled(True)
+        self.options_widget().setEnabled(True)
+        self.layer_view().setEnabled(True)
 
-    def _update_wwt_widget(self, force=False, **kwargs):
+    def _update_wwt_client(self, force=False, **kwargs):
 
         if force or 'foreground' in kwargs:
-            self._wwt_widget.foreground = self.state.foreground
+            self._wwt_client.foreground = self.state.foreground
 
         if force or 'background' in kwargs:
-            self._wwt_widget.background = self.state.background
+            self._wwt_client.background = self.state.background
 
         if force or 'foreground_opacity' in kwargs:
-            self._wwt_widget.foreground_opacity = self.state.foreground_opacity
+            self._wwt_client.foreground_opacity = self.state.foreground_opacity
 
-        if force or 'galactic' in kwargs:
-            self._wwt_widget.galactic = self.state.galactic
+        if force or 'galactic_mode' in kwargs:
+            self._wwt_client.galactic_mode = self.state.galactic
 
-    def options_widget(self):
-        return self.option_panel
-
-    def add_data(self, data, center=True):
-        if data in self._layer_artist_container:
-            return
-        self._add_layer(data, center)
-        for s in data.subsets:
-            self.add_subset(s, center=False)
-        return True
-
-    def add_subset(self, subset, center=True):
-        if subset in self._layer_artist_container:
-            return
-        self._add_layer(subset, center)
-        return True
-
-    def _add_layer(self, layer, center=True):
-        if layer in self._layer_artist_container:
-            return
-        artist = WWTLayer(self._wwt_widget, self.state, layer=layer)
-        self._layer_artist_container.append(artist)
-        return True
-
-    def register_to_hub(self, hub):
-
-        super(WWTDataViewer, self).register_to_hub(hub)
-
-        hub.subscribe(self, m.DataUpdateMessage,
-                      lambda msg: self._update_layer(msg.sender),
-                      lambda msg: msg.data in self._layer_artist_container)
-
-        hub.subscribe(self, m.SubsetUpdateMessage,
-                      lambda msg: self._update_layer(msg.sender),
-                      lambda msg: msg.subset in self._layer_artist_container)
-
-        hub.subscribe(self, m.DataCollectionDeleteMessage,
-                      lambda msg: self._remove_layer(msg.data),
-                      lambda msg: msg.data in self._layer_artist_container)
-
-        hub.subscribe(self, m.SubsetDeleteMessage,
-                      lambda msg: self._remove_layer(msg.subset),
-                      lambda msg: msg.subset in self._layer_artist_container)
-
-        hub.subscribe(self, m.SubsetCreateMessage,
-                      lambda msg: self.add_subset(msg.subset),
-                      lambda msg: msg.subset.data in self._layer_artist_container)
-
-    def _update_layer(self, layer):
-        for a in self._layer_artist_container[layer]:
-            a.update(force=True)
-
-    def _remove_layer(self, layer):
-        for l in self._layer_artist_container[layer]:
-            self._layer_artist_container.remove(l)
-
-    def unregister(self, hub):
-        hub.unsubscribe_all(self)
+    def get_layer_artist(self, cls, layer=None, layer_state=None):
+        return cls(self._wwt_client, self.state, layer=layer, layer_state=layer_state)

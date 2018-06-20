@@ -12,7 +12,8 @@ environment:
                         # to the matrix section.
 
       CONDA_CHANNELS: "glueviz"
-      CONDA_DEPENDENCIES: "glueviz pytest mock"
+      CONDA_DEPENDENCIES: "glue-core pytest mock"
+      PIP_DEPENDENCIES: "pytest-faulthandler pytest-qt"
 
   matrix:
       #- PYTHON_VERSION: "2.7"
@@ -21,7 +22,7 @@ environment:
         CONDA_CHANNELS: "glueviz/label/dev"
       - PYTHON_VERSION: "3.6"
         CONDA_CHANNELS: "glueviz/label/dev"
-        
+
 platform:
     -x64
 
@@ -31,8 +32,11 @@ install:
     - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
     - "activate test"
 
+    # For now we need to install pywwt here because if we install it sooner,
+    # the post-hook install runs before numpy is correctly set up
+    - "conda install -c wwt pywwt"
+
 build: false
 
 test_script:
-  - "%CMD_IN_ENV% py.test glue_wwt"
-
+  - "%CMD_IN_ENV% pytest glue_wwt"

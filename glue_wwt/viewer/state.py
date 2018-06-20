@@ -5,27 +5,41 @@ from glue.external.echo import (CallbackProperty, ListCallbackProperty,
                                 keep_in_sync, delay_callback)
 
 from glue.core import Data, Subset
-from glue.core.state_objects import State
 from glue.core.data_combo_helper import ComponentIDComboHelper
+from glue.viewers.common.state import ViewerState, LayerState
 
 
-class WWTDataViewerState(State):
+class WWTDataViewerState(ViewerState):
 
-    foreground = SelectionCallbackProperty(default_index=0) 
-    background = SelectionCallbackProperty(default_index=4)
-    foreground_opacity = CallbackProperty(100)
+    foreground = SelectionCallbackProperty(default_index=1)
+    background = SelectionCallbackProperty(default_index=8)
+    foreground_opacity = CallbackProperty(1)
     galactic = CallbackProperty(False)
 
     layers = ListCallbackProperty()
 
+    # For now we need to include this here otherwise when loading files, the
+    # imagery layers are only available asynchronously and the session loading
+    # fails.
+    imagery_layers = ListCallbackProperty()
+
     def __init__(self, **kwargs):
         super(WWTDataViewerState, self).__init__()
         self.add_callback('layers', self._sync_all_attributes)
+        self.add_callback('imagery_layers', self._update_imagery_layers)
         self.update_from_dict(kwargs)
 
-    def set_imagery_layers(self, imagery_layers):
-        WWTDataViewerState.foreground.set_choices(self, imagery_layers)
-        WWTDataViewerState.background.set_choices(self, imagery_layers)
+    def _update_imagery_layers(self, *args):
+        WWTDataViewerState.foreground.set_choices(self, self.imagery_layers)
+        WWTDataViewerState.background.set_choices(self, self.imagery_layers)
+
+    def _update_priority(self, name):
+        if name == 'layers':
+            return 2
+        elif name == 'imagery_layers':
+            return 1
+        else:
+            return 0
 
     def _sync_attributes_single(self, reference, layer_state):
         with delay_callback(layer_state, 'ra_att', 'dec_att'):
@@ -56,7 +70,7 @@ class WWTDataViewerState(State):
                     self._sync_attributes_single(reference, layer_state)
 
 
-class WWTLayerState(State):
+class WWTLayerState(LayerState):
 
     layer = CallbackProperty()
     ra_att = SelectionCallbackProperty(default_index=0)
@@ -88,7 +102,7 @@ class WWTLayerState(State):
 
         self.update_from_dict(kwargs)
 
-        if isinstance(self.layer, Subset):
+        if isinstance(self.layer, Subset) and self.viewer_state is not None:
             for layer_state in self.viewer_state.layers:
                 if self.layer.data is layer_state.layer:
                     self.viewer_state._sync_attributes_single(layer_state, self)
@@ -104,6 +118,12 @@ class WWTLayerState(State):
         self._sync_color = keep_in_sync(self, 'color', self.layer.style, 'color')
         self._sync_alpha = keep_in_sync(self, 'alpha', self.layer.style, 'alpha')
         self._sync_size = keep_in_sync(self, 'size', self.layer.style, 'markersize')
+
+    def _update_priority(self, name):
+        if name == 'layer':
+            return 1
+        else:
+            return 0
 
     def _layer_changed(self, layer):
         self.ra_att_helper.set_multiple_data([self.layer])

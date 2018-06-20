@@ -4,12 +4,8 @@ from collections import defaultdict
 
 import numpy as np
 
-try:
-    from matplotlib.colors import to_hex
-except ImportError:
-    from matplotlib.colors import rgb2hex, colorConverter
-    def to_hex(color):  # noqa
-        return str(rgb2hex(colorConverter.to_rgb(color)))
+from astropy import units as u
+from astropy.coordinates import SkyCoord
 
 from .utils import center_fov
 
@@ -18,32 +14,13 @@ __all__ = ['WWTMarkersHelper']
 
 class WWTMarkersHelper(object):
     """
-    This class takes care of showing all the markers in WWT, and tries to make
-    updates with minimal Javascript code.
+    This class takes care of showing all the markers in WWT.
     """
 
-    def __init__(self, wwt_widget):
-        self._wwt_widget = wwt_widget
+    def __init__(self, wwt_client):
+        self._wwt_client = wwt_client
         self.layers = {}
         self.markers = defaultdict(list)
-        self._js_paused = False
-        self._js_buffer = ''
-
-    def run_js(self, js):
-        if not js.strip():
-            return
-        if self._js_paused:
-            self._js_buffer += js
-        else:
-            self._wwt_widget.run_js(js)
-
-    def pause_js(self):
-        self._js_paused = True
-
-    def resume_js(self):
-        self._js_paused = False
-        self.run_js(self._js_buffer)
-        self._js_buffer = ''
 
     def allocate(self, label):
         if label in self.layers:
@@ -67,7 +44,7 @@ class WWTMarkersHelper(object):
         if ra_cen is None:
             return
         fov = min(60, sep_max * 3)
-        self.run_js("wwt.gotoRaDecZoom({0}, {1}, {2}, false);".format(ra_cen, dec_cen, fov))
+        self._wwt_client.center_on_coordinates(SkyCoord(ra_cen, dec_cen, unit=u.degree, frame='icrs'), fov * u.degree)
 
     def set(self, label, **kwargs):
         changed = {}
@@ -96,50 +73,46 @@ class WWTMarkersHelper(object):
 
     def _update_layer(self, label, force_update=False, **kwargs):
 
-        js_code = ""
-
         if force_update or 'zorder' in kwargs or 'visible' in kwargs or 'coords' in kwargs:
 
-            for marker in self.markers[label]:
-                js_code += 'wwt.removeAnnotation({0});\n'.format(marker)
-
-            self.markers[label] = []
-
-            if not self.layers[label]['visible']:
-                self.run_js(js_code)
+            if not self.layers[label]['visible'] or self.layers[label]['coords'] is None:
+                for marker in self.markers[label]:
+                    marker.remove()
+                self.markers[label] = []
                 return
 
-            if self.layers[label]['coords'] is None:
-                self.run_js(js_code)
-                return
+            # Figure out the number of annotations needed
+            n_markers = len(self.layers[label]['coords'][0])
 
-            for imarker, marker in enumerate(range(len(self.layers[label]['coords'][0]))):
-                marker_name = "marker_{0}_{1}".format(label, imarker)
-                js_code += '{0} = wwt.createCircle(true);\n'.format(marker_name)
-                js_code += 'wwt.addAnnotation({0});\n'.format(marker_name)
-                self.markers[label].append(marker_name)
+            # Adjust the number of Circle objects accordingly
+            if len(self.markers[label]) < n_markers:
+                for imarker in range(n_markers - len(self.markers[label])):
+                    self.markers[label].append(self._wwt_client.add_circle(fill=True))
+            elif len(self.markers[label]) > n_markers:
+                for imarker in range(len(self.markers[label]) - n_markers):
+                    self.markers[label][imarker].remove()
+                self.markers[label] = self.markers[label][:n_markers]
 
             force_update = True
 
         if force_update or 'coords' in kwargs:
             ra, dec = self.layers[label]['coords']
+            coords = SkyCoord(ra, dec, unit=u.degree, frame='icrs')
             for imarker, marker in enumerate(self.markers[label]):
-                js_code += '{0}.setCenter({1}, {2});\n'.format(marker, ra[imarker], dec[imarker])
+                marker.set_center(coords[imarker])
 
         if force_update or 'size' in kwargs:
             size = self.layers[label]['size']
             for marker in self.markers[label]:
-                js_code += '{0}.set_radius({1});\n'.format(marker, size)
+                marker.radius = size * u.pix
 
         if force_update or 'color' in kwargs:
-            color = to_hex(self.layers[label]['color'])
+            color = self.layers[label]['color']
             for marker in self.markers[label]:
-                js_code += '{0}.set_fillColor("{1}");\n'.format(marker, color)
-                js_code += '{0}.set_lineColor("{1}");\n'.format(marker, color)
+                marker.fill_color = str(color)
+                marker.line_color = str(color)
 
         if force_update or 'alpha' in kwargs:
             alpha = self.layers[label]['alpha']
             for marker in self.markers[label]:
-                js_code += '{0}.set_opacity({1});\n'.format(marker, alpha)
-
-        self.run_js(js_code)
+                marker.opacity = alpha

@@ -109,8 +109,8 @@ class WWTMarkersHelper(object):
         if force_update or 'color' in kwargs:
             color = self.layers[label]['color']
             for marker in self.markers[label]:
-                marker.fill_color = color
-                marker.line_color = color
+                marker.fill_color = str(color)
+                marker.line_color = str(color)
 
         if force_update or 'alpha' in kwargs:
             alpha = self.layers[label]['alpha']

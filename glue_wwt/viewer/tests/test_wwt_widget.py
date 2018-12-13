@@ -64,7 +64,7 @@ class TestWWTDataViewer(object):
         self.register()
         s = self.d.new_subset()
         self.viewer.add_subset(s)
-        layer = self.viewer._layer_artist_container[self.d][0]
+        layer = self.viewer._layer_artist_container[s][0]
         layer.markers.set = MagicMock()
         s.style.color = 'green'
         assert layer.markers.set.call_count > 0

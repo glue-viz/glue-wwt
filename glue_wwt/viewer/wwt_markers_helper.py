@@ -11,9 +11,10 @@ from .utils import center_fov
 __all__ = ['WWTMarkersHelper']
 
 
+# The empty table can't actually be empty
 EMPTY_TABLE = Table()
-EMPTY_TABLE['ra'] = []
-EMPTY_TABLE['dec'] = []
+EMPTY_TABLE['ra'] = [0.]
+EMPTY_TABLE['dec'] = [0.]
 
 
 class WWTMarkersHelper(object):
@@ -37,7 +38,7 @@ class WWTMarkersHelper(object):
                                   'size': 10,
                                   'visible': True}
             self._wwt_layers[label] = self._wwt_client.layers.add_data_layer(table=EMPTY_TABLE, frame='Sky',
-                                                                            lon_att='ra', lat_att='dec')
+                                                                             lon_att='ra', lat_att='dec')
 
     def deallocate(self, label):
         self.layers.pop(label)
@@ -98,11 +99,8 @@ class WWTMarkersHelper(object):
             else:
                 wwt_layer.update_data(table=EMPTY_TABLE)
 
-        # FIXME: for now, opacity doesn't work on the WWT side, so we actually
-        # translate this as size.
-
-        if force_update or 'size' in kwargs or 'alpha' in kwargs:
-            wwt_layer.size_scale = self.layers[label]['size'] * self.layers[label]['alpha']
+        if force_update or 'size' in kwargs:
+            wwt_layer.size_scale = self.layers[label]['size'] * 5
 
         if force_update or 'color' in kwargs:
             wwt_layer.color = self.layers[label]['color']

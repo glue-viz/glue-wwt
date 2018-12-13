@@ -28,7 +28,7 @@ install:
 
   # For now we need to install pywwt here because if we install it sooner,
   # the post-hook install runs before numpy is correctly set up
-  - conda install -c wwt pywwt
+  - conda install -c wwt/label/dev pywwt
 
 script:
   - pytest glue_wwt

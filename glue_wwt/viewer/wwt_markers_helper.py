@@ -1,15 +1,20 @@
 from __future__ import absolute_import, division, print_function
 
-from collections import defaultdict
-
 import numpy as np
 
 from astropy import units as u
 from astropy.coordinates import SkyCoord
+from astropy.table import Table
 
 from .utils import center_fov
 
 __all__ = ['WWTMarkersHelper']
+
+
+# The empty table can't actually be empty
+EMPTY_TABLE = Table()
+EMPTY_TABLE['ra'] = [0.]
+EMPTY_TABLE['dec'] = [0.]
 
 
 class WWTMarkersHelper(object):
@@ -20,7 +25,7 @@ class WWTMarkersHelper(object):
     def __init__(self, wwt_client):
         self._wwt_client = wwt_client
         self.layers = {}
-        self.markers = defaultdict(list)
+        self._wwt_layers = {}
 
     def allocate(self, label):
         if label in self.layers:
@@ -32,9 +37,13 @@ class WWTMarkersHelper(object):
                                   'zorder': 0,
                                   'size': 10,
                                   'visible': True}
+            self._wwt_layers[label] = self._wwt_client.layers.add_data_layer(table=EMPTY_TABLE, frame='Sky',
+                                                                             lon_att='ra', lat_att='dec')
 
     def deallocate(self, label):
         self.layers.pop(label)
+        layer = self._wwt_layers.pop(label)
+        layer.remove()
 
     def center(self, label):
         if self.layers[label]['coords'] is None:
@@ -73,46 +82,28 @@ class WWTMarkersHelper(object):
 
     def _update_layer(self, label, force_update=False, **kwargs):
 
-        if force_update or 'zorder' in kwargs or 'visible' in kwargs or 'coords' in kwargs:
+        # FIXME: support zorder
 
-            if not self.layers[label]['visible'] or self.layers[label]['coords'] is None:
-                for marker in self.markers[label]:
-                    marker.remove()
-                self.markers[label] = []
-                return
+        if label in self._wwt_layers:
+            wwt_layer = self._wwt_layers[label]
+        else:
+            return
 
-            # Figure out the number of annotations needed
-            n_markers = len(self.layers[label]['coords'][0])
-
-            # Adjust the number of Circle objects accordingly
-            if len(self.markers[label]) < n_markers:
-                for imarker in range(n_markers - len(self.markers[label])):
-                    self.markers[label].append(self._wwt_client.add_circle(fill=True))
-            elif len(self.markers[label]) > n_markers:
-                for imarker in range(len(self.markers[label]) - n_markers):
-                    self.markers[label][imarker].remove()
-                self.markers[label] = self.markers[label][:n_markers]
-
-            force_update = True
-
-        if force_update or 'coords' in kwargs:
-            ra, dec = self.layers[label]['coords']
-            coords = SkyCoord(ra, dec, unit=u.degree, frame='icrs')
-            for imarker, marker in enumerate(self.markers[label]):
-                marker.set_center(coords[imarker])
+        if force_update or 'visible' in kwargs or 'coords' in kwargs:
+            if self.layers[label]['visible'] and self.layers[label]['coords'] is not None:
+                ra, dec = self.layers[label]['coords']
+                tab = Table()
+                tab['ra'] = ra * u.degree
+                tab['dec'] = dec * u.degree
+                wwt_layer.update_data(table=tab)
+            else:
+                wwt_layer.update_data(table=EMPTY_TABLE)
 
         if force_update or 'size' in kwargs:
-            size = self.layers[label]['size']
-            for marker in self.markers[label]:
-                marker.radius = size * u.pix
+            wwt_layer.size_scale = self.layers[label]['size'] * 5
 
         if force_update or 'color' in kwargs:
-            color = self.layers[label]['color']
-            for marker in self.markers[label]:
-                marker.fill_color = str(color)
-                marker.line_color = str(color)
+            wwt_layer.color = self.layers[label]['color']
 
         if force_update or 'alpha' in kwargs:
-            alpha = self.layers[label]['alpha']
-            for marker in self.markers[label]:
-                marker.opacity = alpha
+            wwt_layer.opacity = self.layers[label]['alpha']

@@ -8,6 +8,9 @@ from .state import WWTDataViewerState
 from .layer_style_editor import WWTLayerStyleEditor
 from .wwt_markers_helper import WWTMarkersHelper
 
+# We import the following to register the save tool
+from . import tools  # noqa
+
 __all__ = ['WWTDataViewer']
 
 
@@ -24,12 +27,15 @@ class WWTDataViewer(DataViewer):
 
     large_data_size = 100
 
+    subtools = {'save': ['wwt:save']}
+
     def __init__(self, session, parent=None, state=None):
 
         super(WWTDataViewer, self).__init__(session, parent=parent)
 
         from pywwt.qt import WWTQtClient
         self._wwt_client = WWTQtClient()
+        self._wwt_client.actual_planet_scale = True
 
         self._wwt_client.markers = WWTMarkersHelper(self._wwt_client)
 
@@ -67,7 +73,7 @@ class WWTDataViewer(DataViewer):
         if force or 'foreground_opacity' in kwargs:
             self._wwt_client.foreground_opacity = self.state.foreground_opacity
 
-        if force or 'galactic_mode' in kwargs:
+        if force or 'galactic' in kwargs:
             self._wwt_client.galactic_mode = self.state.galactic
 
     def get_layer_artist(self, cls, layer=None, layer_state=None):

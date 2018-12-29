@@ -16,10 +16,10 @@ with open('README.rst') as infile:
     LONG_DESCRIPTION = infile.read()
 
 install_requires = ['numpy',
-                    'glue-core>=0.10',
+                    'glue-core>=0.14',
                     'qtpy',
                     'astropy',
-                    'pywwt']
+                    'pywwt>=0.4']
 
 setup(name='glue-wwt',
       version=__version__,

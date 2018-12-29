@@ -53,7 +53,7 @@ class WWTMarkersHelper(object):
         if ra_cen is None:
             return
         fov = min(60, sep_max * 3)
-        self._wwt_client.center_on_coordinates(SkyCoord(ra_cen, dec_cen, unit=u.degree, frame='icrs'), fov * u.degree)
+        self._wwt_client.center_on_coordinates(SkyCoord(ra_cen, dec_cen, unit=u.degree, frame='icrs'), fov * u.degree, instant=False)
 
     def set(self, label, **kwargs):
         changed = {}

@@ -30,6 +30,7 @@ class WWTDataViewer(DataViewer):
 
         from pywwt.qt import WWTQtClient
         self._wwt_client = WWTQtClient()
+        self._wwt_client.actual_planet_scale = True
 
         self._wwt_client.markers = WWTMarkersHelper(self._wwt_client)
 

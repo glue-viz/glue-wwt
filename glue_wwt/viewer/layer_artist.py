@@ -15,10 +15,6 @@ from .utils import center_fov
 
 __all__ = ['WWTLayer']
 
-EMPTY_TABLE = Table()
-EMPTY_TABLE['ra'] = [0.]
-EMPTY_TABLE['dec'] = [0.]
-
 
 class WWTLayer(LayerArtist):
 
@@ -28,9 +24,11 @@ class WWTLayer(LayerArtist):
 
         super(WWTLayer, self).__init__(viewer_state, layer_state=layer_state, layer=layer)
 
+        self.wwt_layer = None
+        self._coords = [], []
+
         self.layer_id = "{0:08x}".format(random.getrandbits(32))
         self.wwt_client = wwt_client
-        self.wwt_layer = None
 
         self.zorder = self.state.zorder
         self.visible = self.state.visible
@@ -40,17 +38,25 @@ class WWTLayer(LayerArtist):
         self._update_markers(force=True)
 
     def clear(self):
-        self.wwt_layer.update_data(table=EMPTY_TABLE)
-        self._coords = [], []
+        if self.wwt_layer is not None:
+            self.wwt_layer.remove()
+            self.wwt_layer = None
+            self._coords = [], []
 
     def _update_markers(self, force=False, **kwargs):
 
         logger.debug("updating WWT for %s" % self.layer.label)
 
+        if self.visible is False and self.wwt_layer is not None:
+            self.wwt_layer.remove()
+            self.wwt_layer = None
+            return
+
         if force or 'frame' in kwargs or self.wwt_layer is None:
             if self.wwt_layer is not None:
                 self.wwt_layer.remove()
-            self.wwt_layer = self.wwt_client.layers.add_data_layer(EMPTY_TABLE, frame=self.state.frame)
+                self.wwt_layer = None
+                self._coords = [], []
             force = True
 
         if force or 'ra_att' in kwargs or 'dec_att' in kwargs:
@@ -89,13 +95,21 @@ class WWTLayer(LayerArtist):
                 tab = Table()
                 tab['ra'] = ra * u.degree
                 tab['dec'] = dec * u.degree
-                self.wwt_layer.update_data(table=tab)
+
+                if self.wwt_layer is None:
+                    self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=self.state.frame)
+                else:
+                    self.wwt_layer.update_data(table=tab)
+
                 self._coords = ra, dec
 
             else:
 
-                self.wwt_layer.update_data(table=EMPTY_TABLE)
-                self._coords = [], []
+                if self.wwt_layer is not None:
+                    self.wwt_layer.remove()
+                    self.wwt_layer = None
+                    self._coords = [], []
+                return
 
         if force or 'size' in kwargs:
             self.wwt_layer.size_scale = self.state.size * 5

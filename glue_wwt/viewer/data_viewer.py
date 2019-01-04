@@ -6,7 +6,6 @@ from .layer_artist import WWTLayer
 from .options_widget import WWTOptionPanel
 from .state import WWTDataViewerState
 from .layer_style_editor import WWTLayerStyleEditor
-from .wwt_markers_helper import WWTMarkersHelper
 
 # We import the following to register the save tool
 from . import tools  # noqa
@@ -37,8 +36,6 @@ class WWTDataViewer(DataViewer):
         self._wwt_client = WWTQtClient()
         self._wwt_client.actual_planet_scale = True
 
-        self._wwt_client.markers = WWTMarkersHelper(self._wwt_client)
-
         self.setCentralWidget(self._wwt_client.widget)
         self.resize(self._wwt_client.widget.size())
         self.setWindowTitle("WorldWideTelescope")
@@ -63,6 +60,9 @@ class WWTDataViewer(DataViewer):
         self.layer_view().setEnabled(True)
 
     def _update_wwt_client(self, force=False, **kwargs):
+
+        if force or 'frame' in kwargs:
+            self._wwt_client.set_view(self.state.frame)
 
         if force or 'foreground' in kwargs:
             self._wwt_client.foreground = self.state.foreground

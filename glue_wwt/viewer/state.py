@@ -8,9 +8,13 @@ from glue.core import Data, Subset
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.viewers.common.state import ViewerState, LayerState
 
+from pywwt.core import VIEW_MODES_2D, VIEW_MODES_3D
+from pywwt.layers import VALID_FRAMES
+
 
 class WWTDataViewerState(ViewerState):
 
+    frame = SelectionCallbackProperty(default_index=0)
     foreground = SelectionCallbackProperty(default_index=1)
     background = SelectionCallbackProperty(default_index=8)
     foreground_opacity = CallbackProperty(1)
@@ -30,6 +34,7 @@ class WWTDataViewerState(ViewerState):
         self.update_from_dict(kwargs)
 
     def _update_imagery_layers(self, *args):
+        WWTDataViewerState.frame.set_choices(self, [x.capitalize() for x in VIEW_MODES_2D + VIEW_MODES_3D])
         WWTDataViewerState.foreground.set_choices(self, self.imagery_layers)
         WWTDataViewerState.background.set_choices(self, self.imagery_layers)
 
@@ -72,6 +77,7 @@ class WWTDataViewerState(ViewerState):
 
 class WWTLayerState(LayerState):
 
+    frame = SelectionCallbackProperty(default_index=0)
     layer = CallbackProperty()
     ra_att = SelectionCallbackProperty(default_index=0)
     dec_att = SelectionCallbackProperty(default_index=1)
@@ -118,6 +124,10 @@ class WWTLayerState(LayerState):
         self._sync_color = keep_in_sync(self, 'color', self.layer.style, 'color')
         self._sync_alpha = keep_in_sync(self, 'alpha', self.layer.style, 'alpha')
         self._sync_size = keep_in_sync(self, 'size', self.layer.style, 'markersize')
+
+        WWTLayerState.frame.set_choices(self, [x.capitalize() for x in VALID_FRAMES])
+        if self.viewer_state.frame.lower() in VALID_FRAMES:
+            self.frame = self.viewer_state.frame
 
     def _update_priority(self, name):
         if name == 'layer':

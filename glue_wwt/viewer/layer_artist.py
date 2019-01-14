@@ -128,6 +128,9 @@ class WWTLayer(LayerArtist):
         if force or 'alt_unit' in kwargs:
             self.wwt_layer.alt_unit = self._viewer_state.alt_unit
 
+        if force or 'alt_type' in kwargs:
+            self.wwt_layer.alt_type = self._viewer_state.alt_type.lower()
+
         if force or 'size' in kwargs:
             self.wwt_layer.size_scale = self.state.size * 5
 

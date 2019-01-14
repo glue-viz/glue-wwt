@@ -20,6 +20,8 @@ MODES_3D = ['Solar System', 'Milky Way', 'Universe']
 ALT_UNITS = [u.m, u.km, u.AU, u.lyr, u.pc, u.Mpc,
              u.imperial.ft, u.imperial.inch, u.imperial.mi]
 
+ALT_TYPES = ['Altitude', 'Depth', 'Distance']
+
 
 class WWTDataViewerState(ViewerState):
 
@@ -30,6 +32,7 @@ class WWTDataViewerState(ViewerState):
     lat_att = SelectionCallbackProperty(default_index=1)
     alt_att = SelectionCallbackProperty(default_index=0)
     alt_unit = SelectionCallbackProperty(default_index=0)
+    alt_type = SelectionCallbackProperty(default_index=0)
 
     foreground = SelectionCallbackProperty(default_index=1)
     foreground_opacity = CallbackProperty(1)
@@ -50,6 +53,7 @@ class WWTDataViewerState(ViewerState):
 
         WWTDataViewerState.mode.set_choices(self, ['Sky'] + MODES_3D + MODES_BODIES)
         WWTDataViewerState.alt_unit.set_choices(self, ALT_UNITS)
+        WWTDataViewerState.alt_type.set_choices(self, ALT_TYPES)
 
         self.add_callback('imagery_layers', self._update_imagery_layers)
 

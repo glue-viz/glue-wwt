@@ -61,8 +61,8 @@ class WWTDataViewer(DataViewer):
 
     def _update_wwt_client(self, force=False, **kwargs):
 
-        if force or 'frame' in kwargs:
-            self._wwt_client.set_view(self.state.frame)
+        if force or 'mode' in kwargs:
+            self._wwt_client.set_view(self.state.mode)
 
         if force or 'foreground' in kwargs:
             self._wwt_client.foreground = self.state.foreground

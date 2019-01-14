@@ -34,6 +34,7 @@ class WWTLayer(LayerArtist):
         self.visible = self.state.visible
 
         self.state.add_global_callback(self._update_markers)
+        self._viewer_state.add_global_callback(self._update_markers)
 
         self._update_markers(force=True)
 
@@ -45,6 +46,12 @@ class WWTLayer(LayerArtist):
 
     def _update_markers(self, force=False, **kwargs):
 
+        if self._viewer_state.lon_att is None or self._viewer_state.lat_att is None:
+            if self.wwt_layer is not None:
+                self.wwt_layer.remove()
+                self.wwt_layer = None
+            return
+
         logger.debug("updating WWT for %s" % self.layer.label)
 
         if self.visible is False and self.wwt_layer is not None:
@@ -52,56 +59,55 @@ class WWTLayer(LayerArtist):
             self.wwt_layer = None
             return
 
-        if force or 'frame' in kwargs or self.wwt_layer is None:
+        if force or 'mode' in kwargs or self.wwt_layer is None:
             if self.wwt_layer is not None:
                 self.wwt_layer.remove()
                 self.wwt_layer = None
                 self._coords = [], []
             force = True
 
-        if force or 'ra_att' in kwargs or 'dec_att' in kwargs:
+        if force or 'mode' in kwargs or 'lon_att' in kwargs or 'lat_att' in kwargs or 'alt_att' in kwargs:
 
             try:
-                ra = self.layer[self.state.ra_att]
+                lon = self.layer[self._viewer_state.lon_att]
             except IncompatibleAttribute:
-                self.disable_invalid_attributes(self.state.ra_att)
+                self.disable_invalid_attributes(self._viewer_state.lon_att)
                 return
 
             try:
-                dec = self.layer[self.state.dec_att]
+                lat = self.layer[self._viewer_state.lat_att]
             except IncompatibleAttribute:
-                self.disable_invalid_attributes(self.state.dec_att)
+                self.disable_invalid_attributes(self._viewer_state.dec_att)
                 return
+
+            if self._viewer_state.alt_att is not None:
+                try:
+                    alt = self.layer[self._viewer_state.alt_att]
+                except IncompatibleAttribute:
+                    self.disable_invalid_attributes(self._viewer_state.alt_att)
+                    return
 
             # First deal with data/coordinates
 
-            if len(ra) > 0:
-
-                try:
-                    coord = SkyCoord(ra, dec, unit=(u.deg, u.deg))
-                except ValueError as exc:
-                    # self.disable(str(exc))
-                    return
-
-                coord_icrs = coord.icrs
-                ra = coord_icrs.ra.degree
-                dec = coord_icrs.dec.degree
-
-                keep = ((ra >= -360) & (ra <= 360) &
-                        (dec >= -90) & (dec <= 90))
-
-                ra, dec = ra[keep], dec[keep]
+            if len(lon) > 0:
 
                 tab = Table()
-                tab['ra'] = ra * u.degree
-                tab['dec'] = dec * u.degree
+                tab['lon'] = lon * u.degree
+                tab['lat'] = lat * u.degree
+                if self._viewer_state.alt_att is not None:
+                    # FIXME: allow arbitrary units
+                    tab['alt'] = alt * u.m
+                    alt_att = {'alt_att': 'alt'}
+                else:
+                    alt_att = {}
 
                 if self.wwt_layer is None:
-                    self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=self.state.frame)
+                    self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=self._viewer_state.mode,
+                                                                           lon_att='lon', lat_att='lat', **alt_att)
                 else:
                     self.wwt_layer.update_data(table=tab)
 
-                self._coords = ra, dec
+                self._coords = lon, lat
 
             else:
 
@@ -126,19 +132,19 @@ class WWTLayer(LayerArtist):
 
     def center(self, *args):
 
-        ra, dec = self._coords
+        lon, lat = self._coords
 
-        if len(ra) == 0:
+        if len(lon) == 0:
             return
 
-        ra_cen, dec_cen, sep_max = center_fov(ra, dec)
+        lon_cen, lat_cen, sep_max = center_fov(lon, lat)
 
-        if ra_cen is None:
+        if lon_cen is None:
             return
 
         fov = min(60, sep_max * 3)
 
-        self.wwt_client.center_on_coordinates(SkyCoord(ra_cen, dec_cen, unit=u.degree, frame='icrs'), fov * u.degree, instant=False)
+        self.wwt_client.center_on_coordinates(SkyCoord(lon_cen, lat_cen, unit=u.degree, frame='icrs'), fov * u.degree, instant=False)
 
     def redraw(self):
         pass

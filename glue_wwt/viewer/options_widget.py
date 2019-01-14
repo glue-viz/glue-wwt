@@ -6,6 +6,8 @@ from qtpy import QtWidgets
 from glue.utils.qt import load_ui
 from glue.external.echo.qt import autoconnect_callbacks_to_qt
 
+from .state import MODES_3D, MODES_BODIES
+
 __all__ = ['WWTOptionPanel']
 
 
@@ -23,3 +25,21 @@ class WWTOptionPanel(QtWidgets.QWidget):
         connect_kwargs = {'foreground_opacity': dict(value_range=(0, 1))}
 
         autoconnect_callbacks_to_qt(self._viewer_state, self.ui, connect_kwargs)
+
+        self._viewer_state.add_callback('mode', self._update_visible_options)
+        self._update_visible_options()
+
+    def _update_visible_options(self, *args, **kwargs):
+
+        show_frame = self._viewer_state.mode not in MODES_BODIES
+        self.ui.label_frame.setVisible(show_frame)
+        self.ui.combosel_frame.setVisible(show_frame)
+
+        show_imagery = self._viewer_state.mode == 'Sky'
+        self.ui.label_foreground.setVisible(show_imagery)
+        self.ui.combosel_foreground.setVisible(show_imagery)
+        self.ui.label_opacity.setVisible(show_imagery)
+        self.ui.value_foreground_opacity.setVisible(show_imagery)
+        self.ui.label_background.setVisible(show_imagery)
+        self.ui.combosel_background.setVisible(show_imagery)
+        self.ui.bool_galactic.setVisible(show_imagery)

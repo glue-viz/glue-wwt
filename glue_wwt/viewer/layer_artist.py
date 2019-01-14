@@ -10,7 +10,7 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 
-from .state import WWTLayerState
+from .state import WWTLayerState, MODES_3D
 from .utils import center_fov
 
 __all__ = ['WWTLayer']
@@ -74,7 +74,7 @@ class WWTLayer(LayerArtist):
                 self._coords = [], []
             force = True
 
-        if force or 'mode' in kwargs or 'lon_att' in kwargs or 'lat_att' in kwargs or 'alt_att' in kwargs:
+        if force or 'mode' in kwargs or 'frame' in kwargs or 'lon_att' in kwargs or 'lat_att' in kwargs or 'alt_att' in kwargs:
 
             try:
                 lon = self.layer[self._viewer_state.lon_att]
@@ -99,6 +99,16 @@ class WWTLayer(LayerArtist):
 
             if len(lon) > 0:
 
+                if self._viewer_state.mode == 'Sky':
+                    coord = SkyCoord(lon, lat, unit=u.deg, frame=self._viewer_state.frame.lower()).icrs
+                    lon = coord.spherical.lon.degree
+                    lat = coord.spherical.lat.degree
+
+                if self._viewer_state.mode in MODES_3D:
+                    ref_frame = 'Sky'
+                else:
+                    ref_frame = self._viewer_state.mode
+
                 tab = Table()
                 tab['lon'] = lon * u.degree
                 tab['lat'] = lat * u.degree
@@ -110,7 +120,7 @@ class WWTLayer(LayerArtist):
                     alt_att = {}
 
                 if self.wwt_layer is None:
-                    self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=self._viewer_state.mode,
+                    self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=ref_frame,
                                                                            lon_att='lon', lat_att='lat', **alt_att)
                 else:
                     self.wwt_layer.update_data(table=tab)

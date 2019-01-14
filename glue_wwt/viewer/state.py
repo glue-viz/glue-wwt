@@ -22,6 +22,8 @@ ALT_UNITS = [u.m, u.km, u.AU, u.lyr, u.pc, u.Mpc,
 
 ALT_TYPES = ['Altitude', 'Depth', 'Distance']
 
+CELESTIAL_FRAMES = ['ICRS', 'FK5', 'FK4', 'Galactic']
+
 
 class WWTDataViewerState(ViewerState):
 
@@ -52,6 +54,7 @@ class WWTDataViewerState(ViewerState):
         super(WWTDataViewerState, self).__init__()
 
         WWTDataViewerState.mode.set_choices(self, ['Sky'] + MODES_3D + MODES_BODIES)
+        WWTDataViewerState.frame.set_choices(self, CELESTIAL_FRAMES)
         WWTDataViewerState.alt_unit.set_choices(self, ALT_UNITS)
         WWTDataViewerState.alt_type.set_choices(self, ALT_TYPES)
 

@@ -29,8 +29,21 @@
    <property name="verticalSpacing">
     <number>5</number>
    </property>
-   <item row="6" column="0">
-    <widget class="QLabel" name="label_foreground">
+   <item row="7" column="1">
+    <widget class="QComboBox" name="combosel_foreground">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <widget class="QLabel" name="label_opacity">
      <property name="font">
       <font>
        <weight>50</weight>
@@ -38,7 +51,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Foreground:</string>
+      <string>Opacity:</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -61,7 +74,23 @@
      </property>
     </widget>
    </item>
-   <item row="14" column="1">
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_foreground">
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Foreground:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -74,36 +103,7 @@
      </property>
     </spacer>
    </item>
-   <item row="6" column="1">
-    <widget class="QComboBox" name="combosel_foreground">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="label_opacity">
-     <property name="font">
-      <font>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Opacity:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="0">
+   <item row="12" column="0">
     <widget class="QLabel" name="label_background">
      <property name="font">
       <font>
@@ -119,7 +119,40 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="1">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_alt_att">
+     <property name="text">
+      <string>Altitude:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QComboBox" name="combosel_alt_att"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_lat_att">
+     <property name="text">
+      <string>Latitude:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_lon_att">
+     <property name="text">
+      <string>Longitude:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1">
     <widget class="QComboBox" name="combosel_background">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -132,7 +165,23 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
+   <item row="1" column="1">
+    <widget class="QComboBox" name="combosel_frame"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_frame">
+     <property name="text">
+      <string>Frame:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="combosel_mode"/>
+   </item>
+   <item row="10" column="1">
     <widget class="QSlider" name="value_foreground_opacity">
      <property name="maximum">
       <number>100</number>
@@ -145,7 +194,13 @@
      </property>
     </widget>
    </item>
-   <item row="13" column="1">
+   <item row="3" column="1">
+    <widget class="QComboBox" name="combosel_lat_att"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="combosel_lon_att"/>
+   </item>
+   <item row="14" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <spacer name="horizontalSpacer">
@@ -182,67 +237,15 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="combosel_mode"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_frame">
-     <property name="text">
-      <string>Frame:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_lat_att">
-     <property name="text">
-      <string>Latitude:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_lon_att">
-     <property name="text">
-      <string>Longitude:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="combosel_frame"/>
-   </item>
-   <item row="5" column="1">
+   <item row="6" column="1">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="combosel_lon_att"/>
-   </item>
-   <item row="3" column="1">
-    <widget class="QComboBox" name="combosel_lat_att"/>
-   </item>
-   <item row="4" column="1">
-    <widget class="QComboBox" name="combosel_alt_att"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_alt_att">
-     <property name="text">
-      <string>Altitude:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="combosel_alt_unit"/>
    </item>
   </layout>
  </widget>

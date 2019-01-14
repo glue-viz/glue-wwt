@@ -59,6 +59,14 @@ class WWTLayer(LayerArtist):
             self.wwt_layer = None
             return
 
+        # FIXME: for some reason changing units doesn't cause the layer to refrsh
+        if 'alt_unit' in kwargs:
+            if self.wwt_layer is not None:
+                self.wwt_layer.remove()
+                self.wwt_layer = None
+                self._coords = [], []
+            force = True
+
         if force or 'mode' in kwargs or self.wwt_layer is None:
             if self.wwt_layer is not None:
                 self.wwt_layer.remove()
@@ -96,7 +104,7 @@ class WWTLayer(LayerArtist):
                 tab['lat'] = lat * u.degree
                 if self._viewer_state.alt_att is not None:
                     # FIXME: allow arbitrary units
-                    tab['alt'] = alt * u.m
+                    tab['alt'] = alt
                     alt_att = {'alt_att': 'alt'}
                 else:
                     alt_att = {}
@@ -116,6 +124,9 @@ class WWTLayer(LayerArtist):
                     self.wwt_layer = None
                     self._coords = [], []
                 return
+
+        if force or 'alt_unit' in kwargs:
+            self.wwt_layer.alt_unit = self._viewer_state.alt_unit
 
         if force or 'size' in kwargs:
             self.wwt_layer.size_scale = self.state.size * 5

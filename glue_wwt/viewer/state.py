@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from astropy import units as u
+
 from glue.external.echo import (CallbackProperty, ListCallbackProperty,
                                 SelectionCallbackProperty,
                                 keep_in_sync)
@@ -7,14 +9,16 @@ from glue.external.echo import (CallbackProperty, ListCallbackProperty,
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.viewers.common.state import ViewerState, LayerState
 
-from pywwt.core import VIEW_MODES_2D, VIEW_MODES_3D
-# from pywwt.layers import VALID_FRAMES
+from pywwt.layers import VALID_FRAMES
 
 MODES_BODIES = ['Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars',
-                 'Jupiter', 'Callisto', 'Europa', 'Ganymede', 'Io', 'Saturn',
-                 'Uranus', 'Neptune', 'Pluto']
+                'Jupiter', 'Callisto', 'Europa', 'Ganymede', 'Io', 'Saturn',
+                'Uranus', 'Neptune', 'Pluto']
 
 MODES_3D = ['Solar System', 'Milky Way', 'Universe']
+
+ALT_UNITS = [u.m, u.km, u.AU, u.lyr, u.pc, u.Mpc,
+             u.imperial.ft, u.imperial.inch, u.imperial.mi]
 
 
 class WWTDataViewerState(ViewerState):
@@ -25,6 +29,7 @@ class WWTDataViewerState(ViewerState):
     lon_att = SelectionCallbackProperty(default_index=0)
     lat_att = SelectionCallbackProperty(default_index=1)
     alt_att = SelectionCallbackProperty(default_index=0)
+    alt_unit = SelectionCallbackProperty(default_index=0)
 
     foreground = SelectionCallbackProperty(default_index=1)
     foreground_opacity = CallbackProperty(1)
@@ -42,6 +47,9 @@ class WWTDataViewerState(ViewerState):
     def __init__(self, **kwargs):
 
         super(WWTDataViewerState, self).__init__()
+
+        WWTDataViewerState.mode.set_choices(self, ['Sky'] + MODES_3D + MODES_BODIES)
+        WWTDataViewerState.alt_unit.set_choices(self, ALT_UNITS)
 
         self.add_callback('imagery_layers', self._update_imagery_layers)
 
@@ -75,7 +83,6 @@ class WWTDataViewerState(ViewerState):
         self.alt_att_helper.set_multiple_data(self.layers_data)
 
     def _update_imagery_layers(self, *args):
-        WWTDataViewerState.mode.set_choices(self, ['Sky'] + MODES_3D + MODES_BODIES)
         WWTDataViewerState.foreground.set_choices(self, self.imagery_layers)
         WWTDataViewerState.background.set_choices(self, self.imagery_layers)
 

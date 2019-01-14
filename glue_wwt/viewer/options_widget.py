@@ -43,3 +43,8 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self.ui.label_background.setVisible(show_imagery)
         self.ui.combosel_background.setVisible(show_imagery)
         self.ui.bool_galactic.setVisible(show_imagery)
+
+        show_alt = self._viewer_state.mode != 'Sky'
+        self.ui.label_alt_att.setVisible(show_alt)
+        self.ui.combosel_alt_att.setVisible(show_alt)
+        self.ui.combosel_alt_unit.setVisible(show_alt)

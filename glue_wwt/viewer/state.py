@@ -55,7 +55,7 @@ class WWTDataViewerState(ViewerState):
 
         WWTDataViewerState.mode.set_choices(self, ['Sky'] + MODES_3D + MODES_BODIES)
         WWTDataViewerState.frame.set_choices(self, CELESTIAL_FRAMES)
-        WWTDataViewerState.alt_unit.set_choices(self, ALT_UNITS)
+        WWTDataViewerState.alt_unit.set_choices(self, [str(x) for x in ALT_UNITS])
         WWTDataViewerState.alt_type.set_choices(self, ALT_TYPES)
 
         self.add_callback('imagery_layers', self._update_imagery_layers)

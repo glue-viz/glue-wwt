@@ -8,8 +8,10 @@ from glue.viewers.common.layer_artist import LayerArtist
 
 from astropy import units as u
 from astropy.coordinates import SkyCoord
+from astropy.table import Table
 
-from .state import WWTLayerState
+from .state import WWTLayerState, MODES_3D
+from .utils import center_fov
 
 __all__ = ['WWTLayer']
 
@@ -22,62 +24,138 @@ class WWTLayer(LayerArtist):
 
         super(WWTLayer, self).__init__(viewer_state, layer_state=layer_state, layer=layer)
 
+        self.wwt_layer = None
+        self._coords = [], []
+
         self.layer_id = "{0:08x}".format(random.getrandbits(32))
-        self.markers = wwt_client.markers
-        self.markers.allocate(self.layer_id)
+        self.wwt_client = wwt_client
 
         self.zorder = self.state.zorder
         self.visible = self.state.visible
 
         self.state.add_global_callback(self._update_markers)
+        self._viewer_state.add_global_callback(self._update_markers)
 
         self._update_markers(force=True)
 
     def clear(self):
-        self.markers.set(self.layer_id, visible=False)
+        if self.wwt_layer is not None:
+            self.wwt_layer.remove()
+            self.wwt_layer = None
+            self._coords = [], []
 
     def _update_markers(self, force=False, **kwargs):
 
+        if self._viewer_state.lon_att is None or self._viewer_state.lat_att is None:
+            if self.wwt_layer is not None:
+                self.wwt_layer.remove()
+                self.wwt_layer = None
+            return
+
         logger.debug("updating WWT for %s" % self.layer.label)
 
-        coords = {}
+        if self.visible is False and self.wwt_layer is not None:
+            self.wwt_layer.remove()
+            self.wwt_layer = None
+            return
 
-        if force or 'ra_att' in kwargs or 'dec_att' in kwargs:
+        if force or 'mode' in kwargs or self.wwt_layer is None:
+            if self.wwt_layer is not None:
+                self.wwt_layer.remove()
+                self.wwt_layer = None
+                self._coords = [], []
+            force = True
+
+        if force or 'mode' in kwargs or 'frame' in kwargs or 'lon_att' in kwargs or 'lat_att' in kwargs or 'alt_att' in kwargs:
 
             try:
-                ra = self.layer[self.state.ra_att]
+                lon = self.layer[self._viewer_state.lon_att]
             except IncompatibleAttribute:
-                self.disable_invalid_attributes(self.state.ra_att)
+                self.disable_invalid_attributes(self._viewer_state.lon_att)
                 return
 
             try:
-                dec = self.layer[self.state.dec_att]
+                lat = self.layer[self._viewer_state.lat_att]
             except IncompatibleAttribute:
-                self.disable_invalid_attributes(self.state.dec_att)
+                self.disable_invalid_attributes(self._viewer_state.dec_att)
                 return
 
-            if len(ra) > 0:
-
+            if self._viewer_state.alt_att is not None:
                 try:
-                    coord = SkyCoord(ra, dec, unit=(u.deg, u.deg))
-                except ValueError as exc:
-                    # self.disable(str(exc))
+                    alt = self.layer[self._viewer_state.alt_att]
+                except IncompatibleAttribute:
+                    self.disable_invalid_attributes(self._viewer_state.alt_att)
                     return
 
-                coord_icrs = coord.icrs
-                ra = coord_icrs.ra.degree
-                dec = coord_icrs.dec.degree
+            if self.wwt_layer is not None:
+                self.wwt_layer.remove()
+                self.wwt_layer = None
+                self._coords = [], []
 
-                coords = {'coords': (ra, dec)}
+            if len(lon) > 0:
+
+                if self._viewer_state.mode == 'Sky':
+                    coord = SkyCoord(lon, lat, unit=u.deg, frame=self._viewer_state.frame.lower()).icrs
+                    lon = coord.spherical.lon.degree
+                    lat = coord.spherical.lat.degree
+
+                if self._viewer_state.mode in MODES_3D:
+                    ref_frame = 'Sky'
+                else:
+                    ref_frame = self._viewer_state.mode
+
+                tab = Table()
+                tab['lon'] = lon * u.degree
+                tab['lat'] = lat * u.degree
+                if self._viewer_state.alt_att is not None:
+                    # FIXME: allow arbitrary units
+                    tab['alt'] = alt
+                    alt_att = {'alt_att': 'alt'}
+                else:
+                    alt_att = {}
+
+                self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=ref_frame,
+                                                                       lon_att='lon', lat_att='lat', **alt_att)
+
+                self._coords = lon, lat
+
+            else:
+                return
+
+        if force or 'alt_unit' in kwargs:
+            self.wwt_layer.alt_unit = self._viewer_state.alt_unit
+
+        if force or 'alt_type' in kwargs:
+            self.wwt_layer.alt_type = self._viewer_state.alt_type.lower()
+
+        if force or 'size' in kwargs:
+            self.wwt_layer.size_scale = self.state.size * 5
+
+        if force or 'color' in kwargs:
+            self.wwt_layer.color = self.state.color
+
+        if force or 'alpha' in kwargs:
+            self.wwt_layer.opacity = self.state.alpha
 
         self.enable()
 
-        self.markers.set(self.layer_id, color=self.state.color,
-                         alpha=self.state.alpha, visible=self.visible,
-                         zorder=self.zorder, size=self.state.size, **coords)
+        # TODO: deal with visible, zorder, frame
 
     def center(self, *args):
-        self.markers.center(self.layer_id)
+
+        lon, lat = self._coords
+
+        if len(lon) == 0:
+            return
+
+        lon_cen, lat_cen, sep_max = center_fov(lon, lat)
+
+        if lon_cen is None:
+            return
+
+        fov = min(60, sep_max * 3)
+
+        self.wwt_client.center_on_coordinates(SkyCoord(lon_cen, lat_cen, unit=u.degree, frame='icrs'), fov * u.degree, instant=False)
 
     def redraw(self):
         pass

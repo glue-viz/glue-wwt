@@ -77,7 +77,7 @@ class WWTDataViewerState(ViewerState):
                                                      categorical=False,
                                                      world_coord=True,
                                                      pixel_coord=False,
-                                                     none=True)
+                                                     none='None')
 
         self.add_callback('layers', self._on_layers_changed)
         self._on_layers_changed()

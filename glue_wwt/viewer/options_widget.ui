@@ -157,9 +157,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QComboBox" name="combosel_frame">
-      <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-      </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
     </widget>
    </item>
    <item row="1" column="0">
@@ -174,9 +174,9 @@
    </item>
    <item row="0" column="1">
     <widget class="QComboBox" name="combosel_mode">
-      <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-      </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
     </widget>
    </item>
    <item row="10" column="1">
@@ -194,16 +194,16 @@
    </item>
    <item row="3" column="1">
     <widget class="QComboBox" name="combosel_lat_att">
-      <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-      </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
     </widget>
    </item>
    <item row="2" column="1">
     <widget class="QComboBox" name="combosel_lon_att">
-      <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-      </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
     </widget>
    </item>
    <item row="14" column="1">
@@ -252,16 +252,16 @@
    </item>
    <item row="5" column="1">
     <widget class="QComboBox" name="combosel_alt_unit">
-      <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-      </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLength</enum>
+     </property>
     </widget>
    </item>
    <item row="4" column="0">
     <widget class="QComboBox" name="combosel_alt_type">
-      <property name="sizeAdjustPolicy">
-       <enum>QComboBox::AdjustToMinimumContentsLength</enum>
-      </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToContents</enum>
+     </property>
     </widget>
    </item>
   </layout>

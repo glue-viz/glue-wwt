@@ -27,6 +27,7 @@ class WWTOptionPanel(QtWidgets.QWidget):
         autoconnect_callbacks_to_qt(self._viewer_state, self.ui, connect_kwargs)
 
         self._viewer_state.add_callback('mode', self._update_visible_options)
+        self._viewer_state.add_callback('frame', self._update_visible_options)
         self._update_visible_options()
 
     def _update_visible_options(self, *args, **kwargs):
@@ -48,3 +49,14 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self.ui.combosel_alt_type.setVisible(show_alt)
         self.ui.combosel_alt_att.setVisible(show_alt)
         self.ui.combosel_alt_unit.setVisible(show_alt)
+
+        if self._viewer_state.mode in MODES_BODIES:
+            self.ui.label_lon_att.setText('Longitude')
+            self.ui.label_lat_att.setText('Latitude')
+        else:
+            if self._viewer_state.frame in ['ICRS', 'FK5', 'FK4']:
+                self.ui.label_lon_att.setText('RA')
+                self.ui.label_lat_att.setText('Dec')
+            else:
+                self.ui.label_lon_att.setText('Longitude')
+                self.ui.label_lat_att.setText('Latitude')

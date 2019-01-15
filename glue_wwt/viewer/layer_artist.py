@@ -59,14 +59,6 @@ class WWTLayer(LayerArtist):
             self.wwt_layer = None
             return
 
-        # FIXME: for some reason changing units doesn't cause the layer to refrsh
-        if 'alt_unit' in kwargs:
-            if self.wwt_layer is not None:
-                self.wwt_layer.remove()
-                self.wwt_layer = None
-                self._coords = [], []
-            force = True
-
         if force or 'mode' in kwargs or self.wwt_layer is None:
             if self.wwt_layer is not None:
                 self.wwt_layer.remove()
@@ -95,7 +87,10 @@ class WWTLayer(LayerArtist):
                     self.disable_invalid_attributes(self._viewer_state.alt_att)
                     return
 
-            # First deal with data/coordinates
+            if self.wwt_layer is not None:
+                self.wwt_layer.remove()
+                self.wwt_layer = None
+                self._coords = [], []
 
             if len(lon) > 0:
 
@@ -119,20 +114,12 @@ class WWTLayer(LayerArtist):
                 else:
                     alt_att = {}
 
-                if self.wwt_layer is None:
-                    self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=ref_frame,
-                                                                           lon_att='lon', lat_att='lat', **alt_att)
-                else:
-                    self.wwt_layer.update_data(table=tab)
+                self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=ref_frame,
+                                                                       lon_att='lon', lat_att='lat', **alt_att)
 
                 self._coords = lon, lat
 
             else:
-
-                if self.wwt_layer is not None:
-                    self.wwt_layer.remove()
-                    self.wwt_layer = None
-                    self._coords = [], []
                 return
 
         if force or 'alt_unit' in kwargs:

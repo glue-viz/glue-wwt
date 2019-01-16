@@ -22,3 +22,9 @@ class WWTLayerStyleEditor(QtWidgets.QWidget):
         autoconnect_callbacks_to_qt(layer.state, self.ui, connect_kwargs)
 
         self.ui.button_center.clicked.connect(layer.center)
+
+        self._viewer_state = layer._viewer_state
+        self._viewer_state.add_callback('mode', self._on_mode_changed)
+
+    def _on_mode_changed(self, *args):
+        self.ui.button_center.setVisible(self._viewer_state.mode == 'Sky')

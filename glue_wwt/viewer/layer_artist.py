@@ -66,7 +66,12 @@ class WWTLayer(LayerArtist):
                 self._coords = [], []
             force = True
 
-        if force or 'mode' in kwargs or 'frame' in kwargs or 'lon_att' in kwargs or 'lat_att' in kwargs or 'alt_att' in kwargs:
+        # FIXME: kpc isn't yet a valid unit in WWT/PyWWT:
+        # https://github.com/WorldWideTelescope/wwt-web-client/pull/197
+        # for now we set unit to pc and scale values accordingly, so if the
+        # unit changes we need to refresh the data just in case
+
+        if force or 'mode' in kwargs or 'frame' in kwargs or 'lon_att' in kwargs or 'lat_att' in kwargs or 'alt_att' in kwargs or 'alt_unit' in kwargs:
 
             try:
                 lon = self.layer[self._viewer_state.lon_att]
@@ -94,15 +99,19 @@ class WWTLayer(LayerArtist):
 
             if len(lon) > 0:
 
-                if self._viewer_state.mode == 'Sky':
+                if self._viewer_state.mode in MODES_3D:
+                    ref_frame = 'Sky'
                     coord = SkyCoord(lon, lat, unit=u.deg, frame=self._viewer_state.frame.lower()).icrs
                     lon = coord.spherical.lon.degree
                     lat = coord.spherical.lat.degree
-
-                if self._viewer_state.mode in MODES_3D:
-                    ref_frame = 'Sky'
                 else:
                     ref_frame = self._viewer_state.mode
+
+                # FIXME: kpc isn't yet a valid unit in WWT/PyWWT:
+                # https://github.com/WorldWideTelescope/wwt-web-client/pull/197
+                # for now we set unit to pc and scale values accordingly
+                if self._viewer_state.alt_unit == 'kpc':
+                    alt = alt * 1000
 
                 tab = Table()
                 tab['lon'] = lon * u.degree
@@ -117,13 +126,23 @@ class WWTLayer(LayerArtist):
                 self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=ref_frame,
                                                                        lon_att='lon', lat_att='lat', **alt_att)
 
+                self.wwt_layer.far_side_visible = self._viewer_state.mode in MODES_3D
+
                 self._coords = lon, lat
+
+                force = True
 
             else:
                 return
 
         if force or 'alt_unit' in kwargs:
-            self.wwt_layer.alt_unit = self._viewer_state.alt_unit
+            # FIXME: kpc isn't yet a valid unit in WWT/PyWWT:
+            # https://github.com/WorldWideTelescope/wwt-web-client/pull/197
+            # for now we set unit to pc and scale values accordingly
+            if self._viewer_state.alt_unit == 'kpc':
+                self.wwt_layer.alt_unit = u.pc
+            else:
+                self.wwt_layer.alt_unit = self._viewer_state.alt_unit
 
         if force or 'alt_type' in kwargs:
             self.wwt_layer.alt_type = self._viewer_state.alt_type.lower()

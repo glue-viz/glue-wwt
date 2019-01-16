@@ -107,6 +107,12 @@ class WWTLayer(LayerArtist):
                 else:
                     ref_frame = self._viewer_state.mode
 
+                # For some reason in 3D mode, when the frame is Sky, we need to
+                # shift the longitudes by 180 degrees.
+                if self._viewer_state.mode in MODES_3D:
+                    lon = lon + 180
+                    lon[lon > 360] -= 360
+
                 # FIXME: kpc isn't yet a valid unit in WWT/PyWWT:
                 # https://github.com/WorldWideTelescope/wwt-web-client/pull/197
                 # for now we set unit to pc and scale values accordingly

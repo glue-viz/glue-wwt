@@ -1,7 +1,8 @@
 0.3 (unreleased)
 ----------------
 
-- No changes yet.
+- Added support for showing data on the surface of celestial bodies as well as
+  in the 3D Solar System/Milky Way/Universe view. [#40, #42]
 
 0.2 (2018-12-29)
 ----------------

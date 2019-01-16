@@ -17,7 +17,7 @@ MODES_BODIES = ['Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars',
 
 MODES_3D = ['Solar System', 'Milky Way', 'Universe']
 
-ALT_UNITS = [u.m, u.km, u.AU, u.lyr, u.pc, u.Mpc,
+ALT_UNITS = [u.m, u.km, u.AU, u.lyr, u.pc, u.kpc, u.Mpc,
              u.imperial.ft, u.imperial.inch, u.imperial.mi]
 
 ALT_TYPES = ['Altitude', 'Depth', 'Distance']

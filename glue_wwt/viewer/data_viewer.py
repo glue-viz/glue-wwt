@@ -63,6 +63,8 @@ class WWTDataViewer(DataViewer):
 
         if force or 'mode' in kwargs:
             self._wwt_client.set_view(self.state.mode)
+            # Only show SDSS data when in Universe mode
+            self._wwt_client.solar_system.cosmos = self.state.mode == 'Universe'
 
         if force or 'foreground' in kwargs:
             self._wwt_client.foreground = self.state.foreground

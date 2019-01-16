@@ -12,7 +12,7 @@ from ..data_viewer import WWTDataViewer
 class TestWWTDataViewer(object):
 
     def setup_method(self, method):
-        self.d = Data(x=[1, 2, 3], y=[2, 3, 4])
+        self.d = Data(x=[1, 2, 3], y=[2, 3, 4], z=[4, 5, 6])
         self.application = GlueApplication()
         self.dc = self.application.data_collection
         self.dc.append(self.d)
@@ -26,13 +26,13 @@ class TestWWTDataViewer(object):
 
     def test_add_data(self):
         self.viewer.add_data(self.d)
-        self.viewer.state.layers[0].ra_att = self.d.id['x']
-        self.viewer.state.layers[0].dec_att = self.d.id['y']
+        self.viewer.state.lon_att = self.d.id['x']
+        self.viewer.state.lat_att = self.d.id['y']
 
     def test_center(self):
         self.viewer.add_data(self.d)
-        self.viewer.state.layers[0].ra_att = self.d.id['x']
-        self.viewer.state.layers[0].dec_att = self.d.id['y']
+        self.viewer.state.lon_att = self.d.id['x']
+        self.viewer.state.lat_att = self.d.id['y']
         self.viewer.layers[0].center()
 
     def test_new_subset_group(self):
@@ -99,6 +99,17 @@ class TestWWTDataViewer(object):
 
         viewer2 = application2.viewers[0][0]
 
+    def test_changing_alt_back_to_none(self):
+
+        # Regression test for a bug which caused an exception to
+        # happen when changing the altitude attribute back to None
+        self.viewer.add_data(self.d)
+        self.viewer.state.mode = 'Milky Way'
+        self.viewer.state.lon_att = self.d.id['x']
+        self.viewer.state.lat_att = self.d.id['y']
+        self.viewer.state.alt_att = self.d.id['z']
+        self.viewer.state.alt_unit = 'kpc'
+        self.viewer.state.alt_att = None
 
 
     # TODO: determine if the following test is the desired behavior

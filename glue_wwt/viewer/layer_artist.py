@@ -105,7 +105,12 @@ class WWTLayer(LayerArtist):
                     ref_frame = self._viewer_state.mode
 
                 if ref_frame == 'Sky':
-                    coord = SkyCoord(lon, lat, unit=u.deg, frame=self._viewer_state.frame.lower()).icrs
+                    try:
+                        coord = SkyCoord(lon, lat, unit=u.deg, frame=self._viewer_state.frame.lower()).icrs
+                    except Exception as exc:
+                        self.disable(str(exc))
+                        return
+
                     lon = coord.spherical.lon.degree
                     lat = coord.spherical.lat.degree
 
@@ -118,7 +123,7 @@ class WWTLayer(LayerArtist):
                 # FIXME: kpc isn't yet a valid unit in WWT/PyWWT:
                 # https://github.com/WorldWideTelescope/wwt-web-client/pull/197
                 # for now we set unit to pc and scale values accordingly
-                if self._viewer_state.alt_unit == 'kpc':
+                if self._viewer_state.alt_att is not None and self._viewer_state.alt_unit == 'kpc':
                     alt = alt * 1000
 
                 tab = Table()

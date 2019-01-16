@@ -101,11 +101,13 @@ class WWTLayer(LayerArtist):
 
                 if self._viewer_state.mode in MODES_3D:
                     ref_frame = 'Sky'
+                else:
+                    ref_frame = self._viewer_state.mode
+
+                if ref_frame == 'Sky':
                     coord = SkyCoord(lon, lat, unit=u.deg, frame=self._viewer_state.frame.lower()).icrs
                     lon = coord.spherical.lon.degree
                     lat = coord.spherical.lat.degree
-                else:
-                    ref_frame = self._viewer_state.mode
 
                 # For some reason in 3D mode, when the frame is Sky, we need to
                 # shift the longitudes by 180 degrees.

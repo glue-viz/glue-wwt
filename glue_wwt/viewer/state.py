@@ -118,13 +118,13 @@ class WWTLayerState(LayerState):
 
     size_mode = CallbackProperty('Fixed')
     size = CallbackProperty()
-    size_attribute = SelectionCallbackProperty()
+    size_att = SelectionCallbackProperty()
     size_vmin = CallbackProperty()
     size_vmax = CallbackProperty()
     size_scaling = CallbackProperty(1)
 
     color_mode = CallbackProperty('Fixed')
-    cmap_attribute = SelectionCallbackProperty()
+    cmap_att = SelectionCallbackProperty()
     cmap_vmin = CallbackProperty()
     cmap_vmax = CallbackProperty()
     cmap = CallbackProperty()
@@ -146,14 +146,14 @@ class WWTLayerState(LayerState):
         self.size = self.layer.style.markersize
         self.alpha = self.layer.style.alpha
 
-        self.size_att_helper = ComponentIDComboHelper(self, 'size_attribute')
-        self.cmap_att_helper = ComponentIDComboHelper(self, 'cmap_attribute')
+        self.size_att_helper = ComponentIDComboHelper(self, 'size_att')
+        self.cmap_att_helper = ComponentIDComboHelper(self, 'cmap_att')
 
-        self.size_lim_helper = StateAttributeLimitsHelper(self, attribute='size_attribute',
+        self.size_lim_helper = StateAttributeLimitsHelper(self, attribute='size_att',
                                                           lower='size_vmin', upper='size_vmax',
                                                           cache=self.size_limits_cache)
 
-        self.cmap_lim_helper = StateAttributeLimitsHelper(self, attribute='cmap_attribute',
+        self.cmap_lim_helper = StateAttributeLimitsHelper(self, attribute='cmap_att',
                                                           lower='cmap_vmin', upper='cmap_vmax',
                                                           cache=self.cmap_limits_cache)
 

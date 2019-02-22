@@ -2,11 +2,14 @@ from __future__ import absolute_import, division, print_function
 
 from astropy import units as u
 
+from glue.config import colormaps
+
 from glue.external.echo import (CallbackProperty, ListCallbackProperty,
-                                SelectionCallbackProperty,
+                                SelectionCallbackProperty, delay_callback,
                                 keep_in_sync)
 
 from glue.core.data_combo_helper import ComponentIDComboHelper
+from glue.core.state_objects import StateAttributeLimitsHelper
 from glue.viewers.common.state import ViewerState, LayerState
 
 from pywwt.layers import VALID_FRAMES
@@ -103,35 +106,92 @@ class WWTDataViewerState(ViewerState):
 
 
 class WWTLayerState(LayerState):
+    """
+    A state object for volume layers
+    """
+
 
     layer = CallbackProperty()
     color = CallbackProperty()
     size = CallbackProperty()
     alpha = CallbackProperty()
-    zorder = CallbackProperty(0)
-    visible = CallbackProperty(True)
 
-    def __init__(self, viewer_state=None, **kwargs):
+    size_mode = CallbackProperty('Fixed')
+    size = CallbackProperty()
+    size_att = SelectionCallbackProperty()
+    size_vmin = CallbackProperty()
+    size_vmax = CallbackProperty()
+    size_scaling = CallbackProperty(1)
 
-        super(WWTLayerState, self).__init__()
+    color_mode = CallbackProperty('Fixed')
+    cmap_att = SelectionCallbackProperty()
+    cmap_vmin = CallbackProperty()
+    cmap_vmax = CallbackProperty()
+    cmap = CallbackProperty()
 
-        self.viewer_state = viewer_state
+    size_limits_cache = CallbackProperty({})
+    cmap_limits_cache = CallbackProperty({})
 
-        self.update_from_dict(kwargs)
+    def __init__(self, layer=None, **kwargs):
 
-        self.color = self.layer.style.color
-        self.alpha = self.layer.style.alpha
-        self.size = self.layer.style.markersize
+        self._sync_markersize = None
+
+        super(WWTLayerState, self).__init__(layer=layer)
 
         self._sync_color = keep_in_sync(self, 'color', self.layer.style, 'color')
         self._sync_alpha = keep_in_sync(self, 'alpha', self.layer.style, 'alpha')
         self._sync_size = keep_in_sync(self, 'size', self.layer.style, 'markersize')
 
-    def _update_priority(self, name):
-        if name == 'layer':
-            return 1
-        else:
-            return 0
+        self.color = self.layer.style.color
+        self.size = self.layer.style.markersize
+        self.alpha = self.layer.style.alpha
 
-    def _att_changed(self, *args):
-        self.viewer_state._sync_all_attributes(reference=self)
+        self.size_att_helper = ComponentIDComboHelper(self, 'size_att')
+        self.cmap_att_helper = ComponentIDComboHelper(self, 'cmap_att')
+
+        self.size_lim_helper = StateAttributeLimitsHelper(self, attribute='size_att',
+                                                          lower='size_vmin', upper='size_vmax',
+                                                          cache=self.size_limits_cache)
+
+        self.cmap_lim_helper = StateAttributeLimitsHelper(self, attribute='cmap_att',
+                                                          lower='cmap_vmin', upper='cmap_vmax',
+                                                          cache=self.cmap_limits_cache)
+
+        self.add_callback('layer', self._on_layer_change)
+        if layer is not None:
+            self._on_layer_change()
+
+        self.cmap = colormaps.members[0][1]
+
+        self.update_from_dict(kwargs)
+
+    def _on_layer_change(self, layer=None):
+
+        with delay_callback(self, 'cmap_vmin', 'cmap_vmax', 'size_vmin', 'size_vmax'):
+
+            if self.layer is None:
+                self.cmap_att_helper.set_multiple_data([])
+                self.size_att_helper.set_multiple_data([])
+            else:
+                self.cmap_att_helper.set_multiple_data([self.layer])
+                self.size_att_helper.set_multiple_data([self.layer])
+
+    def update_priority(self, name):
+        return 0 if name.endswith(('vmin', 'vmax')) else 1
+
+    def _layer_changed(self):
+
+        super(WWTLayerState, self)._layer_changed()
+
+        if self._sync_markersize is not None:
+            self._sync_markersize.stop_syncing()
+
+        if self.layer is not None:
+            self.size = self.layer.style.markersize
+            self._sync_markersize = keep_in_sync(self, 'size', self.layer.style, 'markersize')
+
+    def flip_size(self):
+        self.size_lim_helper.flip_limits()
+
+    def flip_cmap(self):
+        self.cmap_lim_helper.flip_limits()

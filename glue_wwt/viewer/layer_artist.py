@@ -16,6 +16,11 @@ from .utils import center_fov
 __all__ = ['WWTLayer']
 
 
+RESET_DATA_PROPERTIES = ('mode', 'frame', 'lon_att', 'lat_att', 'alt_att',
+                         'alt_unit', 'size_att', 'cmap_att', 'size_mode',
+                         'color_mode')
+
+
 class WWTLayer(LayerArtist):
 
     _layer_state_cls = WWTLayerState
@@ -71,7 +76,7 @@ class WWTLayer(LayerArtist):
         # for now we set unit to pc and scale values accordingly, so if the
         # unit changes we need to refresh the data just in case
 
-        if force or 'mode' in kwargs or 'frame' in kwargs or 'lon_att' in kwargs or 'lat_att' in kwargs or 'alt_att' in kwargs or 'alt_unit' in kwargs:
+        if force or any(x in kwargs for x in RESET_DATA_PROPERTIES):
 
             try:
                 lon = self.layer[self._viewer_state.lon_att]
@@ -91,6 +96,24 @@ class WWTLayer(LayerArtist):
                 except IncompatibleAttribute:
                     self.disable_invalid_attributes(self._viewer_state.alt_att)
                     return
+
+            if self.state.size_mode == 'Linear' and self.state.size_att is not None:
+                try:
+                    size_values = self.layer[self.state.size_att]
+                except IncompatibleAttribute:
+                    self.disable_invalid_attributes(self.state.size_att)
+                    return
+            else:
+                size_values = None
+
+            if self.state.color_mode == 'Linear' and self.state.cmap_att is not None:
+                try:
+                    cmap_values = self.layer[self.state.size_att]
+                except IncompatibleAttribute:
+                    self.disable_invalid_attributes(self.state.size_att)
+                    return
+            else:
+                cmap_values = None
 
             if self.wwt_layer is not None:
                 self.wwt_layer.remove()
@@ -126,18 +149,28 @@ class WWTLayer(LayerArtist):
                 if self._viewer_state.alt_att is not None and self._viewer_state.alt_unit == 'kpc':
                     alt = alt * 1000
 
+                data_kwargs = {}
+
                 tab = Table()
+
                 tab['lon'] = lon * u.degree
                 tab['lat'] = lat * u.degree
+
                 if self._viewer_state.alt_att is not None:
                     # FIXME: allow arbitrary units
                     tab['alt'] = alt
-                    alt_att = {'alt_att': 'alt'}
-                else:
-                    alt_att = {}
+                    data_kwargs['alt_att'] = 'alt'
+
+                if size_values is not None:
+                    tab['size'] = size_values
+                    data_kwargs['size_att'] = 'size'
+
+                if cmap_values is not None:
+                    tab['cmap'] = cmap_values
+                    data_kwargs['cmap_att'] = 'cmap'
 
                 self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=ref_frame,
-                                                                       lon_att='lon', lat_att='lat', **alt_att)
+                                                                       lon_att='lon', lat_att='lat', **data_kwargs)
 
                 self.wwt_layer.far_side_visible = self._viewer_state.mode in MODES_3D
 
@@ -160,14 +193,32 @@ class WWTLayer(LayerArtist):
         if force or 'alt_type' in kwargs:
             self.wwt_layer.alt_type = self._viewer_state.alt_type.lower()
 
-        if force or 'size' in kwargs:
-            self.wwt_layer.size_scale = self.state.size * 5
+        if force or 'size' in kwargs or 'size_mode' in kwargs or 'size_scaling' in kwargs:
+            if self.state.size_mode == 'Linear':
+                self.wwt_layer.size_scale = self.state.size_scaling
+            else:
+                self.wwt_layer.size_scale = self.state.size * 5 * self.state.size_scaling
 
         if force or 'color' in kwargs:
             self.wwt_layer.color = self.state.color
 
         if force or 'alpha' in kwargs:
             self.wwt_layer.opacity = self.state.alpha
+
+        if force or 'size_vmin' in kwargs:
+            self.wwt_layer.size_vmin = self.state.size_vmin
+
+        if force or 'size_vmax' in kwargs:
+            self.wwt_layer.size_vmax = self.state.size_vmax
+
+        if force or 'cmap_vmin' in kwargs:
+            self.wwt_layer.cmap_vmin = self.state.cmap_vmin
+
+        if force or 'cmap_vmax' in kwargs:
+            self.wwt_layer.cmap_vmax = self.state.cmap_vmax
+
+        if force or 'cmap' in kwargs:
+            self.wwt_layer.cmap = self.state.cmap
 
         self.enable()
 

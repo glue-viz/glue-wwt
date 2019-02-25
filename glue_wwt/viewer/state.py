@@ -146,8 +146,12 @@ class WWTLayerState(LayerState):
         self.size = self.layer.style.markersize
         self.alpha = self.layer.style.alpha
 
-        self.size_att_helper = ComponentIDComboHelper(self, 'size_att')
-        self.cmap_att_helper = ComponentIDComboHelper(self, 'cmap_att')
+        self.size_att_helper = ComponentIDComboHelper(self, 'size_att',
+                                                      numeric=True,
+                                                      categorical=False)
+        self.cmap_att_helper = ComponentIDComboHelper(self, 'cmap_att',
+                                                      numeric=True,
+                                                      categorical=False)
 
         self.size_lim_helper = StateAttributeLimitsHelper(self, attribute='size_att',
                                                           lower='size_vmin', upper='size_vmax',

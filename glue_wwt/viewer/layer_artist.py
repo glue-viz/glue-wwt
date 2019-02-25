@@ -108,9 +108,9 @@ class WWTLayer(LayerArtist):
 
             if self.state.color_mode == 'Linear' and self.state.cmap_att is not None:
                 try:
-                    cmap_values = self.layer[self.state.size_att]
+                    cmap_values = self.layer[self.state.cmap_att]
                 except IncompatibleAttribute:
-                    self.disable_invalid_attributes(self.state.size_att)
+                    self.disable_invalid_attributes(self.state.cmap_att)
                     return
             else:
                 cmap_values = None

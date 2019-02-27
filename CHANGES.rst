@@ -4,6 +4,9 @@
 - Added support for showing data on the surface of celestial bodies as well as
   in the 3D Solar System/Milky Way/Universe view. [#40, #42]
 
+- Added support for color-coding and changing point size based on attributes
+  (requires PyWWT 0.6 or later). [#44]
+
 0.2 (2018-12-29)
 ----------------
 

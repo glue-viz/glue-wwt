@@ -1,5 +1,9 @@
 from __future__ import absolute_import, division, print_function
 
+from distutils.version import LooseVersion
+
+import pywwt
+
 from astropy import units as u
 
 from glue.config import colormaps
@@ -12,7 +16,7 @@ from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.state_objects import StateAttributeLimitsHelper
 from glue.viewers.common.state import ViewerState, LayerState
 
-from pywwt.layers import VALID_FRAMES
+PYWWT_LT_06 = LooseVersion(pywwt.__version__) < '0.6'
 
 MODES_BODIES = ['Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars',
                 'Jupiter', 'Callisto', 'Europa', 'Ganymede', 'Io', 'Saturn',
@@ -116,14 +120,14 @@ class WWTLayerState(LayerState):
     size = CallbackProperty()
     alpha = CallbackProperty()
 
-    size_mode = CallbackProperty('Fixed')
+    size_mode = SelectionCallbackProperty(default_index=0)
     size = CallbackProperty()
     size_att = SelectionCallbackProperty()
     size_vmin = CallbackProperty()
     size_vmax = CallbackProperty()
     size_scaling = CallbackProperty(1)
 
-    color_mode = CallbackProperty('Fixed')
+    color_mode = SelectionCallbackProperty(default_index=0)
     cmap_att = SelectionCallbackProperty()
     cmap_vmin = CallbackProperty()
     cmap_vmax = CallbackProperty()
@@ -166,6 +170,16 @@ class WWTLayerState(LayerState):
             self._on_layer_change()
 
         self.cmap = colormaps.members[0][1]
+
+        # Color and size encoding depending on attributes is only available
+        # in PyWWT 0.6 or later.
+        if PYWWT_LT_06:
+            modes = ['Fixed']
+        else:
+            modes = ['Fixed', 'Linear']
+
+        WWTLayerState.color_mode.set_choices(self, modes)
+        WWTLayerState.size_mode.set_choices(self, modes)
 
         self.update_from_dict(kwargs)
 

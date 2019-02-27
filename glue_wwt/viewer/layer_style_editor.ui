@@ -70,7 +70,7 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QComboBox" name="combotext_size_mode">
+           <widget class="QComboBox" name="combosel_size_mode">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -83,16 +83,6 @@
               <height>16777215</height>
              </size>
             </property>
-            <item>
-             <property name="text">
-              <string>Fixed</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Linear</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item>
@@ -238,23 +228,13 @@
            <number>0</number>
           </property>
           <item>
-           <widget class="QComboBox" name="combotext_color_mode">
+           <widget class="QComboBox" name="combosel_color_mode">
             <property name="maximumSize">
              <size>
               <width>80</width>
               <height>16777215</height>
              </size>
             </property>
-            <item>
-             <property name="text">
-              <string>Fixed</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Linear</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item>

@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+__version__ = '0.3'
+
 # The following needs to be imported before the application is constructed
 from qtpy.QtWebEngineWidgets import QWebEnginePage
 

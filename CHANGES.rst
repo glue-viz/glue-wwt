@@ -1,4 +1,4 @@
-0.3 (unreleased)
+0.3 (2019-02-27)
 ----------------
 
 - Added support for showing data on the surface of celestial bodies as well as

@@ -30,7 +30,7 @@ class WWTDataViewer(DataViewer):
 
     def __init__(self, session, parent=None, state=None):
 
-        super(WWTDataViewer, self).__init__(session, parent=parent)
+        super(WWTDataViewer, self).__init__(session, parent=parent, state=state)
 
         from pywwt.qt import WWTQtClient
         self._wwt_client = WWTQtClient()

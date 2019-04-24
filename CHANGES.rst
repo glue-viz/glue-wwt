@@ -1,7 +1,13 @@
 0.4 (unreleased)
 ----------------
 
-- No changes yet.
+- Fixed issues with layer visibility. [#52]
+
+- Fixed issue with viewer options not being set correctly when loading from a session. [#52]
+
+- Fixed compatibility with the latest developer version of glue. [#52]
+
+- Fixed issue with automatic installation of dependencies. [#52]
 
 0.3 (2019-02-27)
 ----------------

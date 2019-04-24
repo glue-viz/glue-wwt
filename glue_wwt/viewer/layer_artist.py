@@ -59,9 +59,10 @@ class WWTLayer(LayerArtist):
 
         logger.debug("updating WWT for %s" % self.layer.label)
 
-        if self.visible is False and self.wwt_layer is not None:
-            self.wwt_layer.remove()
-            self.wwt_layer = None
+        if self.visible is False:
+            if self.wwt_layer is not None:
+                self.wwt_layer.remove()
+                self.wwt_layer = None
             return
 
         if force or 'mode' in kwargs or self.wwt_layer is None:

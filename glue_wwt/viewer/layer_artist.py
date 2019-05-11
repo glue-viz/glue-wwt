@@ -51,11 +51,11 @@ class WWTLayer(LayerArtist):
             self._coords = [], []
 
     def remove(self):
+        self._removed = True
         if self.wwt_layer is not None:
             self.wwt_layer.remove()
             self.wwt_layer = None
             self._coords = [], []
-        self._removed = True
 
     def _update_markers(self, force=False, **kwargs):
 

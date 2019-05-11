@@ -1,6 +1,8 @@
 0.4 (unreleased)
 ----------------
 
+- Fixed bug with layer centering when NaN values are present. [#55]
+
 - Fixed issues with layer visibility. [#52]
 
 - Fixed bug that caused remonving layers to not work. [#56]

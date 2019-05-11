@@ -62,6 +62,8 @@ class WWTLayer(LayerArtist):
         if self._removed:
             return
 
+        changed = set() if force else self.pop_changed_properties()
+
         if self._viewer_state.lon_att is None or self._viewer_state.lat_att is None:
             if self.wwt_layer is not None:
                 self.wwt_layer.remove()
@@ -76,7 +78,7 @@ class WWTLayer(LayerArtist):
                 self.wwt_layer = None
             return
 
-        if force or 'mode' in kwargs or self.wwt_layer is None:
+        if force or 'mode' in changed or self.wwt_layer is None:
             if self.wwt_layer is not None:
                 self.wwt_layer.remove()
                 self.wwt_layer = None
@@ -88,7 +90,7 @@ class WWTLayer(LayerArtist):
         # for now we set unit to pc and scale values accordingly, so if the
         # unit changes we need to refresh the data just in case
 
-        if force or any(x in kwargs for x in RESET_DATA_PROPERTIES):
+        if force or any(x in changed for x in RESET_DATA_PROPERTIES):
 
             try:
                 lon = self.layer[self._viewer_state.lon_att]
@@ -193,7 +195,7 @@ class WWTLayer(LayerArtist):
             else:
                 return
 
-        if force or 'alt_unit' in kwargs:
+        if force or 'alt_unit' in changed:
             # FIXME: kpc isn't yet a valid unit in WWT/PyWWT:
             # https://github.com/WorldWideTelescope/wwt-web-client/pull/197
             # for now we set unit to pc and scale values accordingly
@@ -202,34 +204,34 @@ class WWTLayer(LayerArtist):
             else:
                 self.wwt_layer.alt_unit = self._viewer_state.alt_unit
 
-        if force or 'alt_type' in kwargs:
+        if force or 'alt_type' in changed:
             self.wwt_layer.alt_type = self._viewer_state.alt_type.lower()
 
-        if force or 'size' in kwargs or 'size_mode' in kwargs or 'size_scaling' in kwargs:
+        if force or 'size' in changed or 'size_mode' in changed or 'size_scaling' in changed:
             if self.state.size_mode == 'Linear':
                 self.wwt_layer.size_scale = self.state.size_scaling
             else:
                 self.wwt_layer.size_scale = self.state.size * 5 * self.state.size_scaling
 
-        if force or 'color' in kwargs:
+        if force or 'color' in changed:
             self.wwt_layer.color = self.state.color
 
-        if force or 'alpha' in kwargs:
+        if force or 'alpha' in changed:
             self.wwt_layer.opacity = self.state.alpha
 
-        if force or 'size_vmin' in kwargs:
+        if force or 'size_vmin' in changed:
             self.wwt_layer.size_vmin = self.state.size_vmin
 
-        if force or 'size_vmax' in kwargs:
+        if force or 'size_vmax' in changed:
             self.wwt_layer.size_vmax = self.state.size_vmax
 
-        if force or 'cmap_vmin' in kwargs:
+        if force or 'cmap_vmin' in changed:
             self.wwt_layer.cmap_vmin = self.state.cmap_vmin
 
-        if force or 'cmap_vmax' in kwargs:
+        if force or 'cmap_vmax' in changed:
             self.wwt_layer.cmap_vmax = self.state.cmap_vmax
 
-        if force or 'cmap' in kwargs:
+        if force or 'cmap' in changed:
             self.wwt_layer.cmap = self.state.cmap
 
         self.enable()

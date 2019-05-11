@@ -24,6 +24,7 @@ RESET_DATA_PROPERTIES = ('mode', 'frame', 'lon_att', 'lat_att', 'alt_att',
 class WWTLayer(LayerArtist):
 
     _layer_state_cls = WWTLayerState
+    _removed = False
 
     def __init__(self, wwt_client, viewer_state, layer_state=None, layer=None):
 
@@ -49,7 +50,17 @@ class WWTLayer(LayerArtist):
             self.wwt_layer = None
             self._coords = [], []
 
+    def remove(self):
+        if self.wwt_layer is not None:
+            self.wwt_layer.remove()
+            self.wwt_layer = None
+            self._coords = [], []
+        self._removed = True
+
     def _update_markers(self, force=False, **kwargs):
+
+        if self._removed:
+            return
 
         if self._viewer_state.lon_att is None or self._viewer_state.lat_att is None:
             if self.wwt_layer is not None:

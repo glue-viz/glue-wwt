@@ -1,6 +1,8 @@
 0.4 (unreleased)
 ----------------
 
+- Fixed bug with layer centering when NaN values are present. [#55]
+
 - Fixed issues with layer visibility. [#52]
 
 - Fixed issue with viewer options not being set correctly when loading from a session. [#52]

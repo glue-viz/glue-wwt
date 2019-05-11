@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+import numpy as np
+
 from astropy import units as u
 from astropy.coordinates.angle_utilities import angular_separation
 from astropy.coordinates.representation import UnitSphericalRepresentation
@@ -9,8 +11,9 @@ __all__ = ['center_fov']
 
 def center_fov(lon, lat):
 
-    # We assume here that any non-finite and non-sensible values have already
-    # been filtered out
+    # We need to filter out any non-finite values
+    keep = np.isfinite(lon) & np.isfinite(lat)
+    lon, lat = lon[keep], lat[keep]
 
     lon = u.Quantity(lon, u.deg, copy=False)
     lat = u.Quantity(lat, u.deg, copy=False)

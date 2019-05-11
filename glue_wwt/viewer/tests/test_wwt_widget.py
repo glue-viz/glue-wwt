@@ -111,6 +111,25 @@ class TestWWTDataViewer(object):
         self.viewer.state.alt_unit = 'kpc'
         self.viewer.state.alt_att = None
 
+    def test_remove_layer(self):
+
+        # Make sure that _update_markers doesn't get called after removing a
+        # layer. This is a regression test for
+        # https://github.com/glue-viz/glue-wwt/issues/54
+
+        self.register()
+        self.d.add_subset(self.d.id['x'] > 1)
+        self.viewer.add_data(self.d)
+        assert len(self.viewer.layers) == 2
+
+        subset_layer = self.viewer.layers[1]
+
+        subset_layer.wwt_client.layers.add_data_layer = MagicMock()
+
+        self.viewer.remove_subset(self.d.subsets[0])
+        assert len(self.viewer.layers) == 1
+        assert subset_layer.wwt_client.layers.add_data_layer.call_count == 0
+        assert subset_layer.wwt_layer is None
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):

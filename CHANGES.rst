@@ -3,6 +3,8 @@
 
 - Fixed issues with layer visibility. [#52]
 
+- Fixed bug that caused remonving layers to not work. [#56]
+
 - Fixed issue with viewer options not being set correctly when loading from a session. [#52]
 
 - Fixed compatibility with the latest developer version of glue. [#52]

@@ -24,7 +24,7 @@ class WWTOptionPanel(QtWidgets.QWidget):
 
         connect_kwargs = {'foreground_opacity': dict(value_range=(0, 1))}
 
-        autoconnect_callbacks_to_qt(self._viewer_state, self.ui, connect_kwargs)
+        self._connect = autoconnect_callbacks_to_qt(self._viewer_state, self.ui, connect_kwargs)
 
         self._viewer_state.add_callback('mode', self._update_visible_options)
         self._viewer_state.add_callback('frame', self._update_visible_options)

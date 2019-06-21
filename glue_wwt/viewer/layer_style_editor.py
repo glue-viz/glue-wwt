@@ -26,7 +26,7 @@ class WWTLayerStyleEditor(QtWidgets.QWidget):
 
         connect_kwargs = {'value_alpha': dict(value_range=(0., 1.)),
                           'value_size_scaling': dict(value_range=(0.1, 10), log=True)}
-        autoconnect_callbacks_to_qt(self.state, self.ui, connect_kwargs)
+        self._connect = autoconnect_callbacks_to_qt(self.state, self.ui, connect_kwargs)
 
         # Set initial values
         self._update_size_mode()

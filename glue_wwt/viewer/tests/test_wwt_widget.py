@@ -124,11 +124,11 @@ class TestWWTDataViewer(object):
 
         subset_layer = self.viewer.layers[1]
 
-        subset_layer.wwt_client.layers.add_data_layer = MagicMock()
+        subset_layer.wwt_client.layers.add_table_layer = MagicMock()
 
         self.viewer.remove_subset(self.d.subsets[0])
         assert len(self.viewer.layers) == 1
-        assert subset_layer.wwt_client.layers.add_data_layer.call_count == 0
+        assert subset_layer.wwt_client.layers.add_table_layer.call_count == 0
         assert subset_layer.wwt_layer is None
 
     # TODO: determine if the following test is the desired behavior

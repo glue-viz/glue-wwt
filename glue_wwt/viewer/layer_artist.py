@@ -183,8 +183,8 @@ class WWTLayer(LayerArtist):
                     tab['cmap'] = cmap_values
                     data_kwargs['cmap_att'] = 'cmap'
 
-                self.wwt_layer = self.wwt_client.layers.add_data_layer(tab, frame=ref_frame,
-                                                                       lon_att='lon', lat_att='lat', **data_kwargs)
+                self.wwt_layer = self.wwt_client.layers.add_table_layer(tab, frame=ref_frame,
+                                                                        lon_att='lon', lat_att='lat', **data_kwargs)
 
                 self.wwt_layer.far_side_visible = self._viewer_state.mode in MODES_3D
 

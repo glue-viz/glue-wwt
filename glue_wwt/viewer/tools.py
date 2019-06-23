@@ -2,10 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 from qtpy import compat
 
-try:
-    from glue.viewers.common.tool import Tool
-except ImportError:  # glue < 0.15
-    from glue.viewers.common.qt.tool import Tool
+from glue.viewers.common.tool import Tool
 
 from glue.config import viewer_tool
 

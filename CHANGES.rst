@@ -1,4 +1,4 @@
-0.4 (unreleased)
+0.4 (2019-06-23)
 ----------------
 
 - Fixed bug with layer centering when NaN values are present. [#55]

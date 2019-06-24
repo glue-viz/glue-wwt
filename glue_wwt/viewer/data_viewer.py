@@ -10,6 +10,8 @@ from .layer_style_editor import WWTLayerStyleEditor
 # We import the following to register the save tool
 from . import tools  # noqa
 
+from pywwt.qt import WWTQtClient
+
 __all__ = ['WWTDataViewer']
 
 
@@ -26,13 +28,16 @@ class WWTDataViewer(DataViewer):
 
     large_data_size = 100
 
-    subtools = {'save': ['wwt:save']}
+    if hasattr(WWTQtClient, 'save_as_html_bundle'):
+        save_tools = ['wwt:save_image', 'wwt:save_html']
+    else:
+        save_tools = ['wwt:save_image']
+    subtools = {'save': save_tools}
 
     def __init__(self, session, parent=None, state=None):
 
         super(WWTDataViewer, self).__init__(session, parent=parent, state=state)
 
-        from pywwt.qt import WWTQtClient
         self._wwt_client = WWTQtClient()
         self._wwt_client.actual_planet_scale = True
 
@@ -50,6 +55,9 @@ class WWTDataViewer(DataViewer):
         self._wwt_client.widget.page.wwt_ready.connect(self._on_wwt_ready)
 
         self._update_wwt_client(force=True)
+
+        if hasattr(self._wwt_client, 'save_as_html_bundle'):
+            self.subtools['save'].append('wwt:save_html')
 
     def closeEvent(self, event):
         self._wwt_client.widget.close()

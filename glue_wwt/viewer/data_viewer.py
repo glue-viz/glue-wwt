@@ -56,9 +56,6 @@ class WWTDataViewer(DataViewer):
 
         self._update_wwt_client(force=True)
 
-        if hasattr(self._wwt_client, 'save_as_html_bundle'):
-            self.subtools['save'].append('wwt:save_html')
-
     def closeEvent(self, event):
         self._wwt_client.widget.close()
         return super(WWTDataViewer, self).closeEvent(event)

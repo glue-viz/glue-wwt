@@ -132,6 +132,7 @@ class WWTLayerState(LayerState):
     cmap_vmin = CallbackProperty()
     cmap_vmax = CallbackProperty()
     cmap = CallbackProperty()
+    cmap_mode = color_mode
 
     size_limits_cache = CallbackProperty({})
     cmap_limits_cache = CallbackProperty({})

@@ -7,7 +7,7 @@ from glue_jupyter.widgets import LinkedDropdown, Color, Size
 from pywwt.jupyter import WWTJupyterWidget
 from pywwt.layers import VALID_STRETCHES
 
-from ipywidgets import HBox, Tab, VBox, Dropdown, FloatSlider, Button
+from ipywidgets import HBox, Tab, VBox, Dropdown, FloatSlider, Button, FloatText
 
 from .data_viewer import WWTDataViewerBase
 from .image_layer import WWTImageLayerArtist
@@ -51,12 +51,18 @@ class JupyterImageLayerOptions(VBox):
 
         if self.state.alpha is None:
             self.state.alpha = 1.0
-        self.alpha = FloatSlider(description='alpha', min=0, max=1, value=self.state.alpha)
+        self.alpha = FloatSlider(description='alpha', min=0, max=1, value=self.state.alpha, step = 0.01)
         link((self.state, 'alpha'), (self.alpha, 'value'))
 
         self.stretch = LinkedDropdown(self.state, 'stretch', 'Stretch')
+
+        self.vmin = FloatText(description='Min Val')
+        self.vmax = FloatText(description='Max Val')
+        self.lims = VBox([self.vmin, self.vmax])
+        link((self.state, 'vmin'), (self.vmin, 'value'), lambda value: value or 0)
+        link((self.state, 'vmax'), (self.vmax, 'value'), lambda value: value or 1)
         
-        super().__init__([self.data_att, self.alpha])
+        super().__init__([self.data_att, self.alpha, self.stretch, self.lims])
 
 
 class JupyterTableLayerOptions(VBox):

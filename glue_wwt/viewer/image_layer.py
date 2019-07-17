@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import random
+import numpy as np
 
 from glue.logger import logger
 from glue.core.coordinates import WCSCoordinates
@@ -28,6 +29,8 @@ class WWTImageLayerState(LayerState):
     layer = CallbackProperty()
     color = CallbackProperty()
     alpha = CallbackProperty()
+    vmin = CallbackProperty()
+    vmax = CallbackProperty()
 
     img_data_att = SelectionCallbackProperty(default_index=0)
     stretch = SelectionCallbackProperty(
@@ -119,11 +122,27 @@ class WWTImageLayerArtist(LayerArtist):
                 return
 
             self.wwt_layer = self.wwt_client.layers.add_image_layer((data, wcs))
+            default_lims = np.percentile(data, [5.,95.])
+            self.state.vmin = default_lims[0]
+            self.state.vmax = default_lims[1]
             force = True
 
         if force or 'alpha' in changed:
             if self.state.alpha is not None:
                 self.wwt_layer.opacity = self.state.alpha
+
+        if force or 'stretch' in changed:
+            if self.state.stretch is not None:
+                self.wwt_layer.stretch = self.state.stretch
+
+        if force or 'vmin' in changed:
+            if self.state.vmin is not None:
+                self.wwt_layer.vmin = self.state.vmin
+
+        if force or 'vmax' in changed:
+            if self.state.vmax is not None:
+                self.wwt_layer.vmax = self.state.vmax
+
 
         self.enable()
 

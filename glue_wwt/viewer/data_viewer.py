@@ -1,84 +1,70 @@
+"""Base WWT data viewer implementation, generic over Qt and Jupyter backends."""
+
 from __future__ import absolute_import, division, print_function
 
-from glue.viewers.common.qt.data_viewer import DataViewer
+from glue.core.coordinates import WCSCoordinates
 
-from .layer_artist import WWTLayer
-from .options_widget import WWTOptionPanel
-from .state import WWTDataViewerState
-from .layer_style_editor import WWTLayerStyleEditor
+from .image_layer import WWTImageLayerArtist
+from .table_layer import WWTTableLayerArtist
+from .viewer_state import WWTDataViewerState
 
-# We import the following to register the save tool
-from . import tools  # noqa
-
-__all__ = ['WWTDataViewer']
+__all__ = ['WWTDataViewerBase']
 
 
-class WWTDataViewer(DataViewer):
-
+class WWTDataViewerBase(object):
     LABEL = 'WorldWideTelescope (WWT)'
+    _wwt = None
 
     _state_cls = WWTDataViewerState
-    _data_artist_cls = WWTLayer
-    _subset_artist_cls = WWTLayer
 
-    _options_cls = WWTOptionPanel
-    _layer_style_widget_cls = WWTLayerStyleEditor
 
-    large_data_size = 100
+    def __init__(self):
+        self._initialize_wwt()
+        self._wwt.actual_planet_scale = True
+        self.state.imagery_layers = list(self._wwt.available_layers)
 
-    subtools = {'save': ['wwt:save']}
+        self.state.add_global_callback(self._update_wwt)
+        self._update_wwt(force=True)
 
-    def __init__(self, session, parent=None, state=None):
 
-        super(WWTDataViewer, self).__init__(session, parent=parent, state=state)
+    def _initialize_wwt(self):
+        raise NotImplementedError('subclasses should set _wwt here')
 
-        from pywwt.qt import WWTQtClient
-        self._wwt_client = WWTQtClient()
-        self._wwt_client.actual_planet_scale = True
 
-        self.setCentralWidget(self._wwt_client.widget)
-        self.resize(self._wwt_client.widget.size())
-        self.setWindowTitle("WorldWideTelescope")
-
-        self.state.imagery_layers = list(self._wwt_client.available_layers)
-
-        self.state.add_global_callback(self._update_wwt_client)
-
-        self.options_widget().setEnabled(False)
-        self.layer_view().setEnabled(False)
-
-        self._wwt_client.widget.page.wwt_ready.connect(self._on_wwt_ready)
-
-        self._update_wwt_client(force=True)
-
-    def closeEvent(self, event):
-        self._wwt_client.widget.close()
-        return super(WWTDataViewer, self).closeEvent(event)
-
-    def _on_wwt_ready(self):
-        self.options_widget().setEnabled(True)
-        self.layer_view().setEnabled(True)
-
-    def _update_wwt_client(self, force=False, **kwargs):
-
+    def _update_wwt(self, force=False, **kwargs):
         if force or 'mode' in kwargs:
-            self._wwt_client.set_view(self.state.mode)
+            self._wwt.set_view(self.state.mode)
             # Only show SDSS data when in Universe mode
-            self._wwt_client.solar_system.cosmos = self.state.mode == 'Universe'
+            self._wwt.solar_system.cosmos = self.state.mode == 'Universe'
             # Only show local stars when not in Universe or Milky Way mode
-            self._wwt_client.solar_system.stars = self.state.mode not in ['Universe', 'Milky Way']
+            self._wwt.solar_system.stars = self.state.mode not in ['Universe', 'Milky Way']
 
         if force or 'foreground' in kwargs:
-            self._wwt_client.foreground = self.state.foreground
+            self._wwt.foreground = self.state.foreground
 
         if force or 'background' in kwargs:
-            self._wwt_client.background = self.state.background
+            self._wwt.background = self.state.background
 
         if force or 'foreground_opacity' in kwargs:
-            self._wwt_client.foreground_opacity = self.state.foreground_opacity
+            self._wwt.foreground_opacity = self.state.foreground_opacity
 
         if force or 'galactic' in kwargs:
-            self._wwt_client.galactic_mode = self.state.galactic
+            self._wwt.galactic_mode = self.state.galactic
 
-    def get_layer_artist(self, cls, layer=None, layer_state=None):
-        return cls(self._wwt_client, self.state, layer=layer, layer_state=layer_state)
+
+    def get_data_layer_artist(self, layer=None, layer_state=None):
+        if len(layer.pixel_component_ids) == 2:
+            if not isinstance(layer.coords, WCSCoordinates):
+                raise ValueError('WWT cannot render image layer {}: it must have WCS coordinates'.format(layer.label))
+            cls = WWTImageLayerArtist
+        elif layer.ndim == 1:
+            cls = WWTTableLayerArtist
+        else:
+            raise ValueError('WWT does not know how to render the data of {}'.format(layer.label))
+
+        return cls(self._wwt, self.state, layer=layer, layer_state=layer_state)
+
+
+    def get_subset_layer_artist(self, layer=None, layer_state=None):
+        # At some point maybe we'll use different classes for this?
+        return self.get_data_layer_artist(layer=layer, layer_state=layer_state)

@@ -4,17 +4,17 @@ from glue.viewers.common.qt.data_viewer import DataViewer
 
 from .data_viewer import WWTDataViewerBase
 from .options_widget import WWTOptionPanel
-from .layer_style_editor import WWTLayerStyleEditor
+from .table_style_editor import WWTTableStyleEditor
 
 # We import the following to register the save tool
 from . import tools  # noqa
 
-__all__ = ['WWTDataViewer']
+__all__ = ['WWTQtViewer']
 
 
-class WWTDataViewer(WWTDataViewerBase, DataViewer):
+class WWTQtViewer(WWTDataViewerBase, DataViewer):
     _options_cls = WWTOptionPanel
-    _layer_style_widget_cls = WWTLayerStyleEditor
+    _layer_style_widget_cls = WWTTableStyleEditor
 
     subtools = {'save': ['wwt:save']}
 
@@ -37,7 +37,7 @@ class WWTDataViewer(WWTDataViewerBase, DataViewer):
 
     def closeEvent(self, event):
         self._wwt.widget.close()
-        return super(WWTDataViewer, self).closeEvent(event)
+        return super(WWTQtViewer, self).closeEvent(event)
 
     def _on_wwt_ready(self):
         self.options_widget().setEnabled(True)

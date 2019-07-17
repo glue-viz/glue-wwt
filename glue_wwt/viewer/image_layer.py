@@ -129,7 +129,7 @@ class WWTImageLayerArtist(LayerArtist):
 
         if force or 'alpha' in changed:
             if self.state.alpha is not None:
-                self.wwt_layer.opacity = self.state.alpha
+                self.wwt_layer.opacity = float(self.state.alpha)
 
         if force or 'stretch' in changed:
             if self.state.stretch is not None:

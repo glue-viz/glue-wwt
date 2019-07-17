@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from glue_jupyter.view import IPyWidgetView
-from glue_jupyter.link import link
+from glue_jupyter.link import link, dlink
 from glue_jupyter.widgets import LinkedDropdown, Color, Size
 
 from pywwt.jupyter import WWTJupyterWidget
@@ -20,37 +20,27 @@ class JupterViewerOptions(VBox):
 
         self.state = viewer_state
 
-        self.widget_mode = Dropdown(   options=['Sky']+MODES_BODIES+MODES_3D,
-                                       value=self.state.mode,
-                                       description='Mode:')
-        link((self.widget_mode, 'value'), (self.state, 'mode'))
-
-        self.widget_frame = Dropdown (options = CELESTIAL_FRAMES,
-                                      value = self.state.frame,
-                                      description = "Frame:")
-        link((self.widget_frame, 'value'), (self.state, 'frame'))
+        self.widget_mode = LinkedDropdown(self.state, "mode", label="Mode:")
+        self.widget_frame = LinkedDropdown(self.state, "frame", label = "Frame:")
 
         self.widget_ra = LinkedDropdown(self.state, "lon_att", label="RA:")
-
         self.widget_dec = LinkedDropdown(self.state, "lat_att", label="Dec:")
 
+        self.widget_alt_type = LinkedDropdown(self.state, "alt_type", label="Height Type:")
+        self.widget_alt = LinkedDropdown(self.state, "alt_att", label="Height Column:")
+        self.widget_alt_unit = LinkedDropdown(self.state, "alt_unit", label="Height Unit:")
+        self.alt_opts = VBox([self.widget_alt_type, self.widget_alt, self.widget_alt_unit])
+        dlink((self.state, 'mode'), (self.alt_opts.layout, 'display'), lambda value: '' if value != 'Sky' else 'none')
 
-        self.widget_foreground = Dropdown(   options=available_layers,
-                                       value=self.state.foreground,
-                                       description='Forground:')
-        link((self.widget_foreground, 'value'), (self.state, 'foreground'))
-
+        self.widget_foreground = LinkedDropdown( self.state, "foreground", label='Forground:')
         self.widget_foreground_opacity = FloatSlider(description = "Opacity:", min = 0, max = 1,
                                                      value = self.state.foreground_opacity, step = 0.01 )
         link((self.widget_foreground_opacity, 'value'), (self.state, 'foreground_opacity'))
+        self.widget_background = LinkedDropdown(self.state, 'background',label='Background:')
+        self.widget_allskyimg = VBox([self.widget_foreground, self.widget_foreground_opacity, self.widget_background])
+        dlink((self.state, 'mode'), (self.widget_allskyimg.layout, 'display'), lambda value: '' if value == 'Sky' else 'none')
 
-        self.widget_background = Dropdown(   options=available_layers,
-                                       value=self.state.background,
-                                       description='Background:')
-        link((self.widget_background, 'value'), (self.state, 'background'))
-
-        super().__init__([self.widget_mode, self.widget_frame, self.widget_ra, self.widget_dec, self.widget_foreground,
-                          self.widget_foreground_opacity, self.widget_background])
+        super().__init__([self.widget_mode, self.widget_frame, self.widget_ra, self.widget_dec, self.alt_opts, self.widget_allskyimg])
 
 
 class JupyterImageLayerOptions(VBox):

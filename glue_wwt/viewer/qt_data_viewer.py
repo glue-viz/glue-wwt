@@ -3,7 +3,10 @@ from __future__ import absolute_import, division, print_function
 from glue.viewers.common.qt.data_viewer import DataViewer
 
 from .data_viewer import WWTDataViewerBase
+from .image_layer import WWTImageLayerArtist
+from .table_layer import WWTTableLayerArtist
 from .options_widget import WWTOptionPanel
+from .image_style_editor import WWTImageStyleEditor
 from .table_style_editor import WWTTableStyleEditor
 
 # We import the following to register the save tool
@@ -14,7 +17,11 @@ __all__ = ['WWTQtViewer']
 
 class WWTQtViewer(WWTDataViewerBase, DataViewer):
     _options_cls = WWTOptionPanel
-    _layer_style_widget_cls = WWTTableStyleEditor
+
+    _layer_style_widget_cls = {
+        WWTImageLayerArtist: WWTImageStyleEditor,
+        WWTTableLayerArtist: WWTTableStyleEditor,
+    }
 
     subtools = {'save': ['wwt:save']}
 

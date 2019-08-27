@@ -12,14 +12,14 @@ notifications:
 env:
   global:
     - SETUP_XVFB=True
-    - CONDA_CHANNELS="glueviz"
-    - CONDA_DEPENDENCIES="glue-core pytest mock"
-    - PIP_DEPENDENCIES="pytest-faulthandler pytest-qt"
+    - CONDA_CHANNELS="conda-forge glueviz"
+    - CONDA_DEPENDENCIES="glue-core mock pytest pytest-faulthandler pytest-qt"
+    - PIP_DEPENDENCIES=""
   matrix:
     # - PYTHON_VERSION=2.7
     # - PYTHON_VERSION=3.6
-    - PYTHON_VERSION=2.7 CONDA_CHANNELS="glueviz/label/dev"
-    - PYTHON_VERSION=3.6 CONDA_CHANNELS="glueviz/label/dev"
+    - PYTHON_VERSION=2.7 CONDA_CHANNELS="conda-forge glueviz/label/dev"
+    - PYTHON_VERSION=3.6 CONDA_CHANNELS="conda-forge glueviz/label/dev"
 
 install:
 

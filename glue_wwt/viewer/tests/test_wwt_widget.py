@@ -6,7 +6,7 @@ from glue.app.qt import GlueApplication
 from glue.core import Data, message
 from glue.core.tests.test_state import clone
 
-from ..data_viewer import WWTDataViewer
+from ..qt_data_viewer import WWTQtViewer
 
 
 class TestWWTDataViewer(object):
@@ -18,7 +18,7 @@ class TestWWTDataViewer(object):
         self.dc.append(self.d)
         self.hub = self.dc.hub
         self.session = self.application.session
-        self.viewer = self.application.new_data_viewer(WWTDataViewer)
+        self.viewer = self.application.new_data_viewer(WWTQtViewer)
         self.options = self.viewer.options_widget()
 
     def register(self):

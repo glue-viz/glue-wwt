@@ -149,7 +149,7 @@ class WWTTableLayerArtist(LayerArtist):
     _layer_state_cls = WWTTableLayerState
     _removed = False
 
-    def __init__(self, wwt_client, viewer_state, layer_state=None, layer=None):
+    def __init__(self, viewer_state, wwt_client=None, layer_state=None, layer=None):
         super(WWTTableLayerArtist, self).__init__(viewer_state, layer_state=layer_state, layer=layer)
 
         self.wwt_layer = None

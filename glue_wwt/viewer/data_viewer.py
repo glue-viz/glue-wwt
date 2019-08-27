@@ -52,6 +52,11 @@ class WWTDataViewerBase(object):
             self._wwt.galactic_mode = self.state.galactic
 
 
+    def get_layer_artist(self, cls, **kwargs):
+        "In this package, we must override to append the wwt_client argument."
+        return cls(self.state, wwt_client=self._wwt, **kwargs)
+
+
     def get_data_layer_artist(self, layer=None, layer_state=None):
         if len(layer.pixel_component_ids) == 2:
             if not isinstance(layer.coords, WCSCoordinates):
@@ -62,7 +67,7 @@ class WWTDataViewerBase(object):
         else:
             raise ValueError('WWT does not know how to render the data of {}'.format(layer.label))
 
-        return cls(self._wwt, self.state, layer=layer, layer_state=layer_state)
+        return cls(self.state, wwt_client=self._wwt, layer=layer, layer_state=layer_state)
 
 
     def get_subset_layer_artist(self, layer=None, layer_state=None):

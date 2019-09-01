@@ -7,6 +7,6 @@ from .version import __version__  # noqa
 
 
 def setup():
-    from .viewer.data_viewer import WWTDataViewer
+    from .viewer.qt_data_viewer import WWTQtViewer
     from glue.config import qt_client
-    qt_client.add(WWTDataViewer)
+    qt_client.add(WWTQtViewer)

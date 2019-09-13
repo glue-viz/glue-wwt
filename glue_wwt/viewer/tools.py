@@ -4,7 +4,7 @@ import time
 from qtpy import compat
 
 from glue.viewers.common.tool import Tool
-
+from glue.utils.qt import get_qapp
 from glue.config import viewer_tool
 
 
@@ -68,6 +68,8 @@ class SaveTourTool(Tool):
 
     def activate(self):
 
+        app = get_qapp()
+
         filename, _ = compat.getsavefilename(caption='Save File',
                                              filters='WWT Tour File (*.wtt);;')
 
@@ -87,6 +89,7 @@ class SaveTourTool(Tool):
         tourxml = None
         while time.time() - start < 10:
             time.sleep(0.1)
+            app.processEvents()
             tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;', asynchronous=False)
             if tourxml:
                 break

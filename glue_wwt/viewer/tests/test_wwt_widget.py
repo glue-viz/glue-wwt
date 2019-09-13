@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+import io
 import os
 
 from mock import MagicMock, patch
@@ -151,7 +152,7 @@ class TestWWTDataViewer(object):
             self.viewer.toolbar.tools['save'].subtools[1].activate()
 
         assert os.path.exists(filename)
-        with open(filename, newline='') as f:
+        with io.open(filename, newline='') as f:
             assert f.read().startswith("<?xml version='1.0' encoding='UTF-8'?>\r\n<FileCabinet")
 
     # TODO: determine if the following test is the desired behavior

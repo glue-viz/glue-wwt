@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
+import io
 import time
 from qtpy import compat
 
@@ -97,5 +98,5 @@ class SaveTourTool(Tool):
         if not tourxml:
             raise Exception("Failed to save tour")
 
-        with open(filename, 'w', newline='') as f:
+        with io.open(filename, 'w', newline='') as f:
             f.write(tourxml)

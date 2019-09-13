@@ -5,14 +5,12 @@ from glue_jupyter.link import link, dlink
 from glue_jupyter.widgets import LinkedDropdown, Color, Size
 
 from pywwt.jupyter import WWTJupyterWidget
-from pywwt.layers import VALID_STRETCHES
 
-from ipywidgets import HBox, Tab, VBox, Dropdown, FloatSlider, Button, FloatText
+from ipywidgets import HBox, Tab, VBox, FloatSlider, FloatText
 
 from .data_viewer import WWTDataViewerBase
 from .image_layer import WWTImageLayerArtist
 from .table_layer import WWTTableLayerArtist
-from .viewer_state import WWTDataViewerState, MODES_BODIES, MODES_3D, CELESTIAL_FRAMES
 
 
 class JupterViewerOptions(VBox):
@@ -21,7 +19,7 @@ class JupterViewerOptions(VBox):
         self.state = viewer_state
 
         self.widget_mode = LinkedDropdown(self.state, "mode", label="Mode:")
-        self.widget_frame = LinkedDropdown(self.state, "frame", label = "Frame:")
+        self.widget_frame = LinkedDropdown(self.state, "frame", label="Frame:")
 
         self.widget_ra = LinkedDropdown(self.state, "lon_att", label="RA:")
         self.widget_dec = LinkedDropdown(self.state, "lat_att", label="Dec:")
@@ -32,15 +30,17 @@ class JupterViewerOptions(VBox):
         self.alt_opts = VBox([self.widget_alt_type, self.widget_alt, self.widget_alt_unit])
         dlink((self.state, 'mode'), (self.alt_opts.layout, 'display'), lambda value: '' if value != 'Sky' else 'none')
 
-        self.widget_foreground = LinkedDropdown( self.state, "foreground", label='Forground:')
-        self.widget_foreground_opacity = FloatSlider(description = "Opacity:", min = 0, max = 1,
-                                                     value = self.state.foreground_opacity, step = 0.01 )
+        self.widget_foreground = LinkedDropdown(self.state, "foreground", label='Forground:')
+        self.widget_foreground_opacity = FloatSlider(description="Opacity:", min=0, max=1,
+                                                     value=self.state.foreground_opacity, step=0.01)
         link((self.widget_foreground_opacity, 'value'), (self.state, 'foreground_opacity'))
-        self.widget_background = LinkedDropdown(self.state, 'background',label='Background:')
+        self.widget_background = LinkedDropdown(self.state, 'background', label='Background:')
         self.widget_allskyimg = VBox([self.widget_foreground, self.widget_foreground_opacity, self.widget_background])
-        dlink((self.state, 'mode'), (self.widget_allskyimg.layout, 'display'), lambda value: '' if value == 'Sky' else 'none')
+        dlink((self.state, 'mode'), (self.widget_allskyimg.layout, 'display'),
+              lambda value: '' if value == 'Sky' else 'none')
 
-        super().__init__([self.widget_mode, self.widget_frame, self.widget_ra, self.widget_dec, self.alt_opts, self.widget_allskyimg])
+        super().__init__([self.widget_mode, self.widget_frame, self.widget_ra,
+                          self.widget_dec, self.alt_opts, self.widget_allskyimg])
 
 
 class JupyterImageLayerOptions(VBox):
@@ -51,7 +51,7 @@ class JupyterImageLayerOptions(VBox):
 
         if self.state.alpha is None:
             self.state.alpha = 1.0
-        self.alpha = FloatSlider(description='alpha', min=0, max=1, value=self.state.alpha, step = 0.01)
+        self.alpha = FloatSlider(description='alpha', min=0, max=1, value=self.state.alpha, step=0.01)
         link((self.state, 'alpha'), (self.alpha, 'value'))
 
         self.stretch = LinkedDropdown(self.state, 'stretch', 'Stretch')
@@ -61,18 +61,18 @@ class JupyterImageLayerOptions(VBox):
         self.lims = VBox([self.vmin, self.vmax])
         link((self.state, 'vmin'), (self.vmin, 'value'), lambda value: value or 0)
         link((self.state, 'vmax'), (self.vmax, 'value'), lambda value: value or 1)
-        
+
         super().__init__([self.data_att, self.alpha, self.stretch, self.lims])
 
 
 class JupyterTableLayerOptions(VBox):
     def __init__(self, layer_state):
         self.state = layer_state
-        self.color_widgets = Color(state = self.state)
-        self.size_widgets = Size(state = self.state)
+        self.color_widgets = Color(state=self.state)
+        self.size_widgets = Size(state=self.state)
 
-        #self.recenter_widget = Button(description='Center view on layer')
-        #self.recenter_widget.on_click(viewer_state.)
+        # self.recenter_widget = Button(description='Center view on layer')
+        # self.recenter_widget.on_click(viewer_state.)
 
         super().__init__([self.size_widgets, self.color_widgets])
 
@@ -98,14 +98,11 @@ class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
         self._layout_tab.set_title(1, "Layers")
         self._layout = HBox([self.figure_widget, self._layout_tab])
 
-
     def _initialize_wwt(self):
         self._wwt = WWTJupyterWidget()
 
-
     def redraw(self):
         self._update_wwt()
-
 
     @property
     def figure_widget(self):

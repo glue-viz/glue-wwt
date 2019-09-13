@@ -4,8 +4,7 @@ import os
 
 from qtpy import QtWidgets
 
-from glue.external.echo.qt import autoconnect_callbacks_to_qt
-from glue.utils.qt import load_ui, fix_tab_widget_fontsize
+from glue.utils.qt import load_ui
 
 
 class WWTImageStyleEditor(QtWidgets.QWidget):

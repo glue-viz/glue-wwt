@@ -1,5 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
+from .utils import center_fov
+from .viewer_state import MODES_3D
 import random
 
 from glue.config import colormaps
@@ -7,7 +9,7 @@ from glue.core.coordinates import WCSCoordinates
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.exceptions import IncompatibleAttribute
 from glue.core.state_objects import StateAttributeLimitsHelper
-from glue.external.echo import (CallbackProperty, ListCallbackProperty,
+from glue.external.echo import (CallbackProperty,
                                 SelectionCallbackProperty, delay_callback,
                                 keep_in_sync)
 from glue.logger import logger
@@ -22,8 +24,6 @@ import pywwt
 from distutils.version import LooseVersion
 PYWWT_LT_06 = LooseVersion(pywwt.__version__) < '0.6'
 
-from .viewer_state import MODES_3D
-from .utils import center_fov
 
 __all__ = ['WWTTableLayerArtist']
 
@@ -37,7 +37,6 @@ class WWTTableLayerState(LayerState):
     """
     A state object for WWT layers
     """
-
 
     layer = CallbackProperty()
     color = CallbackProperty()
@@ -150,7 +149,9 @@ class WWTTableLayerArtist(LayerArtist):
     _removed = False
 
     def __init__(self, viewer_state, wwt_client=None, layer_state=None, layer=None):
-        super(WWTTableLayerArtist, self).__init__(viewer_state, layer_state=layer_state, layer=layer)
+        super(WWTTableLayerArtist, self).__init__(viewer_state,
+                                                  layer_state=layer_state,
+                                                  layer=layer)
 
         self.wwt_layer = None
         self._coords = [], []
@@ -166,18 +167,15 @@ class WWTTableLayerArtist(LayerArtist):
 
         self._update_presentation(force=True)
 
-
     def clear(self):
         if self.wwt_layer is not None:
             self.wwt_layer.remove()
             self.wwt_layer = None
             self._coords = [], []
 
-
     def remove(self):
         self._removed = True
         self.clear()
-
 
     def _update_presentation(self, force=False, **kwargs):
         if self._removed:
@@ -258,7 +256,8 @@ class WWTTableLayerArtist(LayerArtist):
 
             if ref_frame == 'Sky':
                 try:
-                    coord = SkyCoord(lon, lat, unit=u.deg, frame=self._viewer_state.frame.lower()).icrs
+                    coord = SkyCoord(lon, lat, unit=u.deg,
+                                     frame=self._viewer_state.frame.lower()).icrs
                 except Exception as exc:
                     self.disable(str(exc))
                     return
@@ -299,7 +298,8 @@ class WWTTableLayerArtist(LayerArtist):
                 data_kwargs['cmap_att'] = 'cmap'
 
             self.wwt_layer = self.wwt_client.layers.add_table_layer(tab, frame=ref_frame,
-                                                                    lon_att='lon', lat_att='lat', **data_kwargs)
+                                                                    lon_att='lon', lat_att='lat',
+                                                                    **data_kwargs)
 
             self.wwt_layer.far_side_visible = self._viewer_state.mode in MODES_3D
 
@@ -350,7 +350,6 @@ class WWTTableLayerArtist(LayerArtist):
 
         # TODO: deal with visible, zorder, frame
 
-
     def _update_image(self, force=False, **kwargs):
         changed = set() if force else self.pop_changed_properties()
 
@@ -366,7 +365,7 @@ class WWTTableLayerArtist(LayerArtist):
             self.clear()
             force = True
 
-        if force or any(x in changed for x in RESET_IMAGE_PROPERTIES):
+        if force or any(x in changed for x in RESET_TABLE_PROPERTIES):
             self.clear()
 
             if not isinstance(self.layer.coords, WCSCoordinates):
@@ -382,11 +381,10 @@ class WWTTableLayerArtist(LayerArtist):
             self.wwt_layer = self.wwt_client.layers.add_image_layer((data, wcs))
             force = True
 
-        #if force or 'cmap_vmax' in changed:
+        # if force or 'cmap_vmax' in changed:
         #    self.wwt_layer.cmap_vmax = self.state.cmap_vmax
 
         self.enable()
-
 
     def center(self, *args):
         lon, lat = self._coords
@@ -398,7 +396,9 @@ class WWTTableLayerArtist(LayerArtist):
             return
 
         fov = min(60, sep_max * 3)
-        self.wwt_client.center_on_coordinates(SkyCoord(lon_cen, lat_cen, unit=u.degree, frame='icrs'), fov * u.degree, instant=False)
+        self.wwt_client.center_on_coordinates(SkyCoord(lon_cen, lat_cen,
+                                                       unit=u.degree, frame='icrs'),
+                                              fov * u.degree, instant=False)
 
     def redraw(self):
         pass

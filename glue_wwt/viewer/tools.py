@@ -19,8 +19,8 @@ class SaveTool(Tool):
 
         filename, _ = compat.getsavefilename(caption='Save File',
                                              filters='PNG Files (*.png);;'
-                                                      'JPEG Files (*.jpeg);;'
-                                                      'TIFF Files (*.tiff);;',
+                                             'JPEG Files (*.jpeg);;'
+                                             'TIFF Files (*.tiff);;',
                                              selectedfilter='PNG Files (*.png);;')
 
         # This indicates that the user cancelled

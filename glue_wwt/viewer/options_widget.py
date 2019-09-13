@@ -6,7 +6,7 @@ from qtpy import QtWidgets
 from glue.utils.qt import load_ui
 from glue.external.echo.qt import autoconnect_callbacks_to_qt
 
-from .viewer_state import MODES_3D, MODES_BODIES
+from .viewer_state import MODES_BODIES
 
 __all__ = ['WWTOptionPanel']
 

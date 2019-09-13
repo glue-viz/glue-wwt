@@ -75,7 +75,7 @@ class TestWWTDataViewer(object):
 
         self.hub.broadcast(message.SubsetDeleteMessage(s))
 
-        #assert layer.clear.call_count == 1
+        # assert layer.clear.call_count == 1
         assert s not in self.viewer._layer_artist_container
 
     def test_subsets_added_with_data(self):
@@ -97,7 +97,7 @@ class TestWWTDataViewer(object):
 
         application2 = clone(self.application)
 
-        viewer2 = application2.viewers[0][0]
+        application2.viewers[0][0]
 
     def test_changing_alt_back_to_none(self):
 

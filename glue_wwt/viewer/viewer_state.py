@@ -1,16 +1,12 @@
 from __future__ import absolute_import, division, print_function
 
-import pywwt
-
 from astropy import units as u
 
 from glue.external.echo import (CallbackProperty, ListCallbackProperty,
-                                SelectionCallbackProperty, delay_callback,
-                                keep_in_sync)
+                                SelectionCallbackProperty)
 
 from glue.core.data_combo_helper import ComponentIDComboHelper
-from glue.core.state_objects import StateAttributeLimitsHelper
-from glue.viewers.common.state import ViewerState, LayerState
+from glue.viewers.common.state import ViewerState
 
 MODES_BODIES = ['Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars',
                 'Jupiter', 'Callisto', 'Europa', 'Ganymede', 'Io', 'Saturn',

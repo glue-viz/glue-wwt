@@ -17,7 +17,6 @@ class WWTDataViewerBase(object):
 
     _state_cls = WWTDataViewerState
 
-
     def __init__(self):
         self._initialize_wwt()
         self._wwt.actual_planet_scale = True
@@ -26,10 +25,8 @@ class WWTDataViewerBase(object):
         self.state.add_global_callback(self._update_wwt)
         self._update_wwt(force=True)
 
-
     def _initialize_wwt(self):
         raise NotImplementedError('subclasses should set _wwt here')
-
 
     def _update_wwt(self, force=False, **kwargs):
         if force or 'mode' in kwargs:
@@ -51,11 +48,9 @@ class WWTDataViewerBase(object):
         if force or 'galactic' in kwargs:
             self._wwt.galactic_mode = self.state.galactic
 
-
     def get_layer_artist(self, cls, **kwargs):
         "In this package, we must override to append the wwt_client argument."
         return cls(self.state, wwt_client=self._wwt, **kwargs)
-
 
     def get_data_layer_artist(self, layer=None, layer_state=None):
         if len(layer.pixel_component_ids) == 2:
@@ -68,7 +63,6 @@ class WWTDataViewerBase(object):
             raise ValueError('WWT does not know how to render the data of {}'.format(layer.label))
 
         return cls(self.state, wwt_client=self._wwt, layer=layer, layer_state=layer_state)
-
 
     def get_subset_layer_artist(self, layer=None, layer_state=None):
         # At some point maybe we'll use different classes for this?

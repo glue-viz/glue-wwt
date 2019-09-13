@@ -7,11 +7,10 @@ from glue.logger import logger
 from glue.core.coordinates import WCSCoordinates
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.exceptions import IncompatibleAttribute
-from glue.core.state_objects import StateAttributeLimitsHelper
 from glue.viewers.common.layer_artist import LayerArtist
 from glue.viewers.common.state import LayerState
-from glue.external.echo import (CallbackProperty, ListCallbackProperty,
-                                SelectionCallbackProperty, delay_callback,
+from glue.external.echo import (CallbackProperty,
+                                SelectionCallbackProperty,
                                 keep_in_sync)
 
 from pywwt.layers import VALID_STRETCHES
@@ -34,8 +33,8 @@ class WWTImageLayerState(LayerState):
 
     img_data_att = SelectionCallbackProperty(default_index=0)
     stretch = SelectionCallbackProperty(
-        default_index = 0,
-        choices = VALID_STRETCHES
+        default_index=0,
+        choices=VALID_STRETCHES
     )
 
     def __init__(self, layer=None, **kwargs):
@@ -71,7 +70,9 @@ class WWTImageLayerArtist(LayerArtist):
     _removed = False
 
     def __init__(self, viewer_state, wwt_client=None, layer_state=None, layer=None):
-        super(WWTImageLayerArtist, self).__init__(viewer_state, layer_state=layer_state, layer=layer)
+        super(WWTImageLayerArtist, self).__init__(viewer_state,
+                                                  layer_state=layer_state,
+                                                  layer=layer)
 
         self.wwt_layer = None
         self.layer_id = "{0:08x}".format(random.getrandbits(32))
@@ -83,17 +84,14 @@ class WWTImageLayerArtist(LayerArtist):
         self._viewer_state.add_global_callback(self._update_presentation)
         self._update_presentation(force=True)
 
-
     def clear(self):
         if self.wwt_layer is not None:
             self.wwt_layer.remove()
             self.wwt_layer = None
 
-
     def remove(self):
         self._removed = True
         self.clear()
-
 
     def _update_presentation(self, force=False, **kwargs):
         changed = set() if force else self.pop_changed_properties()
@@ -122,7 +120,7 @@ class WWTImageLayerArtist(LayerArtist):
                 return
 
             self.wwt_layer = self.wwt_client.layers.add_image_layer((data, wcs))
-            default_lims = np.percentile(data, [5.,95.])
+            default_lims = np.percentile(data, [5., 95.])
             self.state.vmin = default_lims[0]
             self.state.vmax = default_lims[1]
             force = True
@@ -143,13 +141,10 @@ class WWTImageLayerArtist(LayerArtist):
             if self.state.vmax is not None:
                 self.wwt_layer.vmax = self.state.vmax
 
-
         self.enable()
-
 
     def redraw(self):
         pass
-
 
     def update(self):
         self._update_presentation(force=True)

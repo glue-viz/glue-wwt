@@ -69,12 +69,14 @@ class SaveTourTool(Tool):
     def activate(self):
 
         filename, _ = compat.getsavefilename(caption='Save File',
-                                             filters='WWT Tour File (*.wtt);;',
-                                             selectedfilter='WWT Tour File (*.wtt);;')
+                                             filters='WWT Tour File (*.wtt);;')
 
         # This indicates that the user cancelled
         if not filename:
             return
+
+        if not filename.endswith('.wtt'):
+            filename = filename + '.wtt'
 
         self.viewer._wwt.widget.page.runJavaScript("tourxml = '';", asynchronous=False)
         tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;', asynchronous=False)

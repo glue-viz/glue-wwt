@@ -151,8 +151,8 @@ class TestWWTDataViewer(object):
             self.viewer.toolbar.tools['save'].subtools[1].activate()
 
         assert os.path.exists(filename)
-        with open(filename) as f:
-            assert f.read(5) == '<?xml'
+        with open(filename, newline='') as f:
+            assert f.read().startswith("<?xml version='1.0' encoding='UTF-8'?>\r\n<FileCabinet")
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):

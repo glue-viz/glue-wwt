@@ -92,5 +92,5 @@ class SaveTourTool(Tool):
         if not tourxml:
             raise Exception("Failed to save tour")
 
-        with open(filename, 'w') as f:
+        with open(filename, 'w', newline='') as f:
             f.write(tourxml)

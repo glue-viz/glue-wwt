@@ -1,10 +1,15 @@
 from __future__ import absolute_import, division, print_function
 
-from mock import MagicMock
+import os
+
+from mock import MagicMock, patch
+
+from qtpy import compat
 
 from glue.app.qt import GlueApplication
 from glue.core import Data, message
 from glue.core.tests.test_state import clone
+from glue.utils.qt import get_qapp
 
 from ..qt_data_viewer import WWTQtViewer
 
@@ -130,6 +135,24 @@ class TestWWTDataViewer(object):
         assert len(self.viewer.layers) == 1
         assert subset_layer.wwt_client.layers.add_table_layer.call_count == 0
         assert subset_layer.wwt_layer is None
+
+    def test_save_tour(self, tmpdir):
+
+        app = get_qapp()
+
+        while True:
+            app.processEvents()
+            if self.viewer._wwt.widget._wwt_ready:
+                break
+
+        filename = tmpdir.join('mytour.wtt').strpath
+        self.viewer.add_data(self.d)
+        with patch.object(compat, 'getsavefilename', return_value=(filename, None)):
+            self.viewer.toolbar.tools['save'].subtools[1].activate()
+
+        assert os.path.exists(filename)
+        with open(filename) as f:
+            assert f.read(5) == '<?xml'
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):

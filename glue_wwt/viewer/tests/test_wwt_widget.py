@@ -16,6 +16,13 @@ from glue.core.tests.test_state import clone
 from ..qt_data_viewer import WWTQtViewer
 
 
+class WWTQtViewerBlocking(WWTQtViewer):
+
+    def _initialize_wwt(self):
+        from pywwt.qt import WWTQtClient
+        self._wwt = WWTQtClient(block_until_ready=True)
+
+
 class TestWWTDataViewer(object):
 
     def setup_method(self, method):
@@ -25,7 +32,7 @@ class TestWWTDataViewer(object):
         self.dc.append(self.d)
         self.hub = self.dc.hub
         self.session = self.application.session
-        self.viewer = self.application.new_data_viewer(WWTQtViewer)
+        self.viewer = self.application.new_data_viewer(WWTQtViewerBlocking)
         self.options = self.viewer.options_widget()
 
     def teardown_method(self, method):

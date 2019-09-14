@@ -1,12 +1,26 @@
 from __future__ import absolute_import, division, print_function
 
-from mock import MagicMock
+import io
+import os
+import sys
+
+import pytest
+from mock import MagicMock, patch
+
+from qtpy import compat
 
 from glue.app.qt import GlueApplication
 from glue.core import Data, message
 from glue.core.tests.test_state import clone
 
 from ..qt_data_viewer import WWTQtViewer
+
+
+class WWTQtViewerBlocking(WWTQtViewer):
+
+    def _initialize_wwt(self):
+        from pywwt.qt import WWTQtClient
+        self._wwt = WWTQtClient(block_until_ready=sys.platform != 'win32')
 
 
 class TestWWTDataViewer(object):
@@ -18,8 +32,14 @@ class TestWWTDataViewer(object):
         self.dc.append(self.d)
         self.hub = self.dc.hub
         self.session = self.application.session
-        self.viewer = self.application.new_data_viewer(WWTQtViewer)
+        self.viewer = self.application.new_data_viewer(WWTQtViewerBlocking)
         self.options = self.viewer.options_widget()
+
+    def teardown_method(self, method):
+        self.viewer.close(warn=False)
+        self.viewer = None
+        self.application.close()
+        self.application = None
 
     def register(self):
         self.viewer.register_to_hub(self.hub)
@@ -130,6 +150,18 @@ class TestWWTDataViewer(object):
         assert len(self.viewer.layers) == 1
         assert subset_layer.wwt_client.layers.add_table_layer.call_count == 0
         assert subset_layer.wwt_layer is None
+
+    @pytest.mark.skipif(sys.platform == 'win32', reason="Test causes issues on Windows")
+    def test_save_tour(self, tmpdir):
+
+        filename = tmpdir.join('mytour.wtt').strpath
+        self.viewer.add_data(self.d)
+        with patch.object(compat, 'getsavefilename', return_value=(filename, None)):
+            self.viewer.toolbar.tools['save'].subtools[1].activate()
+
+        assert os.path.exists(filename)
+        with io.open(filename, newline='') as f:
+            assert f.read().startswith("<?xml version='1.0' encoding='UTF-8'?>\r\n<FileCabinet")
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):

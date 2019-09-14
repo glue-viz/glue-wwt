@@ -2,7 +2,9 @@ from __future__ import absolute_import, division, print_function
 
 import io
 import os
+import sys
 
+import pytest
 from mock import MagicMock, patch
 
 from qtpy import compat
@@ -142,6 +144,7 @@ class TestWWTDataViewer(object):
         assert subset_layer.wwt_client.layers.add_table_layer.call_count == 0
         assert subset_layer.wwt_layer is None
 
+    @pytest.mark.skipif(sys.platform == 'win32', reason="Test causes issues on Windows")
     def test_save_tour(self, tmpdir):
 
         filename = tmpdir.join('mytour.wtt').strpath

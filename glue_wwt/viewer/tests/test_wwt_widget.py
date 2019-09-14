@@ -145,13 +145,6 @@ class TestWWTDataViewer(object):
 
     def test_save_tour(self, tmpdir):
 
-        app = get_qapp()
-
-        while True:
-            app.processEvents()
-            if self.viewer._wwt.widget._wwt_ready:
-                break
-
         filename = tmpdir.join('mytour.wtt').strpath
         self.viewer.add_data(self.d)
         with patch.object(compat, 'getsavefilename', return_value=(filename, None)):

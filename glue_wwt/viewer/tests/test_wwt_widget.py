@@ -27,6 +27,12 @@ class TestWWTDataViewer(object):
         self.viewer = self.application.new_data_viewer(WWTQtViewer)
         self.options = self.viewer.options_widget()
 
+    def teardown_method(self, method):
+        self.viewer.close(warn=False)
+        self.viewer = None
+        self.application.close()
+        self.application = None
+
     def register(self):
         self.viewer.register_to_hub(self.hub)
 

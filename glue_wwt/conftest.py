@@ -15,3 +15,9 @@ def pytest_configure(config):
 
     from glue.utils.qt import get_qapp
     app = get_qapp()
+
+
+def pytest_unconfigure(config):
+    global app
+    app.quit()
+    app = None

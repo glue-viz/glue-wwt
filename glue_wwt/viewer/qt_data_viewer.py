@@ -40,7 +40,7 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
 
     def _initialize_wwt(self):
         from pywwt.qt import WWTQtClient
-        self._wwt = WWTQtClient(block_until_ready=True)
+        self._wwt = WWTQtClient()
 
     def closeEvent(self, event):
         self._wwt.widget.close()

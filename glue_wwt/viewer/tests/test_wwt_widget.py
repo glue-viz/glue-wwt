@@ -10,7 +10,6 @@ from qtpy import compat
 from glue.app.qt import GlueApplication
 from glue.core import Data, message
 from glue.core.tests.test_state import clone
-from glue.utils.qt import get_qapp
 
 from ..qt_data_viewer import WWTQtViewer
 

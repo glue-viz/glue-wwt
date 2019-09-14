@@ -20,7 +20,7 @@ class WWTQtViewerBlocking(WWTQtViewer):
 
     def _initialize_wwt(self):
         from pywwt.qt import WWTQtClient
-        self._wwt = WWTQtClient(block_until_ready=True)
+        self._wwt = WWTQtClient(block_until_ready=sys.platform != 'win32')
 
 
 class TestWWTDataViewer(object):

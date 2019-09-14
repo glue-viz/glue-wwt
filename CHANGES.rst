@@ -1,7 +1,7 @@
 0.5 (unreleased)
 ----------------
 
-- No changes yet.
+- Included a save button to save the current view to the first slide of a tour. [#72]
 
 0.4 (2019-06-23)
 ----------------

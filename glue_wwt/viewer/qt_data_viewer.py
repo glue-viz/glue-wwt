@@ -49,3 +49,9 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
     def _on_wwt_ready(self):
         self.options_widget().setEnabled(True)
         self.layer_view().setEnabled(True)
+
+
+# To ensure backward compatibility with old session files, we need to add the
+# Qt viewer to the data_viewer namespace
+from . import data_viewer  # noqa
+data_viewer.WWTDataViewer = WWTQtViewer

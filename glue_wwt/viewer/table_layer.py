@@ -266,10 +266,15 @@ class WWTTableLayerArtist(LayerArtist):
                 lat = coord.spherical.lat.degree
 
             # For some reason in 3D mode, when the frame is Sky, we need to
-            # shift the longitudes by 180 degrees.
+            # shift the longitudes by 180 degrees. However we also make sure
+            # we send the original version since this might be needed e.g. when
+            # exporting tours.
             if self._viewer_state.mode in MODES_3D:
+                lon_orig = lon.copy()
                 lon = lon + 180
                 lon[lon > 360] -= 360
+            else:
+                lon_orig = None
 
             # FIXME: kpc isn't yet a valid unit in WWT/PyWWT:
             # https://github.com/WorldWideTelescope/wwt-web-client/pull/197
@@ -296,6 +301,9 @@ class WWTTableLayerArtist(LayerArtist):
             if cmap_values is not None:
                 tab['cmap'] = cmap_values
                 data_kwargs['cmap_att'] = 'cmap'
+
+            if lon_orig is not None:
+                tab['lon_orig'] = lon_orig * u.degree
 
             self.wwt_layer = self.wwt_client.layers.add_table_layer(tab, frame=ref_frame,
                                                                     lon_att='lon', lat_att='lat',

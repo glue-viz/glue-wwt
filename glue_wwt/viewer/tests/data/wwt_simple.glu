@@ -133,17 +133,27 @@
     "axis": 0,
     "world": false
   },
+  "CoordinateComponent_0": {
+    "_type": "glue.core.component.CoordinateComponent",
+    "axis": 0,
+    "world": true
+  },
+  "Coordinates": {
+    "_type": "glue.core.coordinates.Coordinates"
+  },
   "DataCollection": {
     "_protocol": 4,
     "_type": "glue.core.data_collection.DataCollection",
     "cids": [
       "Pixel Axis 0 [x]",
+      "World 0",
       "a",
       "b",
       "c"
     ],
     "components": [
       "CoordinateComponent",
+      "CoordinateComponent_0",
       "Component",
       "Component_0",
       "Component_1"
@@ -226,40 +236,44 @@
       "zorder": 1
     }
   },
+  "World 0": {
+    "_type": "glue.core.component_id.ComponentID",
+    "label": "World 0"
+  },
   "__main__": {
     "_type": "glue.app.qt.application.GlueApplication",
     "data": "DataCollection",
     "plugins": [
+      "glue_wwt",
       "glue.plugins.dendro_viewer.qt",
-      "glue_plotly",
-      "glue.viewers.profile.qt",
+      "glue_exp.tools.zoom_buttons",
+      "mosviz",
+      "glue.plugins.export_d3po",
       "glue_exp.importers.webcam",
-      "glue_medical",
-      "glue.viewers.image.qt",
-      "glue_exp.importers.vizier",
+      "glue_ginga",
       "glue_vispy_viewers.scatter",
+      "glue.viewers.histogram.qt",
       "glue.core.data_exporters",
       "glue_h5part",
-      "mosviz",
-      "glue_vispy_viewers.volume",
+      "glue.plugins.tools",
       "glue.plugins.tools.pv_slicer",
       "glue.viewers.scatter.qt",
-      "glue_ginga",
+      "glue.viewers.table.qt",
+      "glue_dataverse",
       "glue_openspace",
-      "glue_geospatial",
-      "glue_noaodatalab",
-      "glue.plugins.tools",
-      "glue.plugins.export_d3po",
+      "glue.plugins.coordinate_helpers",
       "glue_exp.tools.floodfill_selection",
       "glue.plugins.wcs_autolinking",
-      "glue.plugins.coordinate_helpers",
-      "glue.viewers.table.qt",
-      "glue_exp.tools.zoom_buttons",
-      "glue.viewers.histogram.qt",
-      "glue.io.formats.fits",
+      "glue_geospatial",
+      "glue_exp.importers.vizier",
+      "glue_plotly",
       "glue_exp.tools.contour_selection",
-      "glue_wwt",
-      "glue_dataverse"
+      "glue_noaodatalab",
+      "glue.viewers.image.qt",
+      "glue.viewers.profile.qt",
+      "glue_medical",
+      "glue.io.formats.fits",
+      "glue_vispy_viewers.volume"
     ],
     "session": "Session",
     "tab_names": [
@@ -289,6 +303,10 @@
         "CoordinateComponent"
       ],
       [
+        "World 0",
+        "CoordinateComponent_0"
+      ],
+      [
         "a",
         "Component"
       ],
@@ -301,6 +319,7 @@
         "Component_1"
       ]
     ],
+    "coords": "Coordinates",
     "label": "basic",
     "meta": {
       "_type": "collections.OrderedDict",
@@ -308,6 +327,7 @@
     },
     "primary_owner": [
       "Pixel Axis 0 [x]",
+      "World 0",
       "a",
       "b",
       "c"
@@ -322,7 +342,7 @@
       "markersize": 3
     },
     "subsets": [],
-    "uuid": "65e9dd23-eec3-41fc-8136-2e99883daf8a"
+    "uuid": "116ed42c-d00b-460a-88dd-0fa4dcbf634d"
   },
   "c": {
     "_type": "glue.core.component_id.ComponentID",

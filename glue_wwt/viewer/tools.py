@@ -72,7 +72,9 @@ class SaveTourTool(Tool):
         app = get_qapp()
 
         filename, _ = compat.getsavefilename(caption='Save File',
-                                             filters='WWT Tour File (*.wtt);;')
+                                             basedir='mytour.wtt',
+                                             filters='WWT Tour File (*.wtt);;',
+                                             selectedfilter='WWT Tour File (*.wtt);;')
 
         # This indicates that the user cancelled
         if not filename:

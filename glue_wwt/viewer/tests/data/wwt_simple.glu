@@ -1,0 +1,357 @@
+{
+  "CallbackList": {
+    "_type": "glue.external.echo.list.CallbackList",
+    "values": [
+      "st__2MASS: Catalog (Synthetic, Near Infrared)",
+      "st__2MASS: Two Micron All Sky Survey (Synthetic, Near Infrared)",
+      "st__2Mass: Imagery (Infrared)",
+      "st__Big Picture (Optical)",
+      "st__Black Sky Background",
+      "st__Bonn 1420 MHz Survey (Radio)",
+      "st__CGRO Compton Telescope: 3 channel data (Gamma)",
+      "st__COBE DIRBE (Infrared)",
+      "st__COBE DIRBE Annual Average Map (Infrared)",
+      "st__COBE DIRBE Zodi-Subtracted Mission Average (Infrared)",
+      "st__Digitized Sky Survey (Color)",
+      "st__EGRET Hard (Gamma)",
+      "st__EGRET Soft (Gamma)",
+      "st__EUVE 171 : Extreme Ultraviolet Explorer 171 Angstroms",
+      "st__EUVE 405 : Extreme Ultraviolet Explorer 405 Angstroms",
+      "st__EUVE 555 : Extreme Ultraviolet Explorer 555 Angstroms",
+      "st__EUVE 83 : Extreme Ultraviolet Explorer 83 Angstroms",
+      "st__Extreme Ultraviolet Explorer",
+      "st__Fermi (Gamma)",
+      "st__Fermi LAT 8-year (gamma)",
+      "st__Fermi Six Months (Gamma)",
+      "st__Fermi Year Three (Gamma)",
+      "st__Fermi Year Two (Gamma)",
+      "st__GALEX (Ultraviolet)",
+      "st__GALEX 2 Combined",
+      "st__GALEX 2 Far-UV",
+      "st__GALEX 2 Near-UV",
+      "st__GALEX 4 Far-UV",
+      "st__GALEX 4 Near-UV",
+      "st__GLIMPSE 360",
+      "st__GLIMPSE IRAC",
+      "st__GLIMPSE/MIPSGAL",
+      "st__GRANAT/SIGMA Flux (X-Ray)",
+      "st__GRANAT/SIGMA Significance (X-Ray)",
+      "st__HI All-Sky Continuum Survey (Radio)",
+      "st__Hydrogen Alpha Full Sky Map",
+      "st__IRIS 100 Microns (Infrared)",
+      "st__IRIS 12 Microns (Infrared)",
+      "st__IRIS 25 Microns (Infrared)",
+      "st__IRIS 60 Microns (Infrared)",
+      "st__IRIS: Improved Reprocessing of IRAS Survey (Infrared)",
+      "st__NVSS: NRAO VLA Sky Survey (Radio)",
+      "st__Planck CMB",
+      "st__Planck Dust & Gas",
+      "st__Planck Ionized Gas (free-free)",
+      "st__Planck Lensing (Mass)",
+      "st__Planck Molecular Gas (CO)",
+      "st__Planck Spinning Dust",
+      "st__Planck Synchrotron (non-thermal)",
+      "st__Planck Thermal Dust",
+      "st__RASS: ROSAT All Sky Survey (X-ray)",
+      "st__ROSAT Broad Band Count Map (X-Ray)",
+      "st__ROSAT Hard Band Count Map (X-Ray)",
+      "st__ROSAT Hard Band Intensity (X-Ray)",
+      "st__ROSAT PSPC summed pointed observations, 2 degree cutoff, intensity (X-Ray)",
+      "st__ROSAT Soft Band Count Map (X-Ray)",
+      "st__ROSAT Soft Band Intensity (X-Ray)",
+      "st__SDSS: Sloan Digital Sky Survey (Optical)",
+      "st__SFD 100 Micron (Infrared)",
+      "st__SFD Dust Map (Infrared)",
+      "st__SUMSS: Sydney University Molonglo Sky Survey (Radio)",
+      "st__Swift BAT All-Sky Survey: Flux 14-195 keV (X-Ray)",
+      "st__Swift BAT All-Sky Survey: Significance 14-195 keV (X-Ray)",
+      "st__Tycho (Synthetic, Optical)",
+      "st__USNOB: US Naval Observatory B 1.0 (Synthetic, Optical)",
+      "st__VLA FIRST: Faint Images of the Radio Sky at Twenty-centimeters",
+      "st__VLSS: VLA Low-frequency Sky Survey (Radio)",
+      "st__WISE All Sky (Infrared)",
+      "st__WMAP Cosmic Microwave Background",
+      "st__WMAP ILC 5-Year CMB",
+      "st__WMAP ILC 5-Year Cosmic Microwave Background",
+      "st__WMAP K (Linear) 23 GHz",
+      "st__WMAP K (Non-linear) 23 GHz",
+      "st__WMAP K (Polarization Map) 50 uK",
+      "st__WMAP K Band (Microwave)",
+      "st__WMAP Ka (Linear) 33 GHz",
+      "st__WMAP Ka (Non-linear) 33 GHz",
+      "st__WMAP Ka (Polarization Map) 35 uK",
+      "st__WMAP Ka Band (Microwave)",
+      "st__WMAP Q (Linear) 41 GHz",
+      "st__WMAP Q (Non-linear) 41 GHz",
+      "st__WMAP Q (Polarization Map) 35 uK",
+      "st__WMAP Q Band (Microwave)",
+      "st__WMAP QVW Linear (Microwave)",
+      "st__WMAP QVW Power (Microwave)",
+      "st__WMAP V (Linear) 61 GHz",
+      "st__WMAP V (Non-linear) 61 GHz",
+      "st__WMAP V (Polarization Map) 35 uK",
+      "st__WMAP V Band (Microwave)",
+      "st__WMAP W (Linear) 94 GHz",
+      "st__WMAP W (Non-linear) 94 GHz",
+      "st__WMAP W (Polarization Map) 35 uK",
+      "st__WMAP W Band (Microwave)",
+      "st__Westerbork Northern Sky Survey (Radio)"
+    ]
+  },
+  "CallbackList_0": {
+    "_type": "glue.external.echo.list.CallbackList",
+    "values": [
+      "WWTLayerState"
+    ]
+  },
+  "Component": {
+    "_type": "glue.core.component.Component",
+    "data": {
+      "_type": "numpy.ndarray",
+      "data": "k05VTVBZAQB2AHsnZGVzY3InOiAnPGY4JywgJ2ZvcnRyYW5fb3JkZXInOiBGYWxzZSwgJ3NoYXBlJzogKDMsKSwgfSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAoAAAAAAADwP5qZmZmZmck/AAAAAAAA8L8="
+    },
+    "units": ""
+  },
+  "Component_0": {
+    "_type": "glue.core.component.Component",
+    "data": {
+      "_type": "numpy.ndarray",
+      "data": "k05VTVBZAQB2AHsnZGVzY3InOiAnPGk4JywgJ2ZvcnRyYW5fb3JkZXInOiBGYWxzZSwgJ3NoYXBlJzogKDMsKSwgfSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAoDAAAAAAAAAAIAAAAAAAAAAgAAAAAAAAA="
+    },
+    "units": ""
+  },
+  "Component_1": {
+    "_type": "glue.core.component.Component",
+    "data": {
+      "_type": "numpy.ndarray",
+      "data": "k05VTVBZAQB2AHsnZGVzY3InOiAnPGY4JywgJ2ZvcnRyYW5fb3JkZXInOiBGYWxzZSwgJ3NoYXBlJzogKDMsKSwgfSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAoAAAAAAAAQQJqZmZmZmdk/AAAAAAAAFEA="
+    },
+    "units": ""
+  },
+  "CoordinateComponent": {
+    "_type": "glue.core.component.CoordinateComponent",
+    "axis": 0,
+    "world": false
+  },
+  "DataCollection": {
+    "_protocol": 4,
+    "_type": "glue.core.data_collection.DataCollection",
+    "cids": [
+      "Pixel Axis 0 [x]",
+      "a",
+      "b",
+      "c"
+    ],
+    "components": [
+      "CoordinateComponent",
+      "Component",
+      "Component_0",
+      "Component_1"
+    ],
+    "data": [
+      "basic"
+    ],
+    "groups": [],
+    "links": [],
+    "subset_group_count": 0
+  },
+  "LinearSegmentedColormap": {
+    "_type": "matplotlib.colors.LinearSegmentedColormap",
+    "cmap": "gray"
+  },
+  "Pixel Axis 0 [x]": {
+    "_type": "glue.core.component_id.PixelComponentID",
+    "axis": 0,
+    "label": "Pixel Axis 0 [x]"
+  },
+  "Session": {
+    "_type": "glue.core.session.Session"
+  },
+  "WWTDataViewer": {
+    "_protocol": 1,
+    "_type": "glue_wwt.viewer.data_viewer.WWTDataViewer",
+    "layers": [
+      {
+        "_type": "glue_wwt.viewer.layer_artist.WWTLayer",
+        "state": "WWTLayerState"
+      }
+    ],
+    "pos": [
+      0,
+      0
+    ],
+    "session": "Session",
+    "size": [
+      800,
+      600
+    ],
+    "state": {
+      "values": {
+        "alt_att": null,
+        "alt_type": "st__Altitude",
+        "alt_unit": "st__m",
+        "background": "st__COBE DIRBE Annual Average Map (Infrared)",
+        "foreground": "st__2MASS: Two Micron All Sky Survey (Synthetic, Near Infrared)",
+        "foreground_opacity": 1.0,
+        "frame": "st__ICRS",
+        "galactic": false,
+        "imagery_layers": "CallbackList",
+        "lat_att": "b",
+        "layers": "CallbackList_0",
+        "lon_att": "a",
+        "mode": "st__Sky"
+      }
+    }
+  },
+  "WWTLayerState": {
+    "_type": "glue_wwt.viewer.state.WWTLayerState",
+    "values": {
+      "alpha": 0.8,
+      "cmap": "LinearSegmentedColormap",
+      "cmap_att": "a",
+      "cmap_limits_cache": "dict",
+      "cmap_vmax": 1.0,
+      "cmap_vmin": -1.0,
+      "color": "st__#595959",
+      "color_mode": "st__Fixed",
+      "layer": "basic",
+      "size": 3,
+      "size_att": "a",
+      "size_limits_cache": "dict_0",
+      "size_mode": "st__Fixed",
+      "size_scaling": 1,
+      "size_vmax": 1.0,
+      "size_vmin": -1.0,
+      "visible": true,
+      "zorder": 1
+    }
+  },
+  "__main__": {
+    "_type": "glue.app.qt.application.GlueApplication",
+    "data": "DataCollection",
+    "plugins": [
+      "glue.plugins.dendro_viewer.qt",
+      "glue_plotly",
+      "glue.viewers.profile.qt",
+      "glue_exp.importers.webcam",
+      "glue_medical",
+      "glue.viewers.image.qt",
+      "glue_exp.importers.vizier",
+      "glue_vispy_viewers.scatter",
+      "glue.core.data_exporters",
+      "glue_h5part",
+      "mosviz",
+      "glue_vispy_viewers.volume",
+      "glue.plugins.tools.pv_slicer",
+      "glue.viewers.scatter.qt",
+      "glue_ginga",
+      "glue_openspace",
+      "glue_geospatial",
+      "glue_noaodatalab",
+      "glue.plugins.tools",
+      "glue.plugins.export_d3po",
+      "glue_exp.tools.floodfill_selection",
+      "glue.plugins.wcs_autolinking",
+      "glue.plugins.coordinate_helpers",
+      "glue.viewers.table.qt",
+      "glue_exp.tools.zoom_buttons",
+      "glue.viewers.histogram.qt",
+      "glue.io.formats.fits",
+      "glue_exp.tools.contour_selection",
+      "glue_wwt",
+      "glue_dataverse"
+    ],
+    "session": "Session",
+    "tab_names": [
+      "Tab 1"
+    ],
+    "viewers": [
+      [
+        "WWTDataViewer"
+      ]
+    ]
+  },
+  "a": {
+    "_type": "glue.core.component_id.ComponentID",
+    "label": "a"
+  },
+  "b": {
+    "_type": "glue.core.component_id.ComponentID",
+    "label": "b"
+  },
+  "basic": {
+    "_key_joins": [],
+    "_protocol": 5,
+    "_type": "glue.core.data.Data",
+    "components": [
+      [
+        "Pixel Axis 0 [x]",
+        "CoordinateComponent"
+      ],
+      [
+        "a",
+        "Component"
+      ],
+      [
+        "b",
+        "Component_0"
+      ],
+      [
+        "c",
+        "Component_1"
+      ]
+    ],
+    "label": "basic",
+    "meta": {
+      "_type": "collections.OrderedDict",
+      "contents": {}
+    },
+    "primary_owner": [
+      "Pixel Axis 0 [x]",
+      "a",
+      "b",
+      "c"
+    ],
+    "style": {
+      "_type": "glue.core.visual.VisualAttributes",
+      "alpha": 0.8,
+      "color": "#595959",
+      "linestyle": "solid",
+      "linewidth": 1,
+      "marker": "o",
+      "markersize": 3
+    },
+    "subsets": [],
+    "uuid": "65e9dd23-eec3-41fc-8136-2e99883daf8a"
+  },
+  "c": {
+    "_type": "glue.core.component_id.ComponentID",
+    "label": "c"
+  },
+  "dict": {
+    "_type": "builtins.dict",
+    "contents": {
+      "a": "dict_1"
+    }
+  },
+  "dict_0": {
+    "_type": "builtins.dict",
+    "contents": {
+      "a": "dict_2"
+    }
+  },
+  "dict_1": {
+    "_type": "builtins.dict",
+    "contents": {
+      "st__lower": -1.0,
+      "st__upper": 1.0
+    }
+  },
+  "dict_2": {
+    "_type": "builtins.dict",
+    "contents": {
+      "st__lower": -1.0,
+      "st__upper": 1.0
+    }
+  }
+}

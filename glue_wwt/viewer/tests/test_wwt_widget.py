@@ -15,6 +15,8 @@ from glue.core.tests.test_state import clone
 
 from ..qt_data_viewer import WWTQtViewer
 
+DATA = os.path.join(os.path.dirname(__file__), 'data')
+
 
 class WWTQtViewerBlocking(WWTQtViewer):
 
@@ -162,6 +164,15 @@ class TestWWTDataViewer(object):
         assert os.path.exists(filename)
         with io.open(filename, newline='') as f:
             assert f.read().startswith("<?xml version='1.0' encoding='UTF-8'?>\r\n<FileCabinet")
+
+    def test_load_session_back_compat(self):
+
+        # Make sure that old session files continue to work
+
+        app = GlueApplication.restore_session(os.path.join(DATA, 'wwt_simple.glu'))
+        viewer_state = app.viewers[0][0].state
+        assert viewer_state.lon_att.label == 'a'
+        assert viewer_state.lat_att.label == 'b'
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):

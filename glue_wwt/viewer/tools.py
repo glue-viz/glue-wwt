@@ -100,5 +100,15 @@ class SaveTourTool(Tool):
         if not tourxml:
             raise Exception("Failed to save tour")
 
+        # Patch the altUnit so that it is correct for the Windows client (since
+        # the web client currently has other bugs with relation to loading tours).
+        # https://github.com/WorldWideTelescope/wwt-web-client/issues/248
+        for unit_int in range(1, 11):
+            altunit_str = 'AltUnit="{0}"'.format(unit_int)
+            if altunit_str in tourxml:
+                altunit_str_new = 'AltUnit="{0}"'.format(unit_int - 1)
+                print('Changing {0} to {1} in {2}'.format(altunit_str, altunit_str_new, filename))
+                tourxml = tourxml.replace(altunit_str, altunit_str_new)
+
         with io.open(filename, 'w', newline='') as f:
             f.write(tourxml)

@@ -203,7 +203,7 @@
         "background": "st__COBE DIRBE Annual Average Map (Infrared)",
         "foreground": "st__2MASS: Two Micron All Sky Survey (Synthetic, Near Infrared)",
         "foreground_opacity": 1.0,
-        "frame": "st__ICRS",
+        "frame": "st__Galactic",
         "galactic": false,
         "imagery_layers": "CallbackList",
         "lat_att": "b",

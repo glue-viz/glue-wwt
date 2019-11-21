@@ -173,6 +173,7 @@ class TestWWTDataViewer(object):
         viewer_state = app.viewers[0][0].state
         assert viewer_state.lon_att.label == 'a'
         assert viewer_state.lat_att.label == 'b'
+        assert viewer_state.frame == 'Galactic'
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):

@@ -26,7 +26,7 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
     subtools = {'save': ['wwt:save', 'wwt:savetour']}
 
     def __init__(self, session, parent=None, state=None):
-        DataViewer.__init__(self, session, parent=None, state=None)
+        DataViewer.__init__(self, session, parent=None, state=state)
         WWTDataViewerBase.__init__(self)
 
         self.setCentralWidget(self._wwt.widget)

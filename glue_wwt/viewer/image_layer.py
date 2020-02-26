@@ -3,8 +3,9 @@ from __future__ import absolute_import, division, print_function
 import random
 import numpy as np
 
+from astropy.wcs import WCS
+
 from glue.logger import logger
-from glue.core.coordinates import WCSCoordinates
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.exceptions import IncompatibleAttribute
 from glue.viewers.common.layer_artist import LayerArtist
@@ -109,9 +110,9 @@ class WWTImageLayerArtist(LayerArtist):
         if force or any(x in changed for x in RESET_IMAGE_PROPERTIES):
             self.clear()
 
-            if not isinstance(self.layer.coords, WCSCoordinates):
+            if not isinstance(self.layer.coords, WCS):
                 raise ValueError('oh no not wcs')
-            wcs = self.layer.coords.wcs
+            wcs = self.layer.coords
 
             try:
                 data = self.layer[self.state.img_data_att]

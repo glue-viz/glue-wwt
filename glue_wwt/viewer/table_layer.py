@@ -5,7 +5,6 @@ from .viewer_state import MODES_3D
 import random
 
 from glue.config import colormaps
-from glue.core.coordinates import WCSCoordinates
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.exceptions import IncompatibleAttribute
 from glue.core.state_objects import StateAttributeLimitsHelper

@@ -12,7 +12,7 @@ jobs:
   parameters:
     envs:
 
-    - linux: pep8
+    - linux: codestyle
 
     - linux: py36_test
     - linux: py37_test
@@ -22,6 +22,3 @@ jobs:
 
     - macosx: py36_test
     - macosx: py37_test
-
-
-

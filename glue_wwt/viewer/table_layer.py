@@ -5,7 +5,6 @@ from .viewer_state import MODES_3D
 import random
 
 from glue.config import colormaps
-from glue.core.coordinates import WCSCoordinates
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.exceptions import IncompatibleAttribute
 from glue.core.state_objects import StateAttributeLimitsHelper
@@ -357,42 +356,6 @@ class WWTTableLayerArtist(LayerArtist):
         self.enable()
 
         # TODO: deal with visible, zorder, frame
-
-    def _update_image(self, force=False, **kwargs):
-        changed = set() if force else self.pop_changed_properties()
-
-        logger.debug("updating WWT for 2D image %s" % self.layer.label)
-
-        if self.visible is False:
-            if self.wwt_layer is not None:
-                self.wwt_layer.remove()
-                self.wwt_layer = None
-            return
-
-        if force or 'mode' in changed or self.wwt_layer is None:
-            self.clear()
-            force = True
-
-        if force or any(x in changed for x in RESET_TABLE_PROPERTIES):
-            self.clear()
-
-            if not isinstance(self.layer.coords, WCSCoordinates):
-                raise ValueError('oh no not wcs')
-            wcs = self.layer.coords.wcs
-
-            try:
-                data = self.layer[self.state.img_data_att]
-            except IncompatibleAttribute:
-                self.disable_invalid_attributes(self.state.img_data_att)
-                return
-
-            self.wwt_layer = self.wwt_client.layers.add_image_layer((data, wcs))
-            force = True
-
-        # if force or 'cmap_vmax' in changed:
-        #    self.wwt_layer.cmap_vmax = self.state.cmap_vmax
-
-        self.enable()
 
     def center(self, *args):
         lon, lat = self._coords

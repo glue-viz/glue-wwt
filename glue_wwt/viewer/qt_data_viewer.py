@@ -31,7 +31,7 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
 
         self.setCentralWidget(self._wwt.widget)
         self.resize(self._wwt.widget.size())
-        self.setWindowTitle("WorldWide Telescope")
+        self.setWindowTitle("Earth/Planet/Sky Viewer (WWT)")
 
         self.options_widget().setEnabled(False)
         self.layer_view().setEnabled(False)

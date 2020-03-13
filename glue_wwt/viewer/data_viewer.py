@@ -12,7 +12,7 @@ __all__ = ['WWTDataViewerBase']
 
 
 class WWTDataViewerBase(object):
-    LABEL = 'WorldWideTelescope (WWT)'
+    LABEL = 'Earth/Planet/Sky Viewer (WWT)'
     _wwt = None
 
     _state_cls = WWTDataViewerState

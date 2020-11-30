@@ -40,7 +40,9 @@ jobs:
     - macos: py38-test
     - macos: py39-test
 
-    - windows: py36-test
-    - windows: py37-test
-    - windows: py38-test
-    - windows: py39-test
+    # FIXME: the following builds appear to hang so we
+    # turn them off for now until this is resolved.
+    # - windows: py36-test
+    # - windows: py37-test
+    # - windows: py38-test
+    # - windows: py39-test

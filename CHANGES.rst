@@ -1,4 +1,4 @@
-0.5 (unreleased)
+0.5 (2020-11-30)
 ----------------
 
 - Fixed compatibility with glue-core 1.0. [#77]

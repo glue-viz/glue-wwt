@@ -10,9 +10,9 @@ from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.exceptions import IncompatibleAttribute
 from glue.viewers.common.layer_artist import LayerArtist
 from glue.viewers.common.state import LayerState
-from glue.external.echo import (CallbackProperty,
-                                SelectionCallbackProperty,
-                                keep_in_sync)
+from echo import (CallbackProperty,
+                  SelectionCallbackProperty,
+                  keep_in_sync)
 
 from pywwt.layers import VALID_STRETCHES
 

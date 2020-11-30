@@ -8,9 +8,9 @@ from glue.config import colormaps
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.exceptions import IncompatibleAttribute
 from glue.core.state_objects import StateAttributeLimitsHelper
-from glue.external.echo import (CallbackProperty,
-                                SelectionCallbackProperty, delay_callback,
-                                keep_in_sync)
+from echo import (CallbackProperty,
+                  SelectionCallbackProperty, delay_callback,
+                  keep_in_sync)
 from glue.logger import logger
 from glue.viewers.common.layer_artist import LayerArtist
 from glue.viewers.common.state import LayerState

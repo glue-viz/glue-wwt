@@ -1,7 +1,15 @@
 0.5 (unreleased)
 ----------------
 
-- Included a save button to save the current view to the first slide of a tour. [#72]
+- Fixed compatibility with glue-core 1.0. [#77]
+
+- Fixed a bug that caused altitude unit to not work correctly on Windows. [#74]
+
+- Fixed a bug related to reloading sessions with WWT viewers. [#76]
+
+- Included a save button to save the current view to the first slide of a tour. [#70, #72, #73]
+
+- Added initial support for using glue-wwt in Jupyter. [#64]
 
 0.4 (2019-06-23)
 ----------------

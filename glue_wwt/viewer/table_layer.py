@@ -29,6 +29,9 @@ PYWWT_GE_013 = LooseVersion(pywwt.__version__) >= '0.13'
 # 0.9 is the first version that grabs the SDK from the WWT CDN
 PYWWT_LT_09 = LooseVersion(pywwt.__version__) < '0.9'
 
+# 0.15 is the first version with the updated engine
+PYWWT_GE_015 = LooseVersion(pywwt.__version__) >= '0.15'
+
 
 __all__ = ['WWTTableLayerArtist']
 
@@ -276,12 +279,13 @@ class WWTTableLayerArtist(LayerArtist):
             # This was fixed in @wwtelescope/engine 7.14.5
             # However, the WWT research app (which is the JS backend
             # for pywwt >= 0.13), is not yet using the new engine
-            # so we need to keep this fix in place
-            # 0.9 <= pywwt <= 0.12 grabs the v7 engine from the WWT CDN
+            # until 0.15, so we need to keep this fix in place for 0.13 <= version < 0.15
+            # 0.9 <= pywwt < 0.13 grabs the v7 engine from the WWT CDN
             # so does not need the fix
             # but pre-0.9 has its own internal wwtsdk.js (hosted on GitHub)
             # and so does
-            need_longitude_fix = PYWWT_GE_013 or PYWWT_LT_09
+            app_old_engine = PYWWT_GE_013 and not PYWWT_GE_015
+            need_longitude_fix = app_old_engine or PYWWT_LT_09
 
             if need_longitude_fix:
                 if self._viewer_state.mode in MODES_3D:

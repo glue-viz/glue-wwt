@@ -31,8 +31,6 @@ jobs:
         - windows: py39-test
 
   allowed_failures:
-    strategy:
-      fail-fast: false
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       libraries: |

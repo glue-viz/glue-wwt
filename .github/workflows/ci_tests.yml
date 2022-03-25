@@ -5,20 +5,26 @@ on:
   pull_request:
 
 jobs:
-  tests:
+  macos:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       envs: |
         # Standard tests
-        - macos: py38-test
-        - macos: py39-test
-        - macos: py310-test
+        - macos: py36-test
+        - macos: py37-test
+
+  windows:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      envs: |
+        # Standard tests
         - windows: py38-test
         - windows: py39-test
 
   linux:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
+      display: true
       libraries: |
         apt:
           - libxkbcommon-x11-0
@@ -34,12 +40,12 @@ jobs:
         # Code style
         - linux: codestyle
         # Standard tests
-        - linux: py38-test
-        - linux: py39-test
+        - linux: py36-test
 
   allowed_failures:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
+      display: true
       libraries: |
         apt:
           - libxkbcommon-x11-0
@@ -52,11 +58,13 @@ jobs:
           - libxcb-xinerama0
       envs: |
         # Tests allowed to fail
-        - linux: py36-test
         - linux: py37-test
+        - linux: py38-test
+        - linux: py39-test
         - linux: py310-test
-        - macos: py36-test
-        - macos: py37-test
+        - macos: py38-test
+        - macos: py39-test
+        - macos: py310-test
         - windows: py36-test
         - windows: py37-test
         - windows: py310-test

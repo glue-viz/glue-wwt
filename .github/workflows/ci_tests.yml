@@ -8,9 +8,9 @@ jobs:
   tests:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1.0.2
     with:
+      # fail-fast: true
       display: true
       coverage: codecov
-      fail-fast: true
       libraries: |
         apt:
           - libxkbcommon-x11-0
@@ -43,11 +43,12 @@ jobs:
         - windows: py39-test
 
   allowed_failures:
-    # Tests allowed to fail (will not trigger cancellation of all in-progress jobs)
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1.0.2
+    # Tests allowed to fail (not to trigger cancellation of all in-progress jobs).
+    # With tox.yml@v1.0.3 the fail-fast setting should hopefully handle this.
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
+      # fail-fast: false
       display: true
-      fail-fast: false
       envs: |
         # UnicodeDecodeError: 'utf-8' codec can't decode bytes in position 14099-14100: invalid continuation byte
         - windows: py36-test

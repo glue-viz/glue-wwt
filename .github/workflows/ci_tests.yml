@@ -12,12 +12,15 @@ jobs:
         # Standard tests
         - macos: py36-test
         - macos: py37-test
+        - macos: py38-test
+        - macos: py39-test
 
   windows:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       envs: |
         # Standard tests
+        - windows: py37-test
         - windows: py38-test
         - windows: py39-test
 
@@ -41,30 +44,20 @@ jobs:
         - linux: codestyle
         # Standard tests
         - linux: py36-test
+        - linux: py37-test
+        - linux: py38-test
+        - linux: py39-test
+        - linux: py310-test
 
   allowed_failures:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       display: true
-      libraries: |
-        apt:
-          - libxkbcommon-x11-0
-          - libxcb-icccm4
-          - libxcb-image0
-          - libxcb-keysyms1
-          - libxcb-randr0
-          - libxcb-render-util0
-          - libxcb-xfixes0
-          - libxcb-xinerama0
       envs: |
         # Tests allowed to fail
-        - linux: py37-test
-        - linux: py38-test
-        - linux: py39-test
-        - linux: py310-test
-        - macos: py38-test
-        - macos: py39-test
-        - macos: py310-test
+        # UnicodeDecodeError: 'utf-8' codec can't decode bytes in position 14099-14100: invalid continuation byte
         - windows: py36-test
-        - windows: py37-test
+        # FileNotFoundError: Could not find module 'geos_c.dll' (or one of its dependencies). Try using the full path with constructor syntax.
         - windows: py310-test
+        # OSError: Could not find library geos_c or load any of its variants
+        - macos: py310-test

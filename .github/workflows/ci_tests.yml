@@ -5,29 +5,12 @@ on:
   pull_request:
 
 jobs:
-  macos:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
-    with:
-      envs: |
-        # Standard tests
-        - macos: py36-test
-        - macos: py37-test
-        - macos: py38-test
-        - macos: py39-test
-
-  windows:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
-    with:
-      envs: |
-        # Standard tests
-        - windows: py37-test
-        - windows: py38-test
-        - windows: py39-test
-
-  linux:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+  tests:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1.0.2
     with:
       display: true
+      coverage: codecov
+      fail-fast: true
       libraries: |
         apt:
           - libxkbcommon-x11-0
@@ -38,10 +21,11 @@ jobs:
           - libxcb-render-util0
           - libxcb-xfixes0
           - libxcb-xinerama0
-      coverage: codecov
+
       envs: |
         # Code style
         - linux: codestyle
+
         # Standard tests
         - linux: py36-test
         - linux: py37-test
@@ -49,12 +33,22 @@ jobs:
         - linux: py39-test
         - linux: py310-test
 
+        - macos: py36-test
+        - macos: py37-test
+        - macos: py38-test
+        - macos: py39-test
+
+        - windows: py37-test
+        - windows: py38-test
+        - windows: py39-test
+
   allowed_failures:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    # Tests allowed to fail (will not trigger cancellation of all in-progress jobs)
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1.0.2
     with:
       display: true
+      fail-fast: false
       envs: |
-        # Tests allowed to fail
         # UnicodeDecodeError: 'utf-8' codec can't decode bytes in position 14099-14100: invalid continuation byte
         - windows: py36-test
         # FileNotFoundError: Could not find module 'geos_c.dll' (or one of its dependencies). Try using the full path with constructor syntax.

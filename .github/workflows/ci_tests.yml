@@ -8,7 +8,6 @@ jobs:
   tests:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
     with:
-      fail-fast: true
       display: true
       coverage: codecov
       libraries: |
@@ -27,31 +26,17 @@ jobs:
         - linux: codestyle
 
         # Standard tests
-        - linux: py36-test
         - linux: py37-test
         - linux: py38-test
         - linux: py39-test
         - linux: py310-test
 
-        - macos: py36-test
         - macos: py37-test
         - macos: py38-test
         - macos: py39-test
+        - macos: py310-test
 
         - windows: py37-test
         - windows: py38-test
         - windows: py39-test
-
-  allowed_failures:
-    # Tests allowed to fail (not to trigger cancellation of all in-progress jobs).
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
-    with:
-      fail-fast: false
-      display: true
-      envs: |
-        # UnicodeDecodeError: 'utf-8' codec can't decode bytes in position 14099-14100: invalid continuation byte
-        - windows: py36-test
-        # FileNotFoundError: Could not find module 'geos_c.dll' (or one of its dependencies). Try using the full path with constructor syntax.
         - windows: py310-test
-        # OSError: Could not find library geos_c or load any of its variants
-        - macos: py310-test

@@ -153,7 +153,8 @@ class TestWWTDataViewer(object):
         assert subset_layer.wwt_client.layers.add_table_layer.call_count == 0
         assert subset_layer.wwt_layer is None
 
-    @pytest.mark.skipif(sys.platform == 'win32', reason="Test causes issues on Windows")
+    # @pytest.mark.skipif(sys.platform == 'win32', reason="Test causes issues on Windows")
+    @pytest.mark.xfail(reason="'asynchronous' keyword unsupported by some JavaScript versions")
     def test_save_tour(self, tmpdir):
 
         filename = tmpdir.join('mytour.wtt').strpath

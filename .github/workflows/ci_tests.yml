@@ -1,0 +1,42 @@
+name: CI Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
+    with:
+      display: true
+      coverage: codecov
+      libraries: |
+        apt:
+          - libxkbcommon-x11-0
+          - libxcb-icccm4
+          - libxcb-image0
+          - libxcb-keysyms1
+          - libxcb-randr0
+          - libxcb-render-util0
+          - libxcb-xfixes0
+          - libxcb-xinerama0
+
+      envs: |
+        # Code style
+        - linux: codestyle
+
+        # Standard tests
+        - linux: py37-test
+        - linux: py38-test
+        - linux: py39-test
+        - linux: py310-test
+
+        - macos: py37-test
+        - macos: py38-test
+        - macos: py39-test
+        - macos: py310-test
+
+        - windows: py37-test
+        - windows: py38-test
+        - windows: py39-test
+        - windows: py310-test

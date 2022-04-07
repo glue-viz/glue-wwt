@@ -1,4 +1,4 @@
-name: CI Tests
+name: CI
 
 on:
   push:
@@ -40,3 +40,11 @@ jobs:
         - windows: py38-test
         - windows: py39-test
         - windows: py310-test
+
+  publish:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@main
+    with:
+      test_extras: test
+      test_command: pytest --pyargs glue_wwt
+    secrets:
+      pypi_token: ${{ secrets.pypi_token }}

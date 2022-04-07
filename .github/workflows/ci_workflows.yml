@@ -1,4 +1,4 @@
-name: CI
+name: CI Workflows
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
   tests:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@main
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       display: true
       coverage: codecov
@@ -42,9 +42,11 @@ jobs:
         - windows: py310-test
 
   publish:
-    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@main
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
     with:
-      test_extras: test
+      test_extras: 'test,qt'
       test_command: pytest --pyargs glue_wwt
+      libraries: 'libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xfixes0 libxcb-xinerama0'
+      display: true
     secrets:
       pypi_token: ${{ secrets.pypi_token }}

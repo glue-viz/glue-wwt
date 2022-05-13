@@ -224,7 +224,7 @@ class WWTTableLayerArtist(LayerArtist):
             try:
                 lat = self.layer[self._viewer_state.lat_att]
             except IncompatibleAttribute:
-                self.disable_invalid_attributes(self._viewer_state.dec_att)
+                self.disable_invalid_attributes(self._viewer_state.lat_att)
                 return
 
             if self._viewer_state.alt_att is not None:

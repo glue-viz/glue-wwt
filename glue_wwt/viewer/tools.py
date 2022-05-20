@@ -83,8 +83,8 @@ class SaveTourTool(Tool):
         if not filename.endswith('.wtt'):
             filename = filename + '.wtt'
 
-        self.viewer._wwt.widget.page.runJavaScript("tourxml = '';", asynchronous=False)
-        tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;', asynchronous=False)
+        self.viewer._wwt.widget.page.runJavaScript("tourxml = '';")
+        tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;')
 
         self.viewer._wwt.widget.page.runJavaScript(SAVE_TOUR_CODE)
 
@@ -93,7 +93,7 @@ class SaveTourTool(Tool):
         while time.time() - start < 10:
             time.sleep(0.1)
             app.processEvents()
-            tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;', asynchronous=False)
+            tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;')
             if tourxml:
                 break
 

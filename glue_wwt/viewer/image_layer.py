@@ -14,7 +14,7 @@ from echo import (CallbackProperty,
                   SelectionCallbackProperty,
                   keep_in_sync)
 
-from pywwt.layers import VALID_STRETCHES
+from pywwt.layers import VALID_COLORMAPS, VALID_STRETCHES
 
 
 __all__ = ['WWTImageLayerArtist']
@@ -37,14 +37,19 @@ class WWTImageLayerState(LayerState):
         default_index=0,
         choices=VALID_STRETCHES
     )
+    cmap = SelectionCallbackProperty(
+        default_index=0,
+        choices=VALID_COLORMAPS
+    )
 
     def __init__(self, layer=None, **kwargs):
         super(WWTImageLayerState, self).__init__(layer=layer)
 
+        self.color = self.layer.style.color
+        self.alpha = self.layer.style.alpha
+
         self._sync_color = keep_in_sync(self, 'color', self.layer.style, 'color')
         self._sync_alpha = keep_in_sync(self, 'alpha', self.layer.style, 'alpha')
-
-        self.color = self.layer.style.color
 
         self.img_data_att_helper = ComponentIDComboHelper(self, 'img_data_att',
                                                           numeric=True,
@@ -141,6 +146,10 @@ class WWTImageLayerArtist(LayerArtist):
         if force or 'vmax' in changed:
             if self.state.vmax is not None:
                 self.wwt_layer.vmax = self.state.vmax
+
+        if force or 'cmap' in changed:
+            if self.state.cmap is not None:
+                self.wwt_layer.cmap = self.state.cmap
 
         self.enable()
 

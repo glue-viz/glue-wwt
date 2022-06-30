@@ -1,3 +1,8 @@
+0.6 (unreleased)
+----------------
+
+- Added setting controls for image layers. [#88]
+
 0.5 (2020-11-30)
 ----------------
 

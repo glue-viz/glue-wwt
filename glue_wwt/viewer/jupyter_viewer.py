@@ -54,6 +54,7 @@ class JupyterImageLayerOptions(VBox):
         self.alpha = FloatSlider(description='alpha', min=0, max=1, value=self.state.alpha, step=0.01)
         link((self.state, 'alpha'), (self.alpha, 'value'))
 
+        self.cmap = LinkedDropdown(self.state, 'cmap', 'Colormap')
         self.stretch = LinkedDropdown(self.state, 'stretch', 'Stretch')
 
         self.vmin = FloatText(description='Min Val')
@@ -62,7 +63,7 @@ class JupyterImageLayerOptions(VBox):
         link((self.state, 'vmin'), (self.vmin, 'value'), lambda value: value or 0)
         link((self.state, 'vmax'), (self.vmax, 'value'), lambda value: value or 1)
 
-        super().__init__([self.data_att, self.alpha, self.stretch, self.lims])
+        super().__init__([self.data_att, self.alpha, self.cmap, self.stretch, self.lims])
 
 
 class JupyterTableLayerOptions(VBox):

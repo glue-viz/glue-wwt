@@ -20,6 +20,7 @@ from astropy.coordinates import SkyCoord
 from astropy.table import Table
 
 import pywwt
+from pywwt.layers import TableLayer
 from distutils.version import LooseVersion
 PYWWT_LT_06 = LooseVersion(pywwt.__version__) < '0.6'
 
@@ -324,6 +325,9 @@ class WWTTableLayerArtist(LayerArtist):
             if need_longitude_fix:
                 if lon_orig is not None:
                     tab['lon_orig'] = lon_orig * u.degree
+
+            if 'selectable' in TableLayer.class_trait_names():
+                data_kwargs['selectable'] = False
 
             self.wwt_layer = self.wwt_client.layers.add_table_layer(tab, frame=ref_frame,
                                                                     lon_att='lon', lat_att='lat',

@@ -39,8 +39,9 @@ To run the tests, do::
 at the root of the repository. This requires the
 `pytest <http://pytest.org>`__ module to be installed.
 
-.. |Actions Status| image:: https://github.com/glue-viz/glue-wwt/workflows/CI%20Tests/badge.svg
+.. |Actions Status| image:: https://github.com/glue-viz/glue-wwt/workflows/ci_workflows/badge.svg
     :target: https://github.com/glue-viz/glue-wwt/actions
     :alt: Glue WWT's GitHub Actions CI Status
 .. |Coverage Status| image:: https://codecov.io/gh/glue-viz/glue-wwt/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/glue-viz/glue-wwt
+    :target: https://codecov.io/gh/glue-viz/glue-wwt
+    :alt: Glue WWT's Coverage Status

@@ -14,6 +14,7 @@ jobs:
         apt:
           - '^libxcb.*-dev'
           - libxkbcommon-x11-dev
+          - libhdf5-dev
 
       envs: |
         # Code style

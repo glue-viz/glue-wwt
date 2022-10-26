@@ -5,7 +5,17 @@ on:
   pull_request:
 
 jobs:
+  initial_checks:
+    # Mandatory checks before CI tests
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      coverage: false
+      envs: |
+        # Code style
+        - linux: codestyle
+
   tests:
+    needs: initial_checks
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       display: true
@@ -17,14 +27,11 @@ jobs:
           - libhdf5-dev
 
       envs: |
-        # Code style
-        - linux: codestyle
-
         # Standard tests
         - linux: py38-test
-        - linux: py39-test
+        - linux: py39-devdeps
         - linux: py310-test
-        - linux: py311-test
+        - linux: py311-devdeps
 
         - macos: py38-test
         - macos: py39-test
@@ -37,6 +44,7 @@ jobs:
         - windows: py311-test
 
   publish:
+    needs: tests
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
     with:
       # setup headless X server as per pyvista/setup-headless-display-action@v1

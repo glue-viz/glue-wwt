@@ -25,6 +25,8 @@ jobs:
           - '^libxcb.*-dev'
           - libxkbcommon-x11-dev
           - libhdf5-dev
+        brew:
+          - hdf5
 
       envs: |
         # Standard tests
@@ -37,11 +39,12 @@ jobs:
         - macos: py39-test
         - macos: py310-test
         - macos: py311-test
+        - macos: py311-test-devdeps
 
         - windows: py38-test
         - windows: py39-test
         - windows: py310-test
-        - windows: py311-test
+        - windows: py311-test-devdeps
 
   publish:
     needs: tests

@@ -268,7 +268,12 @@ class WWTTableLayerArtist(LayerArtist):
                     coord = SkyCoord(lon, lat, unit=u.deg,
                                      frame=self._viewer_state.frame.lower()).icrs
                 except Exception as exc:
-                    self.disable(str(exc))
+                    # Truncate the exception string if it's too long
+                    disable_msg = str(exc)
+                    max_length = 300
+                    if len(disable_msg) > max_length:
+                        disable_msg = disable_msg[:max_length] + "..."
+                    self.disable(disable_msg)
                     return
 
                 lon = coord.spherical.lon.degree

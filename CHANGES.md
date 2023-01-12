@@ -1,5 +1,16 @@
 # Full changelog
 
+## v0.6.1 - 2023-01-12
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+### What's Changed
+
+#### Bug Fixes
+
+- Fix compatibility of .ui files with Qt6 by @astrofrog in https://github.com/glue-viz/glue-wwt/pull/93
+
+**Full Changelog**: https://github.com/glue-viz/glue-wwt/compare/v0.6.0...v0.6.1
+
 ## v0.6.0 - 2022-11-08
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->

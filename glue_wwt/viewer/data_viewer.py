@@ -2,7 +2,9 @@
 
 from __future__ import absolute_import, division, print_function
 
-from glue.core.coordinates import WCSCoordinates
+from astropy.wcs import WCS
+
+from glue.core import Subset
 
 from .image_layer import WWTImageLayerArtist
 from .table_layer import WWTTableLayerArtist
@@ -70,8 +72,14 @@ class WWTDataViewerBase(object):
         return cls(self.state, wwt_client=self._wwt, **kwargs)
 
     def get_data_layer_artist(self, layer=None, layer_state=None):
+
+        if isinstance(layer, Subset):
+            coords = layer.data.coords
+        else:
+            coords = layer.coords
+
         if len(layer.pixel_component_ids) == 2:
-            if not isinstance(layer.coords, WCSCoordinates):
+            if not isinstance(coords, WCS):
                 raise ValueError('WWT cannot render image layer {}: it must have WCS coordinates'.format(layer.label))
             cls = WWTImageLayerArtist
         elif layer.ndim == 1:

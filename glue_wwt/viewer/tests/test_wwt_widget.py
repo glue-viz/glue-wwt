@@ -9,6 +9,11 @@ from mock import MagicMock, patch
 
 from qtpy import compat
 
+import numpy as np
+from numpy.testing import assert_allclose
+
+from astropy.wcs import WCS
+
 from glue.core import Data, message
 from glue.core.tests.test_state import clone
 from glue_qt.app import GlueApplication
@@ -30,6 +35,9 @@ class TestWWTDataViewer(object):
 
     def setup_method(self, method):
         self.d = Data(x=[1, 2, 3], y=[2, 3, 4], z=[4, 5, 6])
+        wcs = WCS(naxis=2)
+        wcs.wcs.ctype = 'RA---TAN', 'DEC--TAN'
+        self.image = Data(x=np.arange(6).reshape((3, 2)), coords=wcs)
         self.bad_data_short = Data(x=[-100, 100], y=[-10, 10])
         self.bad_data_long = Data(x=[-100, -90, -80, 80, 90, 100], y=[-10, -7, -3, 3, 7, 10])
         self.application = GlueApplication()
@@ -37,6 +45,7 @@ class TestWWTDataViewer(object):
         self.dc.append(self.d)
         self.dc.append(self.bad_data_short)
         self.dc.append(self.bad_data_long)
+        self.dc.append(self.image)
         self.hub = self.dc.hub
         self.session = self.application.session
         self.viewer = self.application.new_data_viewer(WWTQtViewerBlocking)
@@ -216,3 +225,12 @@ class TestWWTDataViewer(object):
     #     self.viewer._update_layer = MagicMock()
     #     self.viewer.state.layers[0].ra_att = self.d.id['y']
     #     self.viewer._update_layer.call_count > 0
+
+    def test_add_image_data(self):
+        self.viewer.add_data(self.image)
+
+    def test_image_subset(self):
+        self.viewer.add_data(self.image)
+        assert len(self.viewer.layers) == 1
+        self.dc.new_subset_group(subset_state=self.image.id['x'] > 2, label='High values')
+        assert len(self.viewer.layers) == 2

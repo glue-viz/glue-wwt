@@ -5,6 +5,7 @@ import numpy as np
 
 from astropy.wcs import WCS
 
+from glue.core import Subset
 from glue.logger import logger
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.core.exceptions import IncompatibleAttribute
@@ -115,18 +116,35 @@ class WWTImageLayerArtist(LayerArtist):
         if force or any(x in changed for x in RESET_IMAGE_PROPERTIES):
             self.clear()
 
-            if not isinstance(self.layer.coords, WCS):
-                raise ValueError('oh no not wcs')
-            wcs = self.layer.coords
+            if isinstance(self.layer, Subset):
 
-            try:
-                data = self.layer[self.state.img_data_att]
-            except IncompatibleAttribute:
-                self.disable_invalid_attributes(self.state.img_data_att)
-                return
+                wcs = self.layer.data.coords
+
+                self.layer.to_mask().astype(float)
+
+                try:
+                    data = self.layer.to_mask().astype(float)
+                except IncompatibleAttribute:
+                    self.disable_incompatible_subset()
+
+                default_lims = (0., 1.)
+
+            else:
+
+                wcs = self.layer.coords
+
+                try:
+                    data = self.layer[self.state.img_data_att]
+                except IncompatibleAttribute:
+                    self.disable_invalid_attributes(self.state.img_data_att)
+                    return
+
+                default_lims = np.percentile(data, [5., 95.])
+
+            if not isinstance(wcs, WCS):
+                raise ValueError('Coordinates should be WCS object')
 
             self.wwt_layer = self.wwt_client.layers.add_image_layer((data, wcs))
-            default_lims = np.percentile(data, [5., 95.])
             self.state.vmin = default_lims[0]
             self.state.vmax = default_lims[1]
             force = True

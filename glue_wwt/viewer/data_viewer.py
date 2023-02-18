@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import, division, print_function
 
+from astropy.coordinates import SkyCoord
+import astropy.units as u
 from glue.core.coordinates import WCSCoordinates
 
 from .image_layer import WWTImageLayerArtist
@@ -84,3 +86,26 @@ class WWTDataViewerBase(object):
     def get_subset_layer_artist(self, layer=None, layer_state=None):
         # At some point maybe we'll use different classes for this?
         return self.get_data_layer_artist(layer=layer, layer_state=layer_state)
+
+    def __gluestate__(self, context):
+        state = super(WWTDataViewerBase, self).__gluestate__(context)
+
+        center = self._wwt.get_center()
+        state["camera"] = {
+            "ra": center.ra.deg,
+            "dec": center.dec.deg,
+            "fov": self._wwt.get_fov().value
+        }
+        return state
+
+    @classmethod
+    def __setgluestate__(cls, rec, context):
+        viewer = super(WWTDataViewerBase, cls).__setgluestate__(rec, context)
+        if "camera" in rec:
+            camera = rec["camera"]
+            ra = camera.get("ra", 0)
+            dec = camera.get("dec", 0)
+            fov = camera.get("fov", 60)
+            viewer._wwt.center_on_coordinates(SkyCoord(ra, dec, unit=u.deg), fov=fov * u.deg, instant=True)
+        return viewer
+

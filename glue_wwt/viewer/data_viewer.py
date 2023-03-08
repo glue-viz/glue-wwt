@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 from glue.core.coordinates import WCSCoordinates
+from glue.logger import logger
 from pywwt import ViewerNotAvailableError
 
 from .image_layer import WWTImageLayerArtist
@@ -107,7 +108,7 @@ class WWTDataViewerBase(object):
             }
             state["camera"] = camera
         except ViewerNotAvailableError:
-            pass
+            logger.error("Unable to export camera parameters as WWT viewer is not responding.")
         return state
 
     @classmethod

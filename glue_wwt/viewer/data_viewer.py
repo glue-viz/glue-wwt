@@ -5,6 +5,7 @@ from __future__ import absolute_import, division, print_function
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 from glue.core.coordinates import WCSCoordinates
+from pywwt import ViewerNotAvailableError
 
 from .image_layer import WWTImageLayerArtist
 from .table_layer import WWTTableLayerArtist
@@ -97,13 +98,16 @@ class WWTDataViewerBase(object):
 
     def __gluestate__(self, context):
         state = super(WWTDataViewerBase, self).__gluestate__(context)
-
-        center = self._wwt.get_center()
-        state["camera"] = {
-            "ra": center.ra.deg,
-            "dec": center.dec.deg,
-            "fov": self._wwt.get_fov().value
-        }
+        try:
+            center = self._wwt.get_center()
+            camera = {
+                "ra": center.ra.deg,
+                "dec": center.dec.deg,
+                "fov": self._wwt.get_fov().value
+            }
+            state["camera"] = camera
+        except ViewerNotAvailableError:
+            pass
         return state
 
     @classmethod

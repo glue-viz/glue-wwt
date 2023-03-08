@@ -106,6 +106,8 @@ class WWTDataViewerBase(object):
                 "dec": center.dec.deg,
                 "fov": self._wwt.get_fov().value
             }
+            if hasattr(self._wwt, 'get_roll'):
+                camera["roll"] = self._wwt.get_roll().value
             state["camera"] = camera
         except ViewerNotAvailableError:
             logger.error("Unable to export camera parameters as WWT viewer is not responding.")
@@ -119,5 +121,9 @@ class WWTDataViewerBase(object):
             ra = camera.get("ra", 0)
             dec = camera.get("dec", 0)
             fov = camera.get("fov", 60)
-            viewer._wwt.center_on_coordinates(SkyCoord(ra, dec, unit=u.deg), fov=fov * u.deg, instant=True)
+            roll = camera.get("roll", None)
+            camera_kwargs = dict(fov=fov * u.deg, instant=True)
+            if hasattr(viewer._wwt, 'get_roll') and roll is not None:
+                camera_kwargs["roll"] = roll * u.deg
+            viewer._wwt.center_on_coordinates(SkyCoord(ra, dec, unit=u.deg), **camera_kwargs)
         return viewer

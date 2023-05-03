@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from .utils import center_fov
-from .viewer_state import MODES_3D
+from .viewer_state import MODES_3D, MODES_BODIES
 import random
 
 from glue.config import colormaps
@@ -394,6 +394,10 @@ class WWTTableLayerArtist(LayerArtist):
         if 'line_visible' in changed:
             if self.state.line_visible:
                 lon, lat = self._coords
+                if self._viewer_state.mode in MODES_BODIES:
+                    lon = lon.copy()
+                    lon += 180
+                    lon[lon > 360] -= 360
                 points = SkyCoord(lon, lat, unit=u.deg)
                 self.line = self.wwt_client.add_line(points, color=self._annotation_color)
             else:

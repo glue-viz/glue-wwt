@@ -48,6 +48,16 @@ class WWTDataViewerBase(object):
         if force or 'galactic' in kwargs:
             self._wwt.galactic_mode = self.state.galactic
 
+        if force or 'constellation_boundaries' in kwargs:
+            self._wwt.constellation_boundaries = self.state.constellation_boundaries
+
+        if force or 'constellation_figures' in kwargs:
+            self._wwt.constellation_figures = self.state.constellation_figures
+
+        if force or 'grid' in kwargs or 'galactic' in kwargs:
+            self._wwt.galactic_grid = self.state.grid and self.state.galactic
+            self._wwt.grid = self.state.grid and not self.state.galactic
+
     def get_layer_artist(self, cls, **kwargs):
         "In this package, we must override to append the wwt_client argument."
         return cls(self.state, wwt_client=self._wwt, **kwargs)

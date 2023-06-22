@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>363</width>
-    <height>289</height>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,14 +29,25 @@
    <property name="verticalSpacing">
     <number>5</number>
    </property>
-   <item row="7" column="1">
-    <widget class="QComboBox" name="combosel_foreground">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_frame">
+     <property name="text">
+      <string>Frame:</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QComboBox" name="combosel_alt_unit">
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QComboBox" name="combosel_lat_att">
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
      </property>
@@ -58,6 +69,80 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="combosel_frame">
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="combosel_lon_att">
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QComboBox" name="combosel_alt_att"/>
+   </item>
+   <item row="0" column="1">
+    <widget class="QComboBox" name="combosel_mode">
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="14" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="bool_galactic">
+       <property name="text">
+        <string>Galactic Plane mode</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="bool_grid">
+       <property name="text">
+        <string>Show grid</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QComboBox" name="combosel_alt_type">
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToContents</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_constellation">
+       <property name="text">
+        <string>Constellation</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="bool_constellation_boundaries">
+       <property name="text">
+        <string>boundaries</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="bool_constellation_figures">
+       <property name="text">
+        <string>figures</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_mode">
      <property name="font">
@@ -74,23 +159,7 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="label_foreground">
-     <property name="font">
-      <font>
-       <weight>50</weight>
-       <bold>false</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Foreground:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="15" column="1">
+   <item row="16" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -102,6 +171,26 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_lon_att">
+     <property name="text">
+      <string>Longitude:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_lat_att">
+     <property name="text">
+      <string>Latitude:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
    </item>
    <item row="12" column="0">
     <widget class="QLabel" name="label_background">
@@ -119,63 +208,10 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QComboBox" name="combosel_alt_att"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_lat_att">
-     <property name="text">
-      <string>Latitude:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_lon_att">
-     <property name="text">
-      <string>Longitude:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="1">
-    <widget class="QComboBox" name="combosel_background">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="combosel_frame">
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_frame">
-     <property name="text">
-      <string>Frame:</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="combosel_mode">
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+   <item row="6" column="1">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -192,75 +228,45 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QComboBox" name="combosel_lat_att">
+   <item row="7" column="1">
+    <widget class="QComboBox" name="combosel_foreground">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="combosel_lon_att">
+   <item row="12" column="1">
+    <widget class="QComboBox" name="combosel_background">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="sizeAdjustPolicy">
       <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
      </property>
     </widget>
    </item>
-   <item row="14" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="bool_galactic">
-       <property name="text">
-        <string>Galactic Plane mode</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item row="6" column="1">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_foreground">
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
      </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QComboBox" name="combosel_alt_unit">
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+     <property name="text">
+      <string>Foreground:</string>
      </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QComboBox" name="combosel_alt_type">
-     <property name="sizeAdjustPolicy">
-      <enum>QComboBox::AdjustToContents</enum>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>

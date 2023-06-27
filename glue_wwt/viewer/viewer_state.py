@@ -38,7 +38,10 @@ class WWTDataViewerState(ViewerState):
     background = SelectionCallbackProperty(default_index=8)
 
     galactic = CallbackProperty(False)
-    grid = CallbackProperty(False)
+    equatorial_grid = CallbackProperty(False)
+    ecliptic_grid = CallbackProperty(False)
+    alt_az_grid = CallbackProperty(False)
+    galactic_grid = CallbackProperty(False)
     constellation_boundaries = CallbackProperty(False)
     constellation_figures = CallbackProperty(False)
 

@@ -45,7 +45,6 @@ class WWTDataViewerState(ViewerState):
     constellation_boundaries = CallbackProperty(False)
     constellation_figures = CallbackProperty(False)
 
-
     layers = ListCallbackProperty()
 
     # For now we need to include this here otherwise when loading files, the

@@ -38,12 +38,35 @@ class WWTDataViewerState(ViewerState):
     background = SelectionCallbackProperty(default_index=8)
 
     galactic = CallbackProperty(False)
+
     equatorial_grid = CallbackProperty(False)
+    equatorial_grid_color = CallbackProperty("white")
+    equatorial_text = CallbackProperty(False)
     ecliptic_grid = CallbackProperty(False)
+    ecliptic_grid_color = CallbackProperty("blue")
+    ecliptic_text = CallbackProperty(False)
     alt_az_grid = CallbackProperty(False)
+    alt_az_grid_color = CallbackProperty("magenta")
+    alt_az_text = CallbackProperty(False)
     galactic_grid = CallbackProperty(False)
+    galactic_grid_color = CallbackProperty("cyan")
+    galactic_text = CallbackProperty(False)
+
     constellation_boundaries = CallbackProperty(False)
+    constellation_boundary_color = CallbackProperty("blue")
+    constellation_selection = CallbackProperty(False)
+    constellation_selection_color = CallbackProperty("yellow")
+    constellation_labels = CallbackProperty(False)
     constellation_figures = CallbackProperty(False)
+    constellation_figure_color = CallbackProperty("red")
+    constellation_pictures = CallbackProperty(False)
+
+    crosshairs = CallbackProperty(False)
+    crosshairs_color = CallbackProperty("white")
+    ecliptic = CallbackProperty(False)
+    ecliptic_color = CallbackProperty("blue")
+    precession_chart = CallbackProperty(False)
+    precession_chart_color = CallbackProperty("orange")
 
     layers = ListCallbackProperty()
 

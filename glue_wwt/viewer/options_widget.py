@@ -50,15 +50,9 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self.ui.combosel_alt_att.setVisible(show_alt)
         self.ui.combosel_alt_unit.setVisible(show_alt)
 
-        show_grid_constellations = self._viewer_state.mode == 'Sky'
-        self.ui.bool_equatorial_grid.setVisible(show_grid_constellations)
-        self.ui.bool_ecliptic_grid.setVisible(show_grid_constellations)
-        self.ui.bool_alt_az_grid.setVisible(show_grid_constellations)
-        self.ui.bool_galactic_grid.setVisible(show_grid_constellations)
-        self.ui.label_constellation.setVisible(show_grid_constellations)
-        self.ui.label_grids.setVisible(show_grid_constellations)
-        self.ui.bool_constellation_boundaries.setVisible(show_grid_constellations)
-        self.ui.bool_constellation_figures.setVisible(show_grid_constellations)
+        show_grid_constellations = self._viewer_state.mode in ['Sky', 'Solar System', 'Milky Way', 'Universe']
+        for tab in range(1, self.ui.tab_widget.count()):
+            self.ui.tab_widget.setTabEnabled(tab, show_grid_constellations)
 
         if self._viewer_state.mode in MODES_BODIES:
             self.ui.label_lon_att.setText('Longitude')

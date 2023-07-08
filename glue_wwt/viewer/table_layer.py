@@ -399,7 +399,8 @@ class WWTTableLayerArtist(LayerArtist):
                     lon += 180
                     lon[lon > 360] -= 360
                 points = SkyCoord(lon, lat, unit=u.deg)
-                self.line = self.wwt_client.add_line(points, color=self._annotation_color)
+                self.line = self.wwt_client.add_line(points, color=self._annotation_color,
+                                                     opacity=self.state.alpha)
             else:
                 self.wwt_client.clear_annotations()
                 if self.line is not None:

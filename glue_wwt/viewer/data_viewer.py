@@ -19,7 +19,9 @@ class WWTDataViewerBase(object):
 
     _GLUE_TO_WWT_ATTR_MAP = {
         "galactic": "galactic_mode",
-        "equatorial_grid": "grid"
+        "equatorial_grid": "grid",
+        "equatorial_grid_color": "grid_color",
+        "equatorial_text": "grid_text"
     }
 
     _UPDATE_SETTINGS = [
@@ -28,10 +30,9 @@ class WWTDataViewerBase(object):
         "ecliptic_grid", "ecliptic_grid_color", "ecliptic_text",
         "alt_az_grid", "alt_az_grid_color", "alt_az_text",
         "galactic_grid", "galactic_grid_color", "galactic_text",
-        "constellation_boundaries", "constellation_boundary_color",
-        "constellation_selection", "constellation_selection_color",
+        "constellation_boundary_color", "constellation_selection_color",
         "constellation_figures", "constellation_figure_color",
-        "constellation_pictures", "crosshairs", "crosshairs_color",
+        "constellation_labels", "constellation_pictures", "crosshairs",
         "ecliptic", "ecliptic_color", "precession_chart",
         "precession_chart_color"
     ]
@@ -54,6 +55,10 @@ class WWTDataViewerBase(object):
             self._wwt.solar_system.cosmos = self.state.mode == 'Universe'
             # Only show local stars when not in Universe or Milky Way mode
             self._wwt.solar_system.stars = self.state.mode not in ['Universe', 'Milky Way']
+
+        if force or 'constellation_boundaries' in kwargs:
+            self._wwt.constellation_boundaries = self.state.constellation_boundaries != 'None'
+            self._wwt.constellation_selection = self.state.constellation_boundaries == 'Selection only'
 
         for setting in self._UPDATE_SETTINGS:
             if force or setting in kwargs:

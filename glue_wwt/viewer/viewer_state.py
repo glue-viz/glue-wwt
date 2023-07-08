@@ -52,9 +52,8 @@ class WWTDataViewerState(ViewerState):
     galactic_grid_color = CallbackProperty("cyan")
     galactic_text = CallbackProperty(False)
 
-    constellation_boundaries = CallbackProperty(False)
+    constellation_boundaries = SelectionCallbackProperty(default_index=0)
     constellation_boundary_color = CallbackProperty("blue")
-    constellation_selection = CallbackProperty(False)
     constellation_selection_color = CallbackProperty("yellow")
     constellation_labels = CallbackProperty(False)
     constellation_figures = CallbackProperty(False)
@@ -83,6 +82,7 @@ class WWTDataViewerState(ViewerState):
         WWTDataViewerState.frame.set_choices(self, CELESTIAL_FRAMES)
         WWTDataViewerState.alt_unit.set_choices(self, [str(x) for x in ALT_UNITS])
         WWTDataViewerState.alt_type.set_choices(self, ALT_TYPES)
+        WWTDataViewerState.constellation_boundaries.set_choices(self, ['None', 'All', 'Selection only'])
 
         self.add_callback('imagery_layers', self._update_imagery_layers)
 

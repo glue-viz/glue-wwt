@@ -60,7 +60,6 @@ class WWTDataViewerBase(object):
                 wwt_attr = self._GLUE_TO_WWT_ATTR_MAP.get(setting, setting)
                 setattr(self._wwt, wwt_attr, getattr(self.state, setting, None))
 
-
     def get_layer_artist(self, cls, **kwargs):
         "In this package, we must override to append the wwt_client argument."
         return cls(self.state, wwt_client=self._wwt, **kwargs)

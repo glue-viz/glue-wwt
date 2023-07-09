@@ -11,9 +11,14 @@ from .viewer_state import MODES_BODIES
 __all__ = ['WWTOptionPanel']
 
 
-def _set_enabled_from_checkbox(checkbox, dependent):
-    checkbox.toggled.connect(dependent.setEnabled)
-    dependent.setEnabled(checkbox.isChecked())
+def _set_enabled_from_checkbox(widget, checkbox):
+    checkbox.toggled.connect(widget.setEnabled)
+    widget.setEnabled(checkbox.isChecked())
+
+
+def _enabled_if_combosel_in(widget, combo, options):
+    combo.currentTextChanged.connect(lambda text: widget.setEnabled(text in options))
+    widget.setEnabled(combo.currentText() in options)
 
 
 class WWTOptionPanel(QtWidgets.QWidget):
@@ -37,27 +42,24 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self._update_visible_options()
 
     def _setup_widget_dependencies(self):
-        _set_enabled_from_checkbox(self.ui.bool_alt_az_grid, self.ui.bool_alt_az_text)
-        _set_enabled_from_checkbox(self.ui.bool_alt_az_grid, self.ui.color_alt_az_grid_color)
-        _set_enabled_from_checkbox(self.ui.bool_ecliptic_grid, self.ui.bool_ecliptic_text)
-        _set_enabled_from_checkbox(self.ui.bool_ecliptic_grid, self.ui.color_ecliptic_grid_color)
-        _set_enabled_from_checkbox(self.ui.bool_equatorial_grid, self.ui.bool_equatorial_text)
-        _set_enabled_from_checkbox(self.ui.bool_equatorial_grid, self.ui.color_equatorial_grid_color)
-        _set_enabled_from_checkbox(self.ui.bool_galactic_grid, self.ui.bool_galactic_text)
-        _set_enabled_from_checkbox(self.ui.bool_galactic_grid, self.ui.color_galactic_grid_color)
-        _set_enabled_from_checkbox(self.ui.bool_constellation_figures, self.ui.color_constellation_figure_color)
-        _set_enabled_from_checkbox(self.ui.bool_ecliptic, self.ui.color_ecliptic_color)
-        _set_enabled_from_checkbox(self.ui.bool_precession_chart, self.ui.color_precession_chart_color)
+        _set_enabled_from_checkbox(self.ui.bool_alt_az_text, self.ui.bool_alt_az_grid)
+        _set_enabled_from_checkbox(self.ui.color_alt_az_grid_color, self.ui.bool_alt_az_grid)
+        _set_enabled_from_checkbox(self.ui.bool_ecliptic_text, self.ui.bool_ecliptic_grid)
+        _set_enabled_from_checkbox(self.ui.color_ecliptic_grid_color, self.ui.bool_ecliptic_grid)
+        _set_enabled_from_checkbox(self.ui.bool_equatorial_text, self.ui.bool_equatorial_grid)
+        _set_enabled_from_checkbox(self.ui.color_equatorial_grid_color, self.ui.bool_equatorial_grid)
+        _set_enabled_from_checkbox(self.ui.bool_galactic_text, self.ui.bool_galactic_grid)
+        _set_enabled_from_checkbox(self.ui.color_galactic_grid_color, self.ui.bool_galactic_grid)
+        _set_enabled_from_checkbox(self.ui.color_constellation_figure_color, self.ui.bool_constellation_figures)
+        _set_enabled_from_checkbox(self.ui.color_ecliptic_color, self.ui.bool_ecliptic)
+        _set_enabled_from_checkbox(self.ui.color_precession_chart_color, self.ui.bool_precession_chart)
 
-        def enable_if_in(text, options, widget):
-            widget.setEnabled(text in options)
-        self.ui.combosel_constellation_boundaries.currentTextChanged.connect(
-            lambda text: enable_if_in(text, ['All'], self.ui.color_constellation_boundary_color))
-        enable_if_in(self._viewer_state.constellation_boundaries, ['All'], self.ui.color_constellation_boundary_color)
-        self.ui.combosel_constellation_boundaries.currentTextChanged.connect(
-            lambda text: enable_if_in(text, ['All', 'Selection only'], self.ui.color_constellation_selection_color))
-        enable_if_in(self._viewer_state.constellation_boundaries, ['All', 'Selection only'], self.ui.color_constellation_selection_color)
-
+        _enabled_if_combosel_in(self.ui.color_constellation_boundary_color,
+                                self.ui.combosel_constellation_boundaries,
+                                ['All'])
+        _enabled_if_combosel_in(self.ui.color_constellation_selection_color,
+                                self.ui.combosel_constellation_boundaries,
+                                ['All', 'Selection only'])
 
     def _update_visible_options(self, *args, **kwargs):
 

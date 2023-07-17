@@ -43,7 +43,7 @@ class WWTDataViewerState(ViewerState):
     equatorial_grid_color = CallbackProperty("white")
     equatorial_text = CallbackProperty(False)
     ecliptic_grid = CallbackProperty(False)
-    ecliptic_grid_color = CallbackProperty("blue")
+    ecliptic_grid_color = CallbackProperty("green")
     ecliptic_text = CallbackProperty(False)
     alt_az_grid = CallbackProperty(False)
     alt_az_grid_color = CallbackProperty("magenta")

@@ -83,7 +83,7 @@ class JupterViewerOptions(VBox):
                                                    grid_gap="2px 10px"))
 
         self.widget_constellation_boundaries = LinkedDropdown(self.state, 'constellation_boundaries',
-                                                              label="Show boundaries")
+                                                              label="Boundaries:")
         self.widget_constellation_boundary_color = self.linked_color_picker('constellation_boundary_color',
                                                                             description="Boundary")
         dlink((self.widget_constellation_boundaries, 'value'), (self.widget_constellation_boundary_color, 'disabled'),

@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from .utils import center_fov
-from .viewer_state import MODES_3D
+from .viewer_state import MODES_3D, MODES_BODIES
 import random
 
 from glue.config import colormaps
@@ -18,6 +18,8 @@ from glue.viewers.common.state import LayerState
 from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
+
+from matplotlib.colors import to_rgb
 
 import pywwt
 from pywwt.layers import TableLayer
@@ -70,6 +72,8 @@ class WWTTableLayerState(LayerState):
     cmap_limits_cache = CallbackProperty({})
 
     img_data_att = SelectionCallbackProperty(default_index=0)
+
+    line_visible = CallbackProperty(False)
 
     def __init__(self, layer=None, **kwargs):
 
@@ -165,6 +169,8 @@ class WWTTableLayerArtist(LayerArtist):
         self.wwt_layer = None
         self._coords = [], []
 
+        self.line = None
+
         self.layer_id = "{0:08x}".format(random.getrandbits(32))
         self.wwt_client = wwt_client
 
@@ -181,6 +187,9 @@ class WWTTableLayerArtist(LayerArtist):
             self.wwt_layer.remove()
             self.wwt_layer = None
             self._coords = [], []
+            if self.line is not None:
+                self.line.remove()
+            self.line = None
 
     def remove(self):
         self._removed = True
@@ -359,6 +368,8 @@ class WWTTableLayerArtist(LayerArtist):
 
         if force or 'color' in changed:
             self.wwt_layer.color = self.state.color
+            if self.line is not None:
+                self.line.color = self._annotation_color
 
         if force or 'alpha' in changed:
             self.wwt_layer.opacity = self.state.alpha
@@ -379,6 +390,22 @@ class WWTTableLayerArtist(LayerArtist):
             self.wwt_layer.cmap = self.state.cmap
 
         self.enable()
+
+        if 'line_visible' in changed:
+            if self.state.line_visible:
+                lon, lat = self._coords
+                if self._viewer_state.mode in MODES_BODIES:
+                    lon = lon.copy()
+                    lon += 180
+                    lon[lon > 360] -= 360
+                points = SkyCoord(lon, lat, unit=u.deg)
+                self.line = self.wwt_client.add_line(points, color=self._annotation_color,
+                                                     opacity=self.state.alpha)
+            else:
+                self.wwt_client.clear_annotations()
+                if self.line is not None:
+                    self.line.remove()
+                self.line = None
 
         # TODO: deal with visible, zorder, frame
 
@@ -401,3 +428,7 @@ class WWTTableLayerArtist(LayerArtist):
 
     def update(self):
         self._update_presentation(force=True)
+
+    @property
+    def _annotation_color(self):
+        return (*to_rgb(self.state.color), self.state.alpha)

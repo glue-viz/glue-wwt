@@ -39,6 +39,34 @@ class WWTDataViewerState(ViewerState):
 
     galactic = CallbackProperty(False)
 
+    equatorial_grid = CallbackProperty(False)
+    equatorial_grid_color = CallbackProperty("white")
+    equatorial_text = CallbackProperty(False)
+    ecliptic_grid = CallbackProperty(False)
+    ecliptic_grid_color = CallbackProperty("green")
+    ecliptic_text = CallbackProperty(False)
+    alt_az_grid = CallbackProperty(False)
+    alt_az_grid_color = CallbackProperty("magenta")
+    alt_az_text = CallbackProperty(False)
+    galactic_grid = CallbackProperty(False)
+    galactic_grid_color = CallbackProperty("cyan")
+    galactic_text = CallbackProperty(False)
+
+    constellation_boundaries = SelectionCallbackProperty(default_index=0)
+    constellation_boundary_color = CallbackProperty("blue")
+    constellation_selection_color = CallbackProperty("yellow")
+    constellation_labels = CallbackProperty(False)
+    constellation_figures = CallbackProperty(False)
+    constellation_figure_color = CallbackProperty("red")
+    constellation_pictures = CallbackProperty(False)
+
+    crosshairs = CallbackProperty(False)
+    crosshairs_color = CallbackProperty("white")
+    ecliptic = CallbackProperty(False)
+    ecliptic_color = CallbackProperty("blue")
+    precession_chart = CallbackProperty(False)
+    precession_chart_color = CallbackProperty("orange")
+
     layers = ListCallbackProperty()
 
     # For now we need to include this here otherwise when loading files, the
@@ -54,6 +82,7 @@ class WWTDataViewerState(ViewerState):
         WWTDataViewerState.frame.set_choices(self, CELESTIAL_FRAMES)
         WWTDataViewerState.alt_unit.set_choices(self, [str(x) for x in ALT_UNITS])
         WWTDataViewerState.alt_type.set_choices(self, ALT_TYPES)
+        WWTDataViewerState.constellation_boundaries.set_choices(self, ['None', 'All', 'Selection only'])
 
         self.add_callback('imagery_layers', self._update_imagery_layers)
 

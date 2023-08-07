@@ -17,6 +17,26 @@ class WWTDataViewerBase(object):
 
     _state_cls = WWTDataViewerState
 
+    _GLUE_TO_WWT_ATTR_MAP = {
+        "galactic": "galactic_mode",
+        "equatorial_grid": "grid",
+        "equatorial_grid_color": "grid_color",
+        "equatorial_text": "grid_text"
+    }
+
+    _UPDATE_SETTINGS = [
+        "foreground", "background", "foreground_opacity", "galactic",
+        "equatorial_grid", "equatorial_grid_color", "equatorial_text",
+        "ecliptic_grid", "ecliptic_grid_color", "ecliptic_text",
+        "alt_az_grid", "alt_az_grid_color", "alt_az_text",
+        "galactic_grid", "galactic_grid_color", "galactic_text",
+        "constellation_boundary_color", "constellation_selection_color",
+        "constellation_figures", "constellation_figure_color",
+        "constellation_labels", "constellation_pictures", "crosshairs",
+        "ecliptic", "ecliptic_color", "precession_chart",
+        "precession_chart_color"
+    ]
+
     def __init__(self):
         self._initialize_wwt()
         self._wwt.actual_planet_scale = True
@@ -36,17 +56,14 @@ class WWTDataViewerBase(object):
             # Only show local stars when not in Universe or Milky Way mode
             self._wwt.solar_system.stars = self.state.mode not in ['Universe', 'Milky Way']
 
-        if force or 'foreground' in kwargs:
-            self._wwt.foreground = self.state.foreground
+        if force or 'constellation_boundaries' in kwargs:
+            self._wwt.constellation_boundaries = self.state.constellation_boundaries != 'None'
+            self._wwt.constellation_selection = self.state.constellation_boundaries == 'Selection only'
 
-        if force or 'background' in kwargs:
-            self._wwt.background = self.state.background
-
-        if force or 'foreground_opacity' in kwargs:
-            self._wwt.foreground_opacity = self.state.foreground_opacity
-
-        if force or 'galactic' in kwargs:
-            self._wwt.galactic_mode = self.state.galactic
+        for setting in self._UPDATE_SETTINGS:
+            if force or setting in kwargs:
+                wwt_attr = self._GLUE_TO_WWT_ATTR_MAP.get(setting, setting)
+                setattr(self._wwt, wwt_attr, getattr(self.state, setting, None))
 
     def get_layer_artist(self, cls, **kwargs):
         "In this package, we must override to append the wwt_client argument."

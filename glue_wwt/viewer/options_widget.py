@@ -11,6 +11,16 @@ from .viewer_state import MODES_BODIES
 __all__ = ['WWTOptionPanel']
 
 
+def _set_enabled_from_checkbox(widget, checkbox):
+    checkbox.toggled.connect(widget.setEnabled)
+    widget.setEnabled(checkbox.isChecked())
+
+
+def _enabled_if_combosel_in(widget, combo, options):
+    combo.currentTextChanged.connect(lambda text: widget.setEnabled(text in options))
+    widget.setEnabled(combo.currentText() in options)
+
+
 class WWTOptionPanel(QtWidgets.QWidget):
 
     def __init__(self, viewer_state, session=None, parent=None):
@@ -28,7 +38,28 @@ class WWTOptionPanel(QtWidgets.QWidget):
 
         self._viewer_state.add_callback('mode', self._update_visible_options)
         self._viewer_state.add_callback('frame', self._update_visible_options)
+        self._setup_widget_dependencies()
         self._update_visible_options()
+
+    def _setup_widget_dependencies(self):
+        _set_enabled_from_checkbox(self.ui.bool_alt_az_text, self.ui.bool_alt_az_grid)
+        _set_enabled_from_checkbox(self.ui.color_alt_az_grid_color, self.ui.bool_alt_az_grid)
+        _set_enabled_from_checkbox(self.ui.bool_ecliptic_text, self.ui.bool_ecliptic_grid)
+        _set_enabled_from_checkbox(self.ui.color_ecliptic_grid_color, self.ui.bool_ecliptic_grid)
+        _set_enabled_from_checkbox(self.ui.bool_equatorial_text, self.ui.bool_equatorial_grid)
+        _set_enabled_from_checkbox(self.ui.color_equatorial_grid_color, self.ui.bool_equatorial_grid)
+        _set_enabled_from_checkbox(self.ui.bool_galactic_text, self.ui.bool_galactic_grid)
+        _set_enabled_from_checkbox(self.ui.color_galactic_grid_color, self.ui.bool_galactic_grid)
+        _set_enabled_from_checkbox(self.ui.color_constellation_figure_color, self.ui.bool_constellation_figures)
+        _set_enabled_from_checkbox(self.ui.color_ecliptic_color, self.ui.bool_ecliptic)
+        _set_enabled_from_checkbox(self.ui.color_precession_chart_color, self.ui.bool_precession_chart)
+
+        _enabled_if_combosel_in(self.ui.color_constellation_boundary_color,
+                                self.ui.combosel_constellation_boundaries,
+                                ['All'])
+        _enabled_if_combosel_in(self.ui.color_constellation_selection_color,
+                                self.ui.combosel_constellation_boundaries,
+                                ['All', 'Selection only'])
 
     def _update_visible_options(self, *args, **kwargs):
 
@@ -49,6 +80,10 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self.ui.combosel_alt_type.setVisible(show_alt)
         self.ui.combosel_alt_att.setVisible(show_alt)
         self.ui.combosel_alt_unit.setVisible(show_alt)
+
+        show_grid_constellations = self._viewer_state.mode in ['Sky', 'Solar System', 'Milky Way', 'Universe']
+        for tab in range(1, self.ui.tab_widget.count()):
+            self.ui.tab_widget.setTabEnabled(tab, show_grid_constellations)
 
         if self._viewer_state.mode in MODES_BODIES:
             self.ui.label_lon_att.setText('Longitude')

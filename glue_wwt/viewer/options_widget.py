@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 import os
 
 from qtpy import QtWidgets
-from glue.utils.qt import load_ui
+from glue_qt.utils import load_ui
 from echo.qt import autoconnect_callbacks_to_qt
 
 from .viewer_state import MODES_BODIES

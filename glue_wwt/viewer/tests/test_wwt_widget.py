@@ -9,9 +9,9 @@ from mock import MagicMock, patch
 
 from qtpy import compat
 
-from glue.app.qt import GlueApplication
 from glue.core import Data, message
 from glue.core.tests.test_state import clone
+from glue_qt.app import GlueApplication
 
 from ..qt_data_viewer import WWTQtViewer
 

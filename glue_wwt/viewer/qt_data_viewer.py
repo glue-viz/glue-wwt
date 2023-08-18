@@ -1,6 +1,6 @@
 from __future__ import absolute_import, division, print_function
 
-from glue.viewers.common.qt.data_viewer import DataViewer
+from glue_qt.viewers.common.data_viewer import DataViewer
 
 from .data_viewer import WWTDataViewerBase
 from .image_layer import WWTImageLayerArtist

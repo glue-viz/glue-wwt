@@ -5,8 +5,8 @@ import time
 from qtpy import compat
 
 from glue.viewers.common.tool import Tool
-from glue.utils.qt import get_qapp
 from glue.config import viewer_tool
+from glue_qt.utils import get_qapp
 
 
 @viewer_tool

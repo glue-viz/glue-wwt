@@ -14,6 +14,7 @@ from glue.core import Data, message
 from glue.core.tests.test_state import clone
 
 from ..qt_data_viewer import WWTQtViewer
+from .test_utils import create_disabled_message
 
 DATA = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -29,9 +30,13 @@ class TestWWTDataViewer(object):
 
     def setup_method(self, method):
         self.d = Data(x=[1, 2, 3], y=[2, 3, 4], z=[4, 5, 6])
+        self.bad_data_short = Data(x=[-100, 100], y=[-10, 10])
+        self.bad_data_long = Data(x=[-100, -90, -80, 80, 90, 100], y=[-10, -7, -3, 3, 7, 10])
         self.application = GlueApplication()
         self.dc = self.application.data_collection
         self.dc.append(self.d)
+        self.dc.append(self.bad_data_short)
+        self.dc.append(self.bad_data_long)
         self.hub = self.dc.hub
         self.session = self.application.session
         self.viewer = self.application.new_data_viewer(WWTQtViewerBlocking)
@@ -175,6 +180,26 @@ class TestWWTDataViewer(object):
         assert viewer_state.lon_att.label == 'a'
         assert viewer_state.lat_att.label == 'b'
         assert viewer_state.frame == 'Galactic'
+
+    def test_skycoord_exception_message_short(self):
+        self.viewer.add_data(self.bad_data_short)
+        self.viewer.state.lat_att = self.bad_data_short.id['x']
+        layer = self.viewer.layers[-1]
+        assert not layer.enabled
+        disabled_reason = "Latitude angle(s) must be within -90 deg <= angle <= 90 deg, " \
+                          f"got {self.bad_data_short['x']}"
+        disabled_message = create_disabled_message(disabled_reason)
+        assert layer.disabled_message == disabled_message
+
+    def test_skycoord_exception_message_long(self):
+        self.viewer.add_data(self.bad_data_long)
+        self.viewer.state.lat_att = self.bad_data_long.id['x']
+        layer = self.viewer.layers[-1]
+        assert not layer.enabled
+        disabled_reason = "Latitude angle(s) must be within -90 deg <= angle <= 90 deg, " \
+                          "got -100 deg <= angle <= 100 deg"
+        disabled_message = create_disabled_message(disabled_reason)
+        assert layer.disabled_message == disabled_message
 
     # TODO: determine if the following test is the desired behavior
     # def test_subsets_not_live_added_if_data_not_present(self):

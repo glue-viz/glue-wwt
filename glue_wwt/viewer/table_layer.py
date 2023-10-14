@@ -19,6 +19,8 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 
+from numpy import size
+
 import pywwt
 from pywwt.layers import TableLayer
 from distutils.version import LooseVersion
@@ -267,8 +269,13 @@ class WWTTableLayerArtist(LayerArtist):
                 try:
                     coord = SkyCoord(lon, lat, unit=u.deg,
                                      frame=self._viewer_state.frame.lower()).icrs
-                except Exception as exc:
-                    self.disable(str(exc))
+                except Exception:
+                    if size(lat) < 5:
+                        angle_info = f"{lat}"
+                    else:
+                        angle_info = f"{lat.min()} deg <= angle <= {lat.max()} deg"
+                    disable_msg = f"Latitude angle(s) must be within -90 deg <= angle <= 90 deg, got {angle_info}"
+                    self.disable(disable_msg)
                     return
 
                 lon = coord.spherical.lon.degree

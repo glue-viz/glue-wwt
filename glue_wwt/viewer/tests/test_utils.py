@@ -30,3 +30,7 @@ def test_center_fov_non_finite():
     assert_allclose(lon_c, 3)
     assert_allclose(lat_c, 2)
     assert_allclose(fov, 1)
+
+
+def create_disabled_message(reason):
+    return "Cannot visualize this layer: %s" % reason

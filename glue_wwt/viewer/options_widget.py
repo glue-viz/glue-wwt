@@ -53,6 +53,7 @@ class WWTOptionPanel(QtWidgets.QWidget):
         _set_enabled_from_checkbox(self.ui.color_constellation_figure_color, self.ui.bool_constellation_figures)
         _set_enabled_from_checkbox(self.ui.color_ecliptic_color, self.ui.bool_ecliptic)
         _set_enabled_from_checkbox(self.ui.color_precession_chart_color, self.ui.bool_precession_chart)
+        _set_enabled_from_checkbox(self.ui.valuetext_clock_rate, self.ui.bool_play_time)
 
         _enabled_if_combosel_in(self.ui.color_constellation_boundary_color,
                                 self.ui.combosel_constellation_boundaries,

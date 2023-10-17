@@ -127,11 +127,20 @@ class JupterViewerOptions(VBox):
         self.widget_precession_chart_color = self.linked_color_picker('precession_chart_color')
         self.set_enabled_from_checkbox(self.widget_precession_chart_color, self.widget_precession_chart)
 
-        self.other_settings = GridBox(children=[self.widget_ecliptic_label, self.widget_ecliptic,
-                                                self.widget_ecliptic_color, self.widget_precession_chart_label,
-                                                self.widget_precession_chart, self.widget_precession_chart_color],
-                                      layout=Layout(grid_template_columns="5fr 1fr 1fr", width="100%",
-                                                    grid_gap="2px 10px"))
+        self.widget_play_time = self.linked_checkbox("play_time", description="Play Time")
+        self.widget_clock_rate = FloatText(description="Clock Rate:")
+        link((self.state, 'clock_rate'), (self.widget_clock_rate, 'value'), lambda value: value or 1)
+        self.set_enabled_from_checkbox(self.widget_clock_rate, self.widget_play_time)
+
+        self.other_settings = VBox(children=[
+                                       GridBox(children=[self.widget_ecliptic_label, self.widget_ecliptic,
+                                                         self.widget_ecliptic_color, self.widget_precession_chart_label,
+                                                         self.widget_precession_chart, self.widget_precession_chart_color],
+                                               layout=Layout(grid_template_columns="5fr 1fr 1fr", width="100%",
+                                                             grid_gap="2px 10px")),
+                                       VBox(children=[self.widget_play_time, self.widget_clock_rate])
+                                   ])
+
 
         self.settings = Accordion(children=[self.general_settings, self.grid_settings,
                                             self.constellation_settings, self.other_settings],

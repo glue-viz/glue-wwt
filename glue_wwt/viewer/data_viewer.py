@@ -29,6 +29,10 @@ class WWTDataViewerBase(object):
         "equatorial_text": "grid_text"
     }
 
+    _CLOCK_SETTINGS = [
+        "play_time", "clock_rate"
+    ]
+
     _UPDATE_SETTINGS = [
         "equatorial_grid", "equatorial_grid_color", "equatorial_text",
         "ecliptic_grid", "ecliptic_grid_color", "ecliptic_text",
@@ -66,6 +70,12 @@ class WWTDataViewerBase(object):
         if force or 'constellation_boundaries' in kwargs:
             self._wwt.constellation_boundaries = self.state.constellation_boundaries != 'None'
             self._wwt.constellation_selection = self.state.constellation_boundaries == 'Selection only'
+
+        if force or any(setting in kwargs for setting in self._CLOCK_SETTINGS):
+            if self.state.play_time:
+                self._wwt.play_time(self.state.clock_rate)
+            else:
+                self._wwt.pause_time()
 
         for setting in self._UPDATE_SETTINGS:
             if force or setting in kwargs:

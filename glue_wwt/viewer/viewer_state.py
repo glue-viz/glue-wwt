@@ -67,6 +67,9 @@ class WWTDataViewerState(ViewerState):
     precession_chart = CallbackProperty(False)
     precession_chart_color = CallbackProperty("orange")
 
+    play_time = CallbackProperty(True)
+    clock_rate = CallbackProperty(1)
+
     layers = ListCallbackProperty()
 
     # For now we need to include this here otherwise when loading files, the

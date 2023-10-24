@@ -71,6 +71,10 @@ class WWTDataViewerBase(object):
             self._wwt.constellation_boundaries = self.state.constellation_boundaries != 'None'
             self._wwt.constellation_selection = self.state.constellation_boundaries == 'Selection only'
 
+        if force or ('last_set_time' in kwargs and self.state.last_set_time != self._wwt.get_current_time()):
+            print(self.state.last_set_time)
+            self._wwt.set_current_time(self.state.last_set_time)
+
         if force or any(setting in kwargs for setting in self._CLOCK_SETTINGS):
             if self.state.play_time:
                 self._wwt.play_time(self.state.clock_rate)

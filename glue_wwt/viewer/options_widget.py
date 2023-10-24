@@ -6,19 +6,11 @@ from qtpy import QtWidgets
 from glue_qt.utils import load_ui
 from echo.qt import autoconnect_callbacks_to_qt
 
+from .time_dialog import TimeDialog
+from .ui_utils import enabled_if_combosel_in, set_enabled_from_checkbox
 from .viewer_state import MODES_BODIES
 
 __all__ = ['WWTOptionPanel']
-
-
-def _set_enabled_from_checkbox(widget, checkbox):
-    checkbox.toggled.connect(widget.setEnabled)
-    widget.setEnabled(checkbox.isChecked())
-
-
-def _enabled_if_combosel_in(widget, combo, options):
-    combo.currentTextChanged.connect(lambda text: widget.setEnabled(text in options))
-    widget.setEnabled(combo.currentText() in options)
 
 
 class WWTOptionPanel(QtWidgets.QWidget):
@@ -36,29 +28,31 @@ class WWTOptionPanel(QtWidgets.QWidget):
 
         self._connect = autoconnect_callbacks_to_qt(self._viewer_state, self.ui, connect_kwargs)
 
+        self.ui.button_current_time.clicked.connect(self._current_time_pressed)
+
         self._viewer_state.add_callback('mode', self._update_visible_options)
         self._viewer_state.add_callback('frame', self._update_visible_options)
         self._setup_widget_dependencies()
         self._update_visible_options()
 
     def _setup_widget_dependencies(self):
-        _set_enabled_from_checkbox(self.ui.bool_alt_az_text, self.ui.bool_alt_az_grid)
-        _set_enabled_from_checkbox(self.ui.color_alt_az_grid_color, self.ui.bool_alt_az_grid)
-        _set_enabled_from_checkbox(self.ui.bool_ecliptic_text, self.ui.bool_ecliptic_grid)
-        _set_enabled_from_checkbox(self.ui.color_ecliptic_grid_color, self.ui.bool_ecliptic_grid)
-        _set_enabled_from_checkbox(self.ui.bool_equatorial_text, self.ui.bool_equatorial_grid)
-        _set_enabled_from_checkbox(self.ui.color_equatorial_grid_color, self.ui.bool_equatorial_grid)
-        _set_enabled_from_checkbox(self.ui.bool_galactic_text, self.ui.bool_galactic_grid)
-        _set_enabled_from_checkbox(self.ui.color_galactic_grid_color, self.ui.bool_galactic_grid)
-        _set_enabled_from_checkbox(self.ui.color_constellation_figure_color, self.ui.bool_constellation_figures)
-        _set_enabled_from_checkbox(self.ui.color_ecliptic_color, self.ui.bool_ecliptic)
-        _set_enabled_from_checkbox(self.ui.color_precession_chart_color, self.ui.bool_precession_chart)
-        _set_enabled_from_checkbox(self.ui.valuetext_clock_rate, self.ui.bool_play_time)
+        set_enabled_from_checkbox(self.ui.bool_alt_az_text, self.ui.bool_alt_az_grid)
+        set_enabled_from_checkbox(self.ui.color_alt_az_grid_color, self.ui.bool_alt_az_grid)
+        set_enabled_from_checkbox(self.ui.bool_ecliptic_text, self.ui.bool_ecliptic_grid)
+        set_enabled_from_checkbox(self.ui.color_ecliptic_grid_color, self.ui.bool_ecliptic_grid)
+        set_enabled_from_checkbox(self.ui.bool_equatorial_text, self.ui.bool_equatorial_grid)
+        set_enabled_from_checkbox(self.ui.color_equatorial_grid_color, self.ui.bool_equatorial_grid)
+        set_enabled_from_checkbox(self.ui.bool_galactic_text, self.ui.bool_galactic_grid)
+        set_enabled_from_checkbox(self.ui.color_galactic_grid_color, self.ui.bool_galactic_grid)
+        set_enabled_from_checkbox(self.ui.color_constellation_figure_color, self.ui.bool_constellation_figures)
+        set_enabled_from_checkbox(self.ui.color_ecliptic_color, self.ui.bool_ecliptic)
+        set_enabled_from_checkbox(self.ui.color_precession_chart_color, self.ui.bool_precession_chart)
+        set_enabled_from_checkbox(self.ui.valuetext_clock_rate, self.ui.bool_play_time)
 
-        _enabled_if_combosel_in(self.ui.color_constellation_boundary_color,
+        enabled_if_combosel_in(self.ui.color_constellation_boundary_color,
                                 self.ui.combosel_constellation_boundaries,
                                 ['All'])
-        _enabled_if_combosel_in(self.ui.color_constellation_selection_color,
+        enabled_if_combosel_in(self.ui.color_constellation_selection_color,
                                 self.ui.combosel_constellation_boundaries,
                                 ['All', 'Selection only'])
 
@@ -96,3 +90,17 @@ class WWTOptionPanel(QtWidgets.QWidget):
             else:
                 self.ui.label_lon_att.setText('Longitude')
                 self.ui.label_lat_att.setText('Latitude')
+
+    def _current_time_pressed(self):
+        time_playing = self._viewer_state.play_time
+        if time_playing:
+            self._viewer_state.play_time = False
+
+        dialog = TimeDialog()
+        result = dialog.exec_()
+
+        if result == QtWidgets.QDialog.Accepted and dialog.time is not None:
+            self._viewer_state.last_set_time = dialog.time
+
+        if time_playing:
+            self._viewer_state.play_time = True

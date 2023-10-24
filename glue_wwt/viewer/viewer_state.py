@@ -69,6 +69,7 @@ class WWTDataViewerState(ViewerState):
 
     play_time = CallbackProperty(True)
     clock_rate = CallbackProperty(1)
+    last_set_time = CallbackProperty(None)
 
     layers = ListCallbackProperty()
 

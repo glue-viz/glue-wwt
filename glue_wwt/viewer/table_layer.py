@@ -19,7 +19,7 @@ from astropy import units as u
 from astropy.coordinates import SkyCoord
 from astropy.table import Table
 
-from numpy import size
+from numpy import datetime_as_string, size
 
 
 __all__ = ['WWTTableLayerArtist']
@@ -27,7 +27,7 @@ __all__ = ['WWTTableLayerArtist']
 
 RESET_TABLE_PROPERTIES = ('mode', 'frame', 'lon_att', 'lat_att', 'alt_att',
                           'alt_unit', 'size_att', 'cmap_att', 'size_mode',
-                          'color_mode', 'time_att')
+                          'color_mode', 'time_series', 'time_att')
 
 
 class WWTTableLayerState(LayerState):
@@ -57,6 +57,7 @@ class WWTTableLayerState(LayerState):
     time_att = SelectionCallbackProperty()
     time_decay_value = CallbackProperty(16)
     time_decay_unit = SelectionCallbackProperty(default_index=0, display_func=lambda value: value.long_names[0])
+    time_series = CallbackProperty(False)
 
     size_limits_cache = CallbackProperty({})
     cmap_limits_cache = CallbackProperty({})
@@ -83,7 +84,7 @@ class WWTTableLayerState(LayerState):
         self.cmap_att_helper = ComponentIDComboHelper(self, 'cmap_att',
                                                       numeric=True,
                                                       categorical=False)
-        self.time_att_helper = ComponentIDComboHelper(self, 'cmap_att',
+        self.time_att_helper = ComponentIDComboHelper(self, 'time_att',
                                                       datetime=True,
                                                       numeric=False,
                                                       categorical=False)
@@ -246,9 +247,9 @@ class WWTTableLayerArtist(LayerArtist):
             else:
                 cmap_values = None
 
-            if self.state.time_att is not None:
+            if self.state.time_series and self.state.time_att is not None:
                 try:
-                    time_values = self.layer[self.state.time_att]
+                    time_values = [datetime_as_string(t, unit='s', timezone='UTC') for t in self.layer[self.state.time_att]]
                 except IncompatibleAttribute:
                     self.disable_invalid_attributes(self.state.time_att)
                     return
@@ -308,14 +309,16 @@ class WWTTableLayerArtist(LayerArtist):
                 data_kwargs['cmap_att'] = 'cmap'
 
             if time_values is not None:
-                tab['time'] = time_values,
+                tab['time'] = time_values
+                data_kwargs['time_series'] = self.state.time_series
                 data_kwargs['time_att'] = 'time'
-                data_kwargs['time_series'] = True
 
             self.wwt_layer = self.wwt_client.layers.add_table_layer(tab, frame=ref_frame,
                                                                     lon_att='lon', lat_att='lat',
                                                                     selectable=False,
                                                                     **data_kwargs)
+            if self.state.time_series:
+                self.wwt_layer.time_att = 'time'
 
             self.wwt_layer.far_side_visible = self._viewer_state.mode in MODES_3D
 

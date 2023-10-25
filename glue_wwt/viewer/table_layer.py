@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 
 from .utils import center_fov
 from .viewer_state import MODES_3D
+
+from datetime import datetime
 import random
 
 from glue.config import colormaps
@@ -249,7 +251,9 @@ class WWTTableLayerArtist(LayerArtist):
 
             if self.state.time_series and self.state.time_att is not None:
                 try:
-                    time_values = [datetime_as_string(t, unit='s', timezone='UTC') for t in self.layer[self.state.time_att]]
+                    # Providing datetime objects as the time values offers noticeably better performance than either datetime strings or astropy Time objects
+                    # This is likely due to the time attribute value validation in pywwt
+                    time_values = [datetime.fromisoformat(datetime_as_string(t, unit='s', timezone='UTC')) for t in self.layer[self.state.time_att]]
                 except IncompatibleAttribute:
                     self.disable_invalid_attributes(self.state.time_att)
                     return

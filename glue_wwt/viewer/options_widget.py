@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 import os
+from pywwt.core import ViewerNotAvailableError
 
 from qtpy import QtWidgets
 from glue_qt.utils import load_ui
@@ -28,10 +29,11 @@ class WWTOptionPanel(QtWidgets.QWidget):
 
         self._connect = autoconnect_callbacks_to_qt(self._viewer_state, self.ui, connect_kwargs)
 
-        self.ui.button_current_time.clicked.connect(self._current_time_pressed)
+        self.ui.button_set_current_time.clicked.connect(self._current_time_pressed)
 
         self._viewer_state.add_callback('mode', self._update_visible_options)
         self._viewer_state.add_callback('frame', self._update_visible_options)
+        self._viewer_state.add_callback('current_time', self._update_current_time)
         self._setup_widget_dependencies()
         self._update_visible_options()
 
@@ -91,16 +93,23 @@ class WWTOptionPanel(QtWidgets.QWidget):
                 self.ui.label_lon_att.setText('Longitude')
                 self.ui.label_lat_att.setText('Latitude')
 
+    def _update_current_time(self, *args):
+        try:
+            self.ui.label_current_time.setText(f"Current Time: {self._viewer_state.current_time.strftime('%Y-%m-%dT%H:%M:%SZ')}")
+        except:
+            pass
+
     def _current_time_pressed(self):
         time_playing = self._viewer_state.play_time
         if time_playing:
             self._viewer_state.play_time = False
 
-        dialog = TimeDialog()
+        dialog = TimeDialog(initial_datetime=self._viewer_state.current_time)
         result = dialog.exec_()
 
-        if result == QtWidgets.QDialog.Accepted and dialog.time is not None:
-            self._viewer_state.last_set_time = dialog.time
+        if result == QtWidgets.QDialog.Accepted and dialog.datetime is not None:
+            print(dialog.datetime)
+            self._viewer_state.last_set_time = dialog.datetime
 
         if time_playing:
             self._viewer_state.play_time = True

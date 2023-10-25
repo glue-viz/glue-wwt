@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>353</width>
-    <height>407</height>
+    <height>419</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -489,31 +489,10 @@
        <string>Other</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_precession_chart">
-         <property name="text">
-          <string>Precession Chart:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_clock_rate">
-         <property name="text">
-          <string>Clock Rate:</string>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="1">
         <widget class="QCheckBox" name="bool_ecliptic">
          <property name="text">
           <string>Show</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QColorBox" name="color_ecliptic_color">
-         <property name="text">
-          <string/>
          </property>
         </widget>
        </item>
@@ -531,14 +510,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_ecliptic_2">
-         <property name="text">
-          <string>Ecliptic:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
+       <item row="7" column="1">
         <spacer name="verticalSpacer_4">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -561,10 +533,45 @@
        <item row="4" column="1">
         <widget class="QLineEdit" name="valuetext_clock_rate"/>
        </item>
-       <item row="5" column="0" colspan="3">
-        <widget class="QPushButton" name="button_current_time">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_ecliptic_2">
+         <property name="text">
+          <string>Ecliptic:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="3">
+        <widget class="QPushButton" name="button_set_current_time">
          <property name="text">
           <string>Set Current Time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_clock_rate">
+         <property name="text">
+          <string>Clock Rate:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QColorBox" name="color_ecliptic_color">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_precession_chart">
+         <property name="text">
+          <string>Precession Chart:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="3">
+        <widget class="QLabel" name="label_current_time">
+         <property name="text">
+          <string>Current Time:</string>
          </property>
         </widget>
        </item>

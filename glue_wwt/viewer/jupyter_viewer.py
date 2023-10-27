@@ -1,16 +1,19 @@
 from __future__ import absolute_import, division, print_function
 
-from glue.utils import color2hex
 from glue_jupyter.view import IPyWidgetView
 from glue_jupyter.link import link, dlink
 from glue_jupyter.widgets import LinkedDropdown, Color, Size
 
 from pywwt.jupyter import WWTJupyterWidget
 
-from ipywidgets import Accordion, Checkbox, ColorPicker, GridBox, HBox, Label, Layout, Tab, VBox, FloatSlider, FloatText
+from ipywidgets import Accordion, GridBox, HBox, Label, Layout, Output, Tab, VBox, FloatSlider, FloatText
+from ipywidgets.widgets.widget_datetime import NaiveDatetimePicker
+import ipyvuetify as v
+from IPython.display import display
 
 from .data_viewer import WWTDataViewerBase
 from .image_layer import WWTImageLayerArtist
+from .jupyter_utils import linked_checkbox, linked_color_picker, linked_float_text, set_enabled_from_checkbox
 from .table_layer import WWTTableLayerArtist
 
 
@@ -20,6 +23,8 @@ class JupterViewerOptions(VBox):
         self.fit_content_layout = Layout(width="fit-content")
 
         self.state = viewer_state
+
+        self.widget_output = Output()
 
         self.widget_mode = LinkedDropdown(self.state, "mode", label="Mode:")
         self.widget_frame = LinkedDropdown(self.state, "frame", label="Frame:")
@@ -42,36 +47,36 @@ class JupterViewerOptions(VBox):
         dlink((self.state, 'mode'), (self.widget_allskyimg.layout, 'display'),
               lambda value: '' if value == 'Sky' else 'none')
 
-        self.widget_crosshairs = self.linked_checkbox('crosshairs', description="Show crosshairs")
-        self.widget_galactic_plane_mode = self.linked_checkbox('galactic', description="Galactic Plane mode")
+        self.widget_crosshairs = linked_checkbox(self.state, 'crosshairs', description="Show crosshairs")
+        self.widget_galactic_plane_mode = linked_checkbox(self.state, 'galactic', description="Galactic Plane mode")
 
         self.general_settings = VBox(children=[self.widget_mode, self.widget_frame, self.widget_ra,
                                                self.widget_dec, self.alt_opts, self.widget_allskyimg,
                                                self.widget_crosshairs, self.widget_galactic_plane_mode])
 
-        self.widget_alt_az_grid = self.linked_checkbox('alt_az_grid', description="Alt/Az")
-        self.widget_alt_az_text = self.linked_checkbox('alt_az_text', description="Text")
-        self.set_enabled_from_checkbox(self.widget_alt_az_text, self.widget_alt_az_grid)
-        self.widget_alt_az_grid_color = self.linked_color_picker('alt_az_grid_color')
-        self.set_enabled_from_checkbox(self.widget_alt_az_grid_color, self.widget_alt_az_grid)
+        self.widget_alt_az_grid = linked_checkbox(self.state, 'alt_az_grid', description="Alt/Az")
+        self.widget_alt_az_text = linked_checkbox(self.state, 'alt_az_text', description="Text")
+        set_enabled_from_checkbox(self.widget_alt_az_text, self.widget_alt_az_grid)
+        self.widget_alt_az_grid_color = linked_color_picker(self.state, 'alt_az_grid_color')
+        set_enabled_from_checkbox(self.widget_alt_az_grid_color, self.widget_alt_az_grid)
 
-        self.widget_ecliptic_grid = self.linked_checkbox('ecliptic_grid', description="Ecliptic")
-        self.widget_ecliptic_text = self.linked_checkbox('ecliptic_text', description="Text")
-        self.set_enabled_from_checkbox(self.widget_ecliptic_text, self.widget_ecliptic_grid)
-        self.widget_ecliptic_grid_color = self.linked_color_picker('ecliptic_grid_color')
-        self.set_enabled_from_checkbox(self.widget_ecliptic_grid_color, self.widget_ecliptic_grid)
+        self.widget_ecliptic_grid = linked_checkbox(self.state, 'ecliptic_grid', description="Ecliptic")
+        self.widget_ecliptic_text = linked_checkbox(self.state, 'ecliptic_text', description="Text")
+        set_enabled_from_checkbox(self.widget_ecliptic_text, self.widget_ecliptic_grid)
+        self.widget_ecliptic_grid_color = linked_color_picker(self.state, 'ecliptic_grid_color')
+        set_enabled_from_checkbox(self.widget_ecliptic_grid_color, self.widget_ecliptic_grid)
 
-        self.widget_equatorial_grid = self.linked_checkbox('equatorial_grid', "Equatorial")
-        self.widget_equatorial_text = self.linked_checkbox('equatorial_text', "Text")
-        self.set_enabled_from_checkbox(self.widget_equatorial_text, self.widget_equatorial_grid)
-        self.widget_equatorial_grid_color = self.linked_color_picker('equatorial_grid_color')
-        self.set_enabled_from_checkbox(self.widget_equatorial_grid_color, self.widget_equatorial_grid)
+        self.widget_equatorial_grid = linked_checkbox(self.state, 'equatorial_grid', "Equatorial")
+        self.widget_equatorial_text = linked_checkbox(self.state, 'equatorial_text', "Text")
+        set_enabled_from_checkbox(self.widget_equatorial_text, self.widget_equatorial_grid)
+        self.widget_equatorial_grid_color = linked_color_picker(self.state, 'equatorial_grid_color')
+        set_enabled_from_checkbox(self.widget_equatorial_grid_color, self.widget_equatorial_grid)
 
-        self.widget_galactic_grid = self.linked_checkbox('galactic_grid', description="Galactic")
-        self.widget_galactic_text = self.linked_checkbox('galactic_text', description="Text")
-        self.set_enabled_from_checkbox(self.widget_galactic_text, self.widget_galactic_grid)
-        self.widget_galactic_grid_color = self.linked_color_picker('galactic_grid_color')
-        self.set_enabled_from_checkbox(self.widget_galactic_grid_color, self.widget_galactic_grid)
+        self.widget_galactic_grid = linked_checkbox(self.state, 'galactic_grid', description="Galactic")
+        self.widget_galactic_text = linked_checkbox(self.state, 'galactic_text', description="Text")
+        set_enabled_from_checkbox(self.widget_galactic_text, self.widget_galactic_grid)
+        self.widget_galactic_grid_color = linked_color_picker(self.state, 'galactic_grid_color')
+        set_enabled_from_checkbox(self.widget_galactic_grid_color, self.widget_galactic_grid)
 
         self.grid_settings = GridBox(children=[self.widget_alt_az_grid, self.widget_alt_az_text,
                                                self.widget_alt_az_grid_color, self.widget_ecliptic_grid,
@@ -84,21 +89,21 @@ class JupterViewerOptions(VBox):
 
         self.widget_constellation_boundaries = LinkedDropdown(self.state, 'constellation_boundaries',
                                                               label="Boundaries:")
-        self.widget_constellation_boundary_color = self.linked_color_picker('constellation_boundary_color',
+        self.widget_constellation_boundary_color = linked_color_picker(self.state, 'constellation_boundary_color',
                                                                             description="Boundary")
         dlink((self.widget_constellation_boundaries, 'value'), (self.widget_constellation_boundary_color, 'disabled'),
               lambda value: value != "All")
-        self.widget_constellation_selection_color = self.linked_color_picker('constellation_selection_color',
+        self.widget_constellation_selection_color = linked_color_picker(self.state, 'constellation_selection_color',
                                                                              description="Selection")
         dlink((self.widget_constellation_boundaries, 'value'), (self.widget_constellation_selection_color, 'disabled'),
               lambda value: value == "None")
 
-        self.widget_constellation_figures = self.linked_checkbox('constellation_figures', description="Figures")
-        self.widget_constellation_figure_color = self.linked_color_picker('constellation_figure_color',
+        self.widget_constellation_figures = linked_checkbox(self.state, 'constellation_figures', description="Figures")
+        self.widget_constellation_figure_color = linked_color_picker(self.state, 'constellation_figure_color',
                                                                           description="Figure")
-        self.set_enabled_from_checkbox(self.widget_constellation_figure_color, self.widget_constellation_figures)
-        self.widget_constellation_labels = self.linked_checkbox('constellation_labels', description="Labels")
-        self.widget_constellation_pictures = self.linked_checkbox('constellation_pictures', description="Pictures")
+        set_enabled_from_checkbox(self.widget_constellation_figure_color, self.widget_constellation_figures)
+        self.widget_constellation_labels = linked_checkbox(self.state, 'constellation_labels', description="Labels")
+        self.widget_constellation_pictures = linked_checkbox(self.state, 'constellation_pictures', description="Pictures")
 
         constellations_hbox_layout = Layout(gap="10px", justify_content="space-between")
         constellations_vbox_layout = Layout(height="fit-content", gap="2px", padding="5px", flex_direction="column")
@@ -118,19 +123,19 @@ class JupterViewerOptions(VBox):
                                            layout=constellations_vbox_layout)
 
         self.widget_ecliptic_label = Label("Ecliptic:")
-        self.widget_ecliptic = self.linked_checkbox('ecliptic', description="Show")
-        self.widget_ecliptic_color = self.linked_color_picker('ecliptic_color')
-        self.set_enabled_from_checkbox(self.widget_ecliptic_color, self.widget_ecliptic)
+        self.widget_ecliptic = linked_checkbox(self.state, 'ecliptic', description="Show")
+        self.widget_ecliptic_color = linked_color_picker(self.state, 'ecliptic_color')
+        set_enabled_from_checkbox(self.widget_ecliptic_color, self.widget_ecliptic)
 
         self.widget_precession_chart_label = Label("Precession Chart:")
-        self.widget_precession_chart = self.linked_checkbox('precession_chart', description="Show")
-        self.widget_precession_chart_color = self.linked_color_picker('precession_chart_color')
-        self.set_enabled_from_checkbox(self.widget_precession_chart_color, self.widget_precession_chart)
+        self.widget_precession_chart = linked_checkbox(self.state, 'precession_chart', description="Show")
+        self.widget_precession_chart_color = linked_color_picker(self.state, 'precession_chart_color')
+        set_enabled_from_checkbox(self.widget_precession_chart_color, self.widget_precession_chart)
 
-        self.widget_play_time = self.linked_checkbox("play_time", description="Play Time")
+        self.widget_play_time = linked_checkbox(self.state, "play_time", description="Play Time")
         self.widget_clock_rate = FloatText(description="Clock Rate:")
         link((self.state, 'clock_rate'), (self.widget_clock_rate, 'value'), lambda value: value or 1)
-        self.set_enabled_from_checkbox(self.widget_clock_rate, self.widget_play_time)
+        set_enabled_from_checkbox(self.widget_clock_rate, self.widget_play_time)
 
         self.other_settings = VBox(children=[
                                        GridBox(children=[self.widget_ecliptic_label, self.widget_ecliptic,
@@ -153,23 +158,35 @@ class JupterViewerOptions(VBox):
 
         super().__init__([self.settings])
 
-    def linked_checkbox(self, attr, description=''):
-        widget = Checkbox(getattr(self.state, 'attr', False), description=description,
-                          indent=False, layout=self.fit_content_layout)
-        link((self.state, attr), (widget, 'value'))
-        return widget
+    def open_time_dialog(self):
+        datetime_picker = NaiveDatetimePicker()
+        yes_btn = v.Btn(color='success', children=["Yes"])
+        no_btn = v.Btn(color='error', children=["No"])
+        dialog = v.Dialog(
+            width='500',
+            persistent=True,
+            children=[
+                v.Card(children=[
+                    v.CardText(children=["Please select a date and time (in UTC)."]),
+                    datetime_picker,
+                    HBox(children=[yes_btn, no_btn], layout=Layout(justify_content='flex-end', grip_gap='5px'))
+                ])
+            ]
+        )
 
-    def linked_color_picker(self, attr, description=''):
-        widget = ColorPicker(concise=True, layout=self.fit_content_layout, description=description)
-        link((self.state, attr), (widget, 'value'), color2hex)
-        return widget
+        def on_yes_click(button, event, data):
+            self.state.last_set_time = dialog.value
+            self.widget_output.clear_output()
 
-    @staticmethod
-    def opposite(value):
-        return not value
+        def on_no_click(button, event, data):
+            self.widget_output.clear_output()
 
-    def set_enabled_from_checkbox(self, widget, checkbox):
-        dlink((checkbox, 'value'), (widget, 'disabled'), self.opposite)
+        yes_btn.on_event('click', on_yes_click)
+        no_btn.on_event('click', on_no_click)
+
+        with self.widget_output:
+            dialog.v_model = True
+            display(dialog)
 
 
 class JupyterImageLayerOptions(VBox):
@@ -186,11 +203,9 @@ class JupyterImageLayerOptions(VBox):
         self.cmap = LinkedDropdown(self.state, 'cmap', 'Colormap')
         self.stretch = LinkedDropdown(self.state, 'stretch', 'Stretch')
 
-        self.vmin = FloatText(description='Min Val')
-        self.vmax = FloatText(description='Max Val')
+        self.vmin = linked_float_text(self.state, 'vmin', description='Min Val')
+        self.vmax = linked_float_text(self.state, 'vmax', description='Max Val', default=1)
         self.lims = VBox([self.vmin, self.vmax])
-        link((self.state, 'vmin'), (self.vmin, 'value'), lambda value: value or 0)
-        link((self.state, 'vmax'), (self.vmax, 'value'), lambda value: value or 1)
 
         super().__init__([self.data_att, self.alpha, self.cmap, self.stretch, self.lims])
 
@@ -200,11 +215,19 @@ class JupyterTableLayerOptions(VBox):
         self.state = layer_state
         self.color_widgets = Color(state=self.state)
         self.size_widgets = Size(state=self.state)
+        
+        self.widget_time_series = linked_checkbox(self.state, 'time_series', description="Time series")
+        self.widget_time_att = LinkedDropdown(self.state, 'time_att', 'Time att')
+        self.widget_time_decay_value = linked_float_text(self.state, 'time_decay_value',
+                                                         default=0, description='Time decay')
+        self.widget_time_decay_unit = LinkedDropdown(self.state, 'time_decay_unit') 
+        self.time_decay_widgets = HBox([self.widget_time_decay_value, self.widget_time_decay_unit])
+        self.time_widgets = VBox([self.widget_time_series, self.widget_time_att, self.time_decay_widgets])
 
         # self.recenter_widget = Button(description='Center view on layer')
         # self.recenter_widget.on_click(viewer_state.)
 
-        super().__init__([self.size_widgets, self.color_widgets])
+        super().__init__([self.size_widgets, self.color_widgets, self.time_widgets])
 
 
 class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):

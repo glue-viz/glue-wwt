@@ -321,9 +321,6 @@ class WWTTableLayerArtist(LayerArtist):
                                                                     lon_att='lon', lat_att='lat',
                                                                     selectable=False,
                                                                     **data_kwargs)
-            if self.state.time_series:
-                self.wwt_layer.time_att = 'time'
-
             self.wwt_layer.far_side_visible = self._viewer_state.mode in MODES_3D
 
             self._coords = lon, lat

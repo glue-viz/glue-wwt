@@ -220,7 +220,7 @@ class JupyterTableLayerOptions(VBox):
         self.widget_time_att = LinkedDropdown(self.state, 'time_att', 'Time att')
         self.widget_time_decay_value = linked_float_text(self.state, 'time_decay_value',
                                                          default=0, description='Time decay')
-        self.widget_time_decay_unit = LinkedDropdown(self.state, 'time_decay_unit') 
+        self.widget_time_decay_unit = LinkedDropdown(self.state, 'time_decay_unit', label='')
         self.time_decay_widgets = HBox([self.widget_time_decay_value, self.widget_time_decay_unit])
         self.time_widgets = VBox([self.widget_time_series, self.widget_time_att, self.time_decay_widgets])
 

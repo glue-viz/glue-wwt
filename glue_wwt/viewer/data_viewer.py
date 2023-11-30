@@ -70,7 +70,7 @@ class WWTDataViewerBase(object):
             if force or setting in kwargs:
                 wwt_attr = self._GLUE_TO_WWT_ATTR_MAP.get(setting, setting)
                 setattr(self._wwt, wwt_attr, getattr(self.state, setting, None))
-        
+
         show_imagery = self.state.mode == 'Sky'
         if show_imagery:
             for setting in self._IMAGERY_UPDATE_SETTINGS:

@@ -3,7 +3,10 @@ from __future__ import absolute_import, division, print_function
 import numpy as np
 
 from astropy import units as u
-from astropy.coordinates.angle_utilities import angular_separation
+try:
+    from astropy.coordinates import angular_separation
+except ImportError:
+    from astropy.coordinates.angle_utilities import angular_separation
 from astropy.coordinates.representation import UnitSphericalRepresentation
 
 __all__ = ['center_fov']

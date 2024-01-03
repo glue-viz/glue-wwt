@@ -1,13 +1,11 @@
 from __future__ import absolute_import, division, print_function
 
 import os
-from pywwt.core import ViewerNotAvailableError
 
 from qtpy import QtWidgets
 from glue_qt.utils import load_ui
 from echo.qt import autoconnect_callbacks_to_qt
 
-from .time_dialog import TimeDialog
 from .qt_utils import enabled_if_combosel_in, set_enabled_from_checkbox
 from .viewer_state import MODES_BODIES
 
@@ -29,11 +27,12 @@ class WWTOptionPanel(QtWidgets.QWidget):
 
         self._connect = autoconnect_callbacks_to_qt(self._viewer_state, self.ui, connect_kwargs)
 
-        self.ui.button_set_current_time.clicked.connect(self._current_time_pressed)
+        self.ui.slider_current_time.valueChanged.connect(self._on_slider_changed)
 
         self._viewer_state.add_callback('mode', self._update_visible_options)
         self._viewer_state.add_callback('frame', self._update_visible_options)
         self._viewer_state.add_callback('current_time', self._update_current_time)
+        self._viewer_state.add_callback('layers', self._update_time_bounds)
         self._setup_widget_dependencies()
         self._update_visible_options()
 
@@ -94,22 +93,33 @@ class WWTOptionPanel(QtWidgets.QWidget):
                 self.ui.label_lat_att.setText('Latitude')
 
     def _update_current_time(self, *args):
+        fraction = (self._viewer_state.current_time - self._viewer_state.min_time) / (self._viewer_state.max_time - self._viewer_state.min_time)
+        slider_min = self.ui.slider_current_time.minimum()
+        slider_max = self.ui.slider_current_time.maximum()
+        value = round(slider_min + fraction * (slider_max - slider_min))
+        self.ui.slider_current_time.setValue(value)
         try:
-            self.ui.label_current_time.setText(f"Current Time: {self._viewer_state.current_time.strftime('%Y-%m-%dT%H:%M:%SZ')}")
+            self.ui.label_current_time.setText(f"Current Time: {self._viewer_state.current_time}")
         except:
             pass
 
-    def _current_time_pressed(self):
-        time_playing = self._viewer_state.play_time
-        if time_playing:
-            self._viewer_state.play_time = False
+    def _on_slider_changed(self, *args):
+        self._viewer_state.play_time = False 
+        value = self.ui.slider_current_time.value()
+        slider_min = self.ui.slider_current_time.minimum()
+        slider_max = self.ui.slider_current_time.maximum()
+        fraction = (value - slider_min) / (slider_max - slider_min)
+        self._viewer_state.current_time = self._viewer_state.min_time + fraction * (self._viewer_state.max_time - self._viewer_state.min_time)
 
-        dialog = TimeDialog(initial_datetime=self._viewer_state.current_time)
-        result = dialog.exec_()
+    def _update_time_bounds(self, *args):
+        min_time = self._viewer_state.min_time
+        max_time = self._viewer_state.max_time
+        for layer_state in self._viewer_state.layers:
+            if layer_state.time_att is not None:
+                min_time = min(min_time, min(layer_state.layer[layer_state.time_att]))
+                max_time = max(max_time, max(layer_state.layer[layer_state.time_att]))
 
-        if result == QtWidgets.QDialog.Accepted and dialog.datetime is not None:
-            print(dialog.datetime)
-            self._viewer_state.last_set_time = dialog.datetime
+        self._viewer_state.min_time = min_time
+        self._viewer_state.max_time = max_time
 
-        if time_playing:
-            self._viewer_state.play_time = True
+

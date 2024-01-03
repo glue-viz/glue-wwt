@@ -7,6 +7,7 @@ from echo import (CallbackProperty, ListCallbackProperty,
 
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.viewers.common.state import ViewerState
+from numpy import datetime64
 
 MODES_BODIES = ['Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars',
                 'Jupiter', 'Callisto', 'Europa', 'Ganymede', 'Io', 'Saturn',
@@ -69,8 +70,9 @@ class WWTDataViewerState(ViewerState):
 
     play_time = CallbackProperty(True)
     clock_rate = CallbackProperty(1)
-    last_set_time = CallbackProperty(None)
     current_time = CallbackProperty(None)
+    min_time = CallbackProperty(datetime64("2000-01-01"))
+    max_time = CallbackProperty(datetime64("now"))
 
     layers = ListCallbackProperty()
 

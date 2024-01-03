@@ -29,6 +29,8 @@ class WWTOptionPanel(QtWidgets.QWidget):
 
         self.ui.slider_current_time.valueChanged.connect(self._on_slider_changed)
 
+        self._changing_slider_from_time = False
+
         self._viewer_state.add_callback('mode', self._update_visible_options)
         self._viewer_state.add_callback('frame', self._update_visible_options)
         self._viewer_state.add_callback('current_time', self._update_current_time)
@@ -97,6 +99,7 @@ class WWTOptionPanel(QtWidgets.QWidget):
         slider_min = self.ui.slider_current_time.minimum()
         slider_max = self.ui.slider_current_time.maximum()
         value = round(slider_min + fraction * (slider_max - slider_min))
+        self._changing_slider_from_time = True
         self.ui.slider_current_time.setValue(value)
         try:
             self.ui.label_current_time.setText(f"Current Time: {self._viewer_state.current_time}")
@@ -104,6 +107,9 @@ class WWTOptionPanel(QtWidgets.QWidget):
             pass
 
     def _on_slider_changed(self, *args):
+        if self._changing_slider_from_time:
+            self._changing_slider_from_time = False
+            return
         self._viewer_state.play_time = False 
         value = self.ui.slider_current_time.value()
         slider_min = self.ui.slider_current_time.minimum()

@@ -1,6 +1,7 @@
 from __future__ import absolute_import, division, print_function
 
 from astropy import units as u
+from astropy.time import Time
 
 from echo import (CallbackProperty, ListCallbackProperty,
                   SelectionCallbackProperty)
@@ -68,9 +69,9 @@ class WWTDataViewerState(ViewerState):
     precession_chart = CallbackProperty(False)
     precession_chart_color = CallbackProperty("orange")
 
-    play_time = CallbackProperty(True)
+    play_time = CallbackProperty(False)
     clock_rate = CallbackProperty(1)
-    current_time = CallbackProperty(None)
+    current_time = CallbackProperty(Time.now())
     min_time = CallbackProperty(datetime64("2000-01-01"))
     max_time = CallbackProperty(datetime64("now"))
 

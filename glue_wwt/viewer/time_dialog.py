@@ -29,7 +29,6 @@ class TimeDialog(QDialog):
 
     def accept(self):
         date = self.ui.date_edit.selectedDate().toPython()
-        print(date)
         time = self.ui.time_edit.time().toPython()
         self.datetime = datetime.combine(date, time)
 

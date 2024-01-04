@@ -128,4 +128,3 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self._viewer_state.min_time = min_time
         self._viewer_state.max_time = max_time
 
-

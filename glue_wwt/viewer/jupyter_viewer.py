@@ -138,10 +138,12 @@ class JupterViewerOptions(VBox):
 
         self.widget_current_time_label = Label("Current Time:")
         self.widget_current_time = FloatSlider(readout=False, min=0, max=1, step=0.001)
+        self.state.add_callback('min_time', self._update_slider_fraction)
+        self.state.add_callback('max_time', self._update_slider_fraction)
 
-        # We can't just use `link` here because the time granularity between the slider will not be the same
+        # We can't just use `link` here because the time granularity of the slider will not be the same as WWT
         # and so when we update the time, we'll get a time -> slider -> time update
-        # where the second time lies exactly on a widget step
+        # where the second time lies exactly on a widget step.
         self.state.add_callback('current_time', self._on_current_time_update)
         self.widget_current_time.observe(self._on_slider_update, names=["value"])
 
@@ -185,10 +187,13 @@ class JupterViewerOptions(VBox):
             dt = datetime.combine(dt, datetime.min.time())
         return dt
 
-    def _on_current_time_update(self, time):
-        fraction = (time - self.state.min_time) / (self.state.max_time - self.state.min_time)
+    def _update_slider_fraction(self, *args):
+        fraction = (self.state.current_time - self.state.min_time) / (self.state.max_time - self.state.min_time)
         value = self.widget_current_time.min + fraction * (self.widget_current_time.max - self.widget_current_time.min)
         self.widget_current_time.value = value
+
+    def _on_current_time_update(self, time):
+        self._update_slider_fraction()
         self.widget_current_time_label.value = f"Current Time: {time}"
 
     def _on_slider_update(self, changed):

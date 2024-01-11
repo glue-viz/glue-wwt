@@ -34,6 +34,8 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self._viewer_state.add_callback('mode', self._update_visible_options)
         self._viewer_state.add_callback('frame', self._update_visible_options)
         self._viewer_state.add_callback('current_time', self._on_current_time_update)
+        self._viewer_state.add_callback('min_time', self._update_slider_fraction)
+        self._viewer_state.add_callback('max_time', self._update_slider_fraction)
         self._viewer_state.add_callback('layers', self._update_time_bounds)
         self._setup_widget_dependencies()
         self._update_visible_options()
@@ -93,15 +95,18 @@ class WWTOptionPanel(QtWidgets.QWidget):
                 self.ui.label_lon_att.setText('Longitude')
                 self.ui.label_lat_att.setText('Latitude')
 
-    def _on_current_time_update(self, time):
-        fraction = (time - self._viewer_state.min_time) / (self._viewer_state.max_time - self._viewer_state.min_time)
+    def _update_slider_fraction(self, *args):
+        fraction = (self._viewer_state.current_time - self._viewer_state.min_time) / (self._viewer_state.max_time - self._viewer_state.min_time)
         slider_min = self.ui.slider_current_time.minimum()
         slider_max = self.ui.slider_current_time.maximum()
         value = round(slider_min + fraction * (slider_max - slider_min))
         self._changing_slider_from_time = True
         self.ui.slider_current_time.setValue(value)
+
+    def _on_current_time_update(self, time):
+        self._update_slider_fraction()
         try:
-            self.ui.label_current_time.setText(f"Current Time: {self._viewer_state.current_time}")
+            self.ui.label_current_time.setText(f"Current Time: {time}")
         except:
             pass
 
@@ -109,7 +114,6 @@ class WWTOptionPanel(QtWidgets.QWidget):
         if self._changing_slider_from_time:
             self._changing_slider_from_time = False
             return
-        self._viewer_state.play_time = False 
         value = self.ui.slider_current_time.value()
         slider_min = self.ui.slider_current_time.minimum()
         slider_max = self.ui.slider_current_time.maximum()

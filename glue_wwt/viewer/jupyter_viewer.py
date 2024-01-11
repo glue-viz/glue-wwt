@@ -38,7 +38,7 @@ class JupterViewerOptions(VBox):
         self.alt_opts = VBox([self.widget_alt_type, self.widget_alt, self.widget_alt_unit])
         dlink((self.state, 'mode'), (self.alt_opts.layout, 'display'), lambda value: '' if value != 'Sky' else 'none')
 
-        self.widget_foreground = LinkedDropdown(self.state, "foreground", label='Forground:')
+        self.widget_foreground = LinkedDropdown(self.state, "foreground", label='Foreground:')
         self.widget_foreground_opacity = FloatSlider(description="Opacity:", min=0, max=1,
                                                      value=self.state.foreground_opacity, step=0.01)
         link((self.widget_foreground_opacity, 'value'), (self.state, 'foreground_opacity'))

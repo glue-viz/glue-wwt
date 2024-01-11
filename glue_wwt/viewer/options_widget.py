@@ -33,7 +33,7 @@ class WWTOptionPanel(QtWidgets.QWidget):
 
         self._viewer_state.add_callback('mode', self._update_visible_options)
         self._viewer_state.add_callback('frame', self._update_visible_options)
-        self._viewer_state.add_callback('current_time', self._update_current_time)
+        self._viewer_state.add_callback('current_time', self._on_current_time_update)
         self._viewer_state.add_callback('layers', self._update_time_bounds)
         self._setup_widget_dependencies()
         self._update_visible_options()
@@ -50,7 +50,6 @@ class WWTOptionPanel(QtWidgets.QWidget):
         set_enabled_from_checkbox(self.ui.color_constellation_figure_color, self.ui.bool_constellation_figures)
         set_enabled_from_checkbox(self.ui.color_ecliptic_color, self.ui.bool_ecliptic)
         set_enabled_from_checkbox(self.ui.color_precession_chart_color, self.ui.bool_precession_chart)
-        set_enabled_from_checkbox(self.ui.valuetext_clock_rate, self.ui.bool_play_time)
 
         enabled_if_combosel_in(self.ui.color_constellation_boundary_color,
                                 self.ui.combosel_constellation_boundaries,
@@ -94,8 +93,8 @@ class WWTOptionPanel(QtWidgets.QWidget):
                 self.ui.label_lon_att.setText('Longitude')
                 self.ui.label_lat_att.setText('Latitude')
 
-    def _update_current_time(self, *args):
-        fraction = (self._viewer_state.current_time - self._viewer_state.min_time) / (self._viewer_state.max_time - self._viewer_state.min_time)
+    def _on_current_time_update(self, time):
+        fraction = (time - self._viewer_state.min_time) / (self._viewer_state.max_time - self._viewer_state.min_time)
         slider_min = self.ui.slider_current_time.minimum()
         slider_max = self.ui.slider_current_time.maximum()
         value = round(slider_min + fraction * (slider_max - slider_min))

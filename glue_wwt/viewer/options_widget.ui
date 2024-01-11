@@ -573,7 +573,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_min_time">
             <property name="text">
-             <string>Min Time</string>
+             <string>Min Time:</string>
             </property>
            </widget>
           </item>
@@ -585,8 +585,62 @@
             <property name="showGroupSeparator" stdset="0">
              <bool>false</bool>
             </property>
+            <property name="dateTime">
+             <datetime>
+              <hour>6</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2000</year>
+              <month>1</month>
+              <day>2</day>
+             </datetime>
+            </property>
+            <property name="date">
+             <date>
+              <year>2000</year>
+              <month>1</month>
+              <day>2</day>
+             </date>
+            </property>
+            <property name="maximumDateTime">
+             <datetime>
+              <hour>5</hour>
+              <minute>59</minute>
+              <second>58</second>
+              <year>10000</year>
+              <month>1</month>
+              <day>1</day>
+             </datetime>
+            </property>
+            <property name="minimumDateTime">
+             <datetime>
+              <hour>12</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>1752</year>
+              <month>9</month>
+              <day>15</day>
+             </datetime>
+            </property>
+            <property name="maximumTime">
+             <time>
+              <hour>5</hour>
+              <minute>59</minute>
+              <second>58</second>
+             </time>
+            </property>
+            <property name="minimumTime">
+             <time>
+              <hour>12</hour>
+              <minute>0</minute>
+              <second>0</second>
+             </time>
+            </property>
+            <property name="currentSection">
+             <enum>QDateTimeEdit::MonthSection</enum>
+            </property>
             <property name="calendarPopup">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="timeSpec">
              <enum>Qt::UTC</enum>
@@ -595,18 +649,25 @@
           </item>
           <item row="2" column="0">
            <widget class="QDateTimeEdit" name="datetime_min_time">
+            <property name="minimumDate">
+             <date>
+              <year>1752</year>
+              <month>10</month>
+              <day>14</day>
+             </date>
+            </property>
             <property name="calendarPopup">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="timeSpec">
-             <enum>Qt::UTC</enum>
+             <enum>Qt::LocalTime</enum>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QLabel" name="label_max_time">
             <property name="text">
-             <string>Max Time</string>
+             <string>Max Time:</string>
             </property>
            </widget>
           </item>

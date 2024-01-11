@@ -1,4 +1,5 @@
 from __future__ import absolute_import, division, print_function
+from datetime import datetime
 
 from glue_jupyter.view import IPyWidgetView
 from glue_jupyter.link import link, dlink
@@ -8,8 +9,7 @@ from pywwt.jupyter import WWTJupyterWidget
 
 from ipywidgets import Accordion, GridBox, HBox, Label, Layout, Output, Tab, VBox, FloatSlider, FloatText
 from ipywidgets.widgets.widget_datetime import NaiveDatetimePicker
-import ipyvuetify as v
-from IPython.display import display
+from numpy import datetime64
 
 from .data_viewer import WWTDataViewerBase
 from .image_layer import WWTImageLayerArtist
@@ -134,16 +134,37 @@ class JupterViewerOptions(VBox):
 
         self.widget_play_time = linked_checkbox(self.state, "play_time", description="Play Time")
         self.widget_clock_rate = FloatText(description="Clock Rate:")
-        link((self.state, 'clock_rate'), (self.widget_clock_rate, 'value'), lambda value: value or 1)
-        set_enabled_from_checkbox(self.widget_clock_rate, self.widget_play_time)
+        link((self.state, 'clock_rate'), (self.widget_clock_rate, 'value'))
+
+        self.widget_current_time_label = Label("Current Time:")
+        self.widget_current_time = FloatSlider(readout=False, min=0, max=1, step=0.001)
+
+        # We can't just use `link` here because the time granularity between the slider will not be the same
+        # and so when we update the time, we'll get a time -> slider -> time update
+        # where the second time lies exactly on a widget step
+        self.state.add_callback('current_time', self._on_current_time_update)
+        self.widget_current_time.observe(self._on_slider_update, names=["value"])
+
+        self.widget_min_time = NaiveDatetimePicker(description="Min Time:")
+        link((self.state, 'min_time'), (self.widget_min_time, 'value'),
+             lambda time: self._datetime64_to_utc_datetime(time),
+             lambda value: datetime64(value)
+        )
+        self.widget_max_time = NaiveDatetimePicker(description="Max Time:")
+        link((self.state, 'max_time'), (self.widget_max_time, 'value'),
+             lambda time: self._datetime64_to_utc_datetime(time),
+             lambda value: datetime64(value)
+        )
 
         self.other_settings = VBox(children=[
                                        GridBox(children=[self.widget_ecliptic_label, self.widget_ecliptic,
                                                          self.widget_ecliptic_color, self.widget_precession_chart_label,
                                                          self.widget_precession_chart, self.widget_precession_chart_color],
-                                               layout=Layout(grid_template_columns="5fr 1fr 1fr", width="100%",
+                                               layout=Layout(grid_template_columns="60% 20% 20%", width="100%",
                                                              grid_gap="2px 10px")),
-                                       VBox(children=[self.widget_play_time, self.widget_clock_rate])
+                                       VBox(children=[self.widget_play_time, self.widget_clock_rate,
+                                                      self.widget_current_time_label, self.widget_current_time,
+                                                      self.widget_min_time, self.widget_max_time])
                                    ])
 
 
@@ -158,35 +179,26 @@ class JupterViewerOptions(VBox):
 
         super().__init__([self.settings])
 
-    def open_time_dialog(self):
-        datetime_picker = NaiveDatetimePicker()
-        yes_btn = v.Btn(color='success', children=["Yes"])
-        no_btn = v.Btn(color='error', children=["No"])
-        dialog = v.Dialog(
-            width='500',
-            persistent=True,
-            children=[
-                v.Card(children=[
-                    v.CardText(children=["Please select a date and time (in UTC)."]),
-                    datetime_picker,
-                    HBox(children=[yes_btn, no_btn], layout=Layout(justify_content='flex-end', grip_gap='5px'))
-                ])
-            ]
-        )
+    def _datetime64_to_utc_datetime(self, dt64):
+        dt = dt64.item()
+        if not isinstance(dt, datetime):
+            dt = datetime.combine(dt, datetime.min.time())
+        return dt
 
-        def on_yes_click(button, event, data):
-            self.state.last_set_time = dialog.value
-            self.widget_output.clear_output()
+    def _on_current_time_update(self, time):
+        fraction = (time - self.state.min_time) / (self.state.max_time - self.state.min_time)
+        value = self.widget_current_time.min + fraction * (self.widget_current_time.max - self.widget_current_time.min)
+        self.widget_current_time.value = value
+        self.widget_current_time_label.value = f"Current Time: {time}"
 
-        def on_no_click(button, event, data):
-            self.widget_output.clear_output()
-
-        yes_btn.on_event('click', on_yes_click)
-        no_btn.on_event('click', on_no_click)
-
-        with self.widget_output:
-            dialog.v_model = True
-            display(dialog)
+    def _on_slider_update(self, changed):
+        fraction = (changed["new"] - self.widget_current_time.min) / \
+                   (self.widget_current_time.max - self.widget_current_time.min)
+        time = self.state.min_time + fraction * (self.state.max_time - self.state.min_time)
+        n_steps = (self.widget_current_time.max - self.widget_current_time.min) / self.widget_current_time.step
+        step_timegap = (self.state.max_time - self.state.min_time) / n_steps
+        if abs(time - self.state.current_time) >= step_timegap:
+            self.state.current_time = time
 
 
 class JupyterImageLayerOptions(VBox):

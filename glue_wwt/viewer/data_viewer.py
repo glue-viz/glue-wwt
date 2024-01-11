@@ -175,7 +175,6 @@ class WWTDataViewerBase(object):
         try:
             self.state.current_time = datetime64(self._wwt.get_current_time().to_string())
         except ViewerNotAvailableError:
-            print("Error in _update_time")
             pass
 
         self._current_time_timer = Timer(1.0, self._update_time)

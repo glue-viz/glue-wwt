@@ -587,7 +587,7 @@
             </property>
             <property name="dateTime">
              <datetime>
-              <hour>6</hour>
+              <hour>12</hour>
               <minute>0</minute>
               <second>0</second>
               <year>2000</year>
@@ -604,17 +604,17 @@
             </property>
             <property name="maximumDateTime">
              <datetime>
-              <hour>5</hour>
+              <hour>11</hour>
               <minute>59</minute>
               <second>58</second>
-              <year>10000</year>
-              <month>1</month>
-              <day>1</day>
+              <year>9999</year>
+              <month>12</month>
+              <day>31</day>
              </datetime>
             </property>
             <property name="minimumDateTime">
              <datetime>
-              <hour>12</hour>
+              <hour>18</hour>
               <minute>0</minute>
               <second>0</second>
               <year>1752</year>
@@ -624,14 +624,14 @@
             </property>
             <property name="maximumTime">
              <time>
-              <hour>5</hour>
+              <hour>11</hour>
               <minute>59</minute>
               <second>58</second>
              </time>
             </property>
             <property name="minimumTime">
              <time>
-              <hour>12</hour>
+              <hour>18</hour>
               <minute>0</minute>
               <second>0</second>
              </time>
@@ -660,7 +660,7 @@
              <bool>false</bool>
             </property>
             <property name="timeSpec">
-             <enum>Qt::LocalTime</enum>
+             <enum>Qt::UTC</enum>
             </property>
            </widget>
           </item>

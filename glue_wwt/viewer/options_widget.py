@@ -106,7 +106,7 @@ class WWTOptionPanel(QtWidgets.QWidget):
     def _on_current_time_update(self, time):
         self._update_slider_fraction()
         try:
-            self.ui.label_current_time.setText(f"Current Time: {time}")
+            self.ui.label_current_time.setText(f"Current Time: {time.astype('datetime64[ms]')}")
         except:
             pass
 

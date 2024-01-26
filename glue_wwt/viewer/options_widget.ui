@@ -17,7 +17,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tab_widget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -587,7 +587,7 @@
             </property>
             <property name="dateTime">
              <datetime>
-              <hour>12</hour>
+              <hour>17</hour>
               <minute>0</minute>
               <second>0</second>
               <year>2000</year>
@@ -604,7 +604,7 @@
             </property>
             <property name="maximumDateTime">
              <datetime>
-              <hour>11</hour>
+              <hour>16</hour>
               <minute>59</minute>
               <second>58</second>
               <year>9999</year>
@@ -614,7 +614,7 @@
             </property>
             <property name="minimumDateTime">
              <datetime>
-              <hour>18</hour>
+              <hour>23</hour>
               <minute>0</minute>
               <second>0</second>
               <year>1752</year>
@@ -624,20 +624,23 @@
             </property>
             <property name="maximumTime">
              <time>
-              <hour>11</hour>
+              <hour>16</hour>
               <minute>59</minute>
               <second>58</second>
              </time>
             </property>
             <property name="minimumTime">
              <time>
-              <hour>18</hour>
+              <hour>23</hour>
               <minute>0</minute>
               <second>0</second>
              </time>
             </property>
             <property name="currentSection">
              <enum>QDateTimeEdit::MonthSection</enum>
+            </property>
+            <property name="displayFormat">
+             <string>M/d/yyyy h:mm AP</string>
             </property>
             <property name="calendarPopup">
              <bool>false</bool>
@@ -655,6 +658,9 @@
               <month>10</month>
               <day>14</day>
              </date>
+            </property>
+            <property name="displayFormat">
+             <string>M/d/yyyy h:mm AP</string>
             </property>
             <property name="calendarPopup">
              <bool>false</bool>

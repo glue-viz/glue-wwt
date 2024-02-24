@@ -1,5 +1,20 @@
 # Full changelog
 
+## v0.7.0 - 2024-02-24
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+### What's Changed
+
+#### Other Changes
+
+* Expose grid and constellation settings by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/97
+* Updates for glue-qt by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/98
+* Bump minimum glue-core by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/100
+* Truncate SkyCoord exception if too long by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/92
+* Update import location for astropy v6 by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/102
+
+**Full Changelog**: https://github.com/glue-viz/glue-wwt/compare/v0.6.1...v0.7.0
+
 ## v0.6.1 - 2023-01-12
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->

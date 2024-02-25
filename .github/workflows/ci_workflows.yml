@@ -5,7 +5,17 @@ on:
   pull_request:
 
 jobs:
+  initial_checks:
+    # Mandatory checks before CI tests
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      coverage: false
+      envs: |
+        # Code style
+        - linux: codestyle
+
   tests:
+    needs: initial_checks
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
       display: true
@@ -14,28 +24,32 @@ jobs:
         apt:
           - '^libxcb.*-dev'
           - libxkbcommon-x11-dev
+          - libhdf5-dev
+        brew:
+          - hdf5
 
       envs: |
-        # Code style
-        - linux: codestyle
-
         # Standard tests
         - linux: py38-test
         - linux: py39-test
-        - linux: py310-test
+        - linux: py310-test-devdeps
         - linux: py311-test
+        - linux: py312-test-devdeps
 
         - macos: py38-test
         - macos: py39-test
         - macos: py310-test
-        - macos: py311-test
+        - macos: py311-test-devdeps
+        - macos: py312-test
 
         - windows: py38-test
         - windows: py39-test
         - windows: py310-test
-        - windows: py311-test
+        - windows: py311-test-devdeps
+        - windows: py312-test
 
   publish:
+    needs: tests
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
     with:
       # setup headless X server as per pyvista/setup-headless-display-action@v1

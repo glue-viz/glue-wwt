@@ -17,11 +17,12 @@ def pytest_configure(config):
     # WebEngine widgets require this.
     from pywwt.qt import WWTQtClient  # noqa
 
-    from glue.utils.qt import get_qapp
+    from glue_qt.utils import get_qapp
     app = get_qapp()
 
 
 def pytest_unconfigure(config):
     global app
-    app.quit()
+    if app is not None:
+        app.quit()
     app = None

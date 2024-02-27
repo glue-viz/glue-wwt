@@ -1,5 +1,16 @@
 # Full changelog
 
+## v0.7.1 - 2024-02-27
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+### What's Changed
+
+#### Bug Fixes
+
+* Avoid using deprecated import from glue-core by @astrofrog in https://github.com/glue-viz/glue-wwt/pull/105
+
+**Full Changelog**: https://github.com/glue-viz/glue-wwt/compare/v0.7.0...v0.7.1
+
 ## v0.7.0 - 2024-02-24
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->

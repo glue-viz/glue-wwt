@@ -1,5 +1,17 @@
 # Full changelog
 
+## v0.7.2 - 2024-03-21
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+### What's Changed
+
+#### Other Changes
+
+* Fix distutils deprecation warnings and update infrastructure by @astrofrog in https://github.com/glue-viz/glue-wwt/pull/106
+* Added status bar note on zooming due to buggy scrolling in Qt6 by @astrofrog in https://github.com/glue-viz/glue-wwt/pull/108
+
+**Full Changelog**: https://github.com/glue-viz/glue-wwt/compare/v0.7.1...v0.7.2
+
 ## v0.7.1 - 2024-02-27
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->

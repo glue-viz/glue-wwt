@@ -46,6 +46,7 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
 
     def closeEvent(self, event):
         self._wwt.widget.close()
+        self._cleanup()
         return super(WWTQtViewer, self).closeEvent(event)
 
     def _on_wwt_ready(self):

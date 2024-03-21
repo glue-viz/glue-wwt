@@ -31,9 +31,11 @@ class WWTTableStyleEditor(QtWidgets.QWidget):
         # Set initial values
         self._update_size_mode()
         self._update_color_mode()
+        self._update_time_series()
 
         self.state.add_callback('color_mode', self._update_color_mode)
         self.state.add_callback('size_mode', self._update_size_mode)
+        self.state.add_callback('time_series', self._update_time_series)
 
         self.ui.button_center.clicked.connect(layer_artist.center)
 
@@ -68,3 +70,11 @@ class WWTTableStyleEditor(QtWidgets.QWidget):
             self.ui.spacer_color_label.hide()
             self.ui.color_row_2.show()
             self.ui.color_row_3.show()
+
+    def _update_time_series(self, *args):
+        time_widgets = [self.ui.time_att_row, self.ui.time_decay_row]
+        for widget in time_widgets:
+            if self.state.time_series:
+                widget.show()
+            else:
+                widget.hide()

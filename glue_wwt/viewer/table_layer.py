@@ -23,18 +23,18 @@ from numpy import size
 
 import pywwt
 from pywwt.layers import TableLayer
-from packaging import Version
+from packaging.version import Version
 
-PYWWT_LT_06 = Version(pywwt.__version__) < '0.6'
+PYWWT_LT_06 = Version(pywwt.__version__) < Version('0.6')
 
 # 0.13 is the first version that uses the WWT research app as the JS backend
-PYWWT_GE_013 = Version(pywwt.__version__) >= '0.13'
+PYWWT_GE_013 = Version(pywwt.__version__) >= Version('0.13')
 
 # 0.9 is the first version that grabs the SDK from the WWT CDN
-PYWWT_LT_09 = Version(pywwt.__version__) < '0.9'
+PYWWT_LT_09 = Version(pywwt.__version__) < Version('0.9')
 
 # 0.15 is the first version with the updated engine
-PYWWT_GE_015 = Version(pywwt.__version__) >= '0.15'
+PYWWT_GE_015 = Version(pywwt.__version__) >= Version('0.15')
 
 
 __all__ = ['WWTTableLayerArtist']

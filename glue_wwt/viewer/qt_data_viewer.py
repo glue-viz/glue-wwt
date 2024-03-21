@@ -38,6 +38,8 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
 
         self._wwt.widget.page.wwt_ready.connect(self._on_wwt_ready)
 
+        self.set_status('NOTE ON ZOOMING: use the z/x keys to zoom in/out if scrolling does not work')
+
     def _initialize_wwt(self):
         from pywwt.qt import WWTQtClient
         self._wwt = WWTQtClient()

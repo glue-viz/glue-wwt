@@ -159,4 +159,3 @@ class WWTDataViewerState(ViewerState):
         elif time > self.max_time:
             self.current_time = self.max_time
             self.play_time = False
-        

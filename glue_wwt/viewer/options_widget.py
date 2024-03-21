@@ -54,11 +54,11 @@ class WWTOptionPanel(QtWidgets.QWidget):
         set_enabled_from_checkbox(self.ui.color_precession_chart_color, self.ui.bool_precession_chart)
 
         enabled_if_combosel_in(self.ui.color_constellation_boundary_color,
-                                self.ui.combosel_constellation_boundaries,
-                                ['All'])
+                               self.ui.combosel_constellation_boundaries,
+                               ['All'])
         enabled_if_combosel_in(self.ui.color_constellation_selection_color,
-                                self.ui.combosel_constellation_boundaries,
-                                ['All', 'Selection only'])
+                               self.ui.combosel_constellation_boundaries,
+                               ['All', 'Selection only'])
 
     def _update_visible_options(self, *args, **kwargs):
 
@@ -96,7 +96,8 @@ class WWTOptionPanel(QtWidgets.QWidget):
                 self.ui.label_lat_att.setText('Latitude')
 
     def _update_slider_fraction(self, *args):
-        fraction = (self._viewer_state.current_time - self._viewer_state.min_time) / (self._viewer_state.max_time - self._viewer_state.min_time)
+        fraction = (self._viewer_state.current_time - self._viewer_state.min_time) / \
+                   (self._viewer_state.max_time - self._viewer_state.min_time)
         slider_min = self.ui.slider_current_time.minimum()
         slider_max = self.ui.slider_current_time.maximum()
         value = round(slider_min + fraction * (slider_max - slider_min))
@@ -107,7 +108,7 @@ class WWTOptionPanel(QtWidgets.QWidget):
         self._update_slider_fraction()
         try:
             self.ui.label_current_time.setText(f"Current Time: {time.astype('datetime64[ms]')}")
-        except:
+        except Exception:
             pass
 
     def _on_slider_changed(self, *args):
@@ -118,7 +119,8 @@ class WWTOptionPanel(QtWidgets.QWidget):
         slider_min = self.ui.slider_current_time.minimum()
         slider_max = self.ui.slider_current_time.maximum()
         fraction = (value - slider_min) / (slider_max - slider_min)
-        self._viewer_state.current_time = self._viewer_state.min_time + fraction * (self._viewer_state.max_time - self._viewer_state.min_time)
+        self._viewer_state.current_time = self._viewer_state.min_time + \
+            fraction * (self._viewer_state.max_time - self._viewer_state.min_time)
 
     def _update_time_bounds(self, *args):
         min_time = self._viewer_state.min_time
@@ -130,4 +132,3 @@ class WWTOptionPanel(QtWidgets.QWidget):
 
         self._viewer_state.min_time = min_time
         self._viewer_state.max_time = max_time
-

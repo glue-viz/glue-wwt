@@ -90,20 +90,22 @@ class JupterViewerOptions(VBox):
         self.widget_constellation_boundaries = LinkedDropdown(self.state, 'constellation_boundaries',
                                                               label="Boundaries:")
         self.widget_constellation_boundary_color = linked_color_picker(self.state, 'constellation_boundary_color',
-                                                                            description="Boundary")
+                                                                       description="Boundary")
         dlink((self.widget_constellation_boundaries, 'value'), (self.widget_constellation_boundary_color, 'disabled'),
               lambda value: value != "All")
         self.widget_constellation_selection_color = linked_color_picker(self.state, 'constellation_selection_color',
-                                                                             description="Selection")
+                                                                        description="Selection")
         dlink((self.widget_constellation_boundaries, 'value'), (self.widget_constellation_selection_color, 'disabled'),
               lambda value: value == "None")
 
         self.widget_constellation_figures = linked_checkbox(self.state, 'constellation_figures', description="Figures")
         self.widget_constellation_figure_color = linked_color_picker(self.state, 'constellation_figure_color',
-                                                                          description="Figure")
+                                                                     description="Figure")
         set_enabled_from_checkbox(self.widget_constellation_figure_color, self.widget_constellation_figures)
-        self.widget_constellation_labels = linked_checkbox(self.state, 'constellation_labels', description="Labels")
-        self.widget_constellation_pictures = linked_checkbox(self.state, 'constellation_pictures', description="Pictures")
+        self.widget_constellation_labels = linked_checkbox(self.state, 'constellation_labels',
+                                                           description="Labels")
+        self.widget_constellation_pictures = linked_checkbox(self.state, 'constellation_pictures',
+                                                             description="Pictures")
 
         constellations_hbox_layout = Layout(gap="10px", justify_content="space-between")
         constellations_vbox_layout = Layout(height="fit-content", gap="2px", padding="5px", flex_direction="column")
@@ -150,25 +152,23 @@ class JupterViewerOptions(VBox):
         self.widget_min_time = NaiveDatetimePicker(description="Min Time:")
         link((self.state, 'min_time'), (self.widget_min_time, 'value'),
              lambda time: self._datetime64_to_utc_datetime(time),
-             lambda value: datetime64(value)
-        )
+             lambda value: datetime64(value))
         self.widget_max_time = NaiveDatetimePicker(description="Max Time:")
         link((self.state, 'max_time'), (self.widget_max_time, 'value'),
              lambda time: self._datetime64_to_utc_datetime(time),
-             lambda value: datetime64(value)
-        )
+             lambda value: datetime64(value))
 
         self.other_settings = VBox(children=[
                                        GridBox(children=[self.widget_ecliptic_label, self.widget_ecliptic,
                                                          self.widget_ecliptic_color, self.widget_precession_chart_label,
-                                                         self.widget_precession_chart, self.widget_precession_chart_color],
+                                                         self.widget_precession_chart,
+                                                         self.widget_precession_chart_color],
                                                layout=Layout(grid_template_columns="60% 20% 20%", width="100%",
                                                              grid_gap="2px 10px")),
                                        VBox(children=[self.widget_play_time, self.widget_clock_rate,
                                                       self.widget_current_time_label, self.widget_current_time,
                                                       self.widget_min_time, self.widget_max_time])
                                    ])
-
 
         self.settings = Accordion(children=[self.general_settings, self.grid_settings,
                                             self.constellation_settings, self.other_settings],
@@ -232,7 +232,7 @@ class JupyterTableLayerOptions(VBox):
         self.state = layer_state
         self.color_widgets = Color(state=self.state)
         self.size_widgets = Size(state=self.state)
-        
+
         self.widget_time_series = linked_checkbox(self.state, 'time_series', description="Time series")
         self.widget_time_att = LinkedDropdown(self.state, 'time_att', 'Time att')
         self.widget_time_decay_value = linked_float_text(self.state, 'time_decay_value',

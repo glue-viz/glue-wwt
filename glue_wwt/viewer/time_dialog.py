@@ -1,5 +1,5 @@
 import os
-from datetime import datetime 
+from datetime import datetime
 
 from qtpy.QtCore import QDate, QTime
 from qtpy.QtWidgets import QDialog

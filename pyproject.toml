@@ -1,0 +1,54 @@
+[build-system]
+requires = [
+    "setuptools>=61.2",
+    "setuptools_scm",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glue-wwt"
+authors = [{name = "Thomas Robitaille", email = "thomas.robitaille@gmail.com"}]
+license = {text = "BSD 3-Clause License"}
+description = "Glue WorldWide Telescope plugin"
+readme = "README.rst"
+urls = {Homepage = "https://github.com/glue-viz/glue-wwt"}
+requires-python = ">=3.8"
+dependencies = [
+    "numpy",
+    "glue-core>=1.13.1",
+    "echo",
+    "astropy",
+    "pywwt>=0.21.0",
+    "packaging",
+]
+dynamic = ["version"]
+
+[tool.setuptools_scm]
+
+[project.entry-points]
+"glue.plugins" = {wwt = "glue_wwt:setup"}
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "mock",
+]
+qt = [
+    "qtpy",
+    "glue-qt",
+    'PyQt5;python_version>="3"',
+    'PyQtWebEngine;python_version>="3"',
+]
+
+[tool.setuptools]
+zip-safe = false
+license-files = ["LICENSE"]
+include-package-data = false
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[tool.setuptools.package-data]
+"glue_wwt.viewer" = ["*.ui", "*.html", "*.js", "*.png"]
+"glue_wwt.viewer.tests" = ["data/*.glu"]

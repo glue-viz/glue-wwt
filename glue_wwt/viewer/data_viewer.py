@@ -7,6 +7,7 @@ import astropy.units as u
 from glue.core.coordinates import WCSCoordinates
 from glue.logger import logger
 from pywwt import ViewerNotAvailableError
+from pywwt.layers import guess_lon_lat_columns
 
 from .image_layer import WWTImageLayerArtist
 from .table_layer import WWTTableLayerArtist
@@ -127,3 +128,13 @@ class WWTDataViewerBase(object):
                 camera_kwargs["roll"] = roll * u.deg
             viewer._wwt.center_on_coordinates(SkyCoord(ra, dec, unit=u.deg), **camera_kwargs)
         return viewer
+
+    def add_data(self, data):
+        add = super().add_data(data)
+        if add and len(self.state.layers) == 1:
+            colnames = [c.label for c in data.components]
+            lon, lat = guess_lon_lat_columns(colnames)
+            if lon is not None and lat is not None:
+                self.state.lon_att = data.id[lon]
+                self.state.lat_att = data.id[lat]
+        return add

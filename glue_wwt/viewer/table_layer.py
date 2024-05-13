@@ -21,21 +21,6 @@ from astropy.table import Table
 
 from numpy import size
 
-import pywwt
-from pywwt.layers import TableLayer
-from packaging.version import Version
-
-PYWWT_LT_06 = Version(pywwt.__version__) < Version('0.6')
-
-# 0.13 is the first version that uses the WWT research app as the JS backend
-PYWWT_GE_013 = Version(pywwt.__version__) >= Version('0.13')
-
-# 0.9 is the first version that grabs the SDK from the WWT CDN
-PYWWT_LT_09 = Version(pywwt.__version__) < Version('0.9')
-
-# 0.15 is the first version with the updated engine
-PYWWT_GE_015 = Version(pywwt.__version__) >= Version('0.15')
-
 
 __all__ = ['WWTTableLayerArtist']
 
@@ -112,13 +97,7 @@ class WWTTableLayerState(LayerState):
 
         self.cmap = colormaps.members[0][1]
 
-        # Color and size encoding depending on attributes is only available
-        # in PyWWT 0.6 or later.
-        if PYWWT_LT_06:
-            modes = ['Fixed']
-        else:
-            modes = ['Fixed', 'Linear']
-
+        modes = ['Fixed', 'Linear']
         WWTTableLayerState.color_mode.set_choices(self, modes)
         WWTTableLayerState.size_mode.set_choices(self, modes)
 
@@ -282,28 +261,6 @@ class WWTTableLayerArtist(LayerArtist):
                 lon = coord.spherical.lon.degree
                 lat = coord.spherical.lat.degree
 
-            # Previously, there was an error in the WWT WebGL engine which caused
-            # longitude values to be shifted by 180 degrees in 3d mode.
-            # See https://github.com/WorldWideTelescope/wwt-webgl-engine/issues/34
-            # This was fixed in @wwtelescope/engine 7.14.5
-            # However, the WWT research app (which is the JS backend
-            # for pywwt >= 0.13), is not yet using the new engine
-            # until 0.15, so we need to keep this fix in place for 0.13 <= version < 0.15
-            # 0.9 <= pywwt < 0.13 grabs the v7 engine from the WWT CDN
-            # so does not need the fix
-            # but pre-0.9 has its own internal wwtsdk.js (hosted on GitHub)
-            # and so does
-            app_old_engine = PYWWT_GE_013 and not PYWWT_GE_015
-            need_longitude_fix = app_old_engine or PYWWT_LT_09
-
-            if need_longitude_fix:
-                if self._viewer_state.mode in MODES_3D:
-                    lon_orig = lon.copy()
-                    lon = lon + 180
-                    lon[lon > 360] -= 360
-                else:
-                    lon_orig = None
-
             # FIXME: kpc isn't yet a valid unit in WWT/PyWWT:
             # https://github.com/WorldWideTelescope/wwt-web-client/pull/197
             # for now we set unit to pc and scale values accordingly
@@ -330,15 +287,9 @@ class WWTTableLayerArtist(LayerArtist):
                 tab['cmap'] = cmap_values
                 data_kwargs['cmap_att'] = 'cmap'
 
-            if need_longitude_fix:
-                if lon_orig is not None:
-                    tab['lon_orig'] = lon_orig * u.degree
-
-            if 'selectable' in TableLayer.class_trait_names():
-                data_kwargs['selectable'] = False
-
             self.wwt_layer = self.wwt_client.layers.add_table_layer(tab, frame=ref_frame,
                                                                     lon_att='lon', lat_att='lat',
+                                                                    selectable=False,
                                                                     **data_kwargs)
 
             self.wwt_layer.far_side_visible = self._viewer_state.mode in MODES_3D

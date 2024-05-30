@@ -10,7 +10,7 @@ from .image_style_editor import WWTImageStyleEditor
 from .table_style_editor import WWTTableStyleEditor
 
 # We import the following to register the save tool
-from . import tools  # noqa
+from . import tools as wwt_tools  # noqa
 
 __all__ = ['WWTQtViewer']
 
@@ -24,6 +24,7 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
     }
 
     subtools = {'save': ['wwt:save', 'wwt:savetour']}
+    tools = ["save", "wwt:refresh_cache"]
 
     def __init__(self, session, parent=None, state=None):
         DataViewer.__init__(self, session, parent=None, state=state)

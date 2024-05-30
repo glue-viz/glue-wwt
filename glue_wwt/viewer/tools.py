@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import io
 import time
+from os.path import abspath, dirname, join
 from qtpy import compat
 
 from glue.viewers.common.tool import Tool
@@ -112,3 +113,15 @@ class SaveTourTool(Tool):
 
         with io.open(filename, 'w', newline='') as f:
             f.write(tourxml)
+
+
+@viewer_tool
+class RefreshTileCacheTool(Tool):
+
+    icon = abspath(join(dirname(__file__), 'refresh_cache'))
+    tool_id = 'wwt:refresh_cache'
+    action_text = 'Refresh the WWT tile cache'
+    tool_tip = 'Refresh the WWT tile cache'
+
+    def activate(self):
+        self.viewer._wwt.refresh_tile_cache()

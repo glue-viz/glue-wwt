@@ -96,13 +96,16 @@ class WWTOptionPanel(QtWidgets.QWidget):
                 self.ui.label_lat_att.setText('Latitude')
 
     def _update_slider_fraction(self, *args):
-        fraction = (self._viewer_state.current_time - self._viewer_state.min_time) / \
-                   (self._viewer_state.max_time - self._viewer_state.min_time)
-        slider_min = self.ui.slider_current_time.minimum()
-        slider_max = self.ui.slider_current_time.maximum()
-        value = round(slider_min + fraction * (slider_max - slider_min))
-        self._changing_slider_from_time = True
-        self.ui.slider_current_time.setValue(value)
+        try:
+            fraction = (self._viewer_state.current_time - self._viewer_state.min_time) / \
+                       (self._viewer_state.max_time - self._viewer_state.min_time)
+            slider_min = self.ui.slider_current_time.minimum()
+            slider_max = self.ui.slider_current_time.maximum()
+            value = round(slider_min + fraction * (slider_max - slider_min))
+            self._changing_slider_from_time = True
+            self.ui.slider_current_time.setValue(value)
+        except RuntimeError:
+            pass
 
     def _on_current_time_update(self, time):
         self._update_slider_fraction()

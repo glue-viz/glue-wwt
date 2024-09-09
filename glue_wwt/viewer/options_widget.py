@@ -129,7 +129,7 @@ class WWTOptionPanel(QtWidgets.QWidget):
         min_time = self._viewer_state.min_time
         max_time = self._viewer_state.max_time
         for layer_state in self._viewer_state.layers:
-            if layer_state.time_att is not None:
+            if getattr(layer_state, 'time_att', None) is not None:
                 min_time = min(min_time, min(layer_state.layer[layer_state.time_att]))
                 max_time = max(max_time, max(layer_state.layer[layer_state.time_att]))
 

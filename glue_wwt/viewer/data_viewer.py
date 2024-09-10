@@ -69,14 +69,17 @@ class WWTDataViewerBase(object):
 
         for setting in self._UPDATE_SETTINGS:
             if force or setting in kwargs:
-                wwt_attr = self._GLUE_TO_WWT_ATTR_MAP.get(setting, setting)
-                setattr(self._wwt, wwt_attr, getattr(self.state, setting, None))
+                self._update_wwt_setting_from_state(setting)
 
         show_imagery = self.state.mode == 'Sky'
         if show_imagery:
             for setting in self._IMAGERY_UPDATE_SETTINGS:
                 if force or setting in kwargs:
-                    setattr(self._wwt, setting, getattr(self.state, setting, None))
+                    self._update_wwt_setting_from_state(setting)
+
+    def _update_wwt_setting_from_state(self, setting):
+        wwt_attr = self._GLUE_TO_WWT_ATTR_MAP.get(setting, setting)
+        setattr(self._wwt, wwt_attr, getattr(self.state, setting, None))
 
     def get_layer_artist(self, cls, **kwargs):
         "In this package, we must override to append the wwt_client argument."

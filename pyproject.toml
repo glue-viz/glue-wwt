@@ -18,7 +18,7 @@ dependencies = [
     "glue-core>=1.13.1",
     "echo",
     "astropy",
-    "pywwt>=0.21.0",
+    "pywwt>=0.24.1",
     "packaging",
 ]
 dynamic = ["version"]

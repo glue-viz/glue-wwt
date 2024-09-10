@@ -204,6 +204,8 @@ class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
         WWTTableLayerArtist: JupyterTableLayerOptions,
     }
 
+    tools = ["wwt:refresh_cache"]
+
     def __init__(self, session, state=None):
         IPyWidgetView.__init__(self, session, state=state)
         WWTDataViewerBase.__init__(self)

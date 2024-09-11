@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
-    <height>407</height>
+    <width>354</width>
+    <height>469</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,7 +41,6 @@
         <widget class="QLabel" name="label_lon_att">
          <property name="font">
           <font>
-           <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
@@ -85,7 +84,6 @@
         <widget class="QLabel" name="label_opacity">
          <property name="font">
           <font>
-           <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
@@ -117,7 +115,6 @@
         <widget class="QLabel" name="label_frame">
          <property name="font">
           <font>
-           <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
@@ -140,7 +137,6 @@
         <widget class="QLabel" name="label_background">
          <property name="font">
           <font>
-           <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
@@ -169,7 +165,6 @@
         <widget class="QLabel" name="label_foreground">
          <property name="font">
           <font>
-           <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
@@ -185,7 +180,6 @@
         <widget class="QLabel" name="label_mode">
          <property name="font">
           <font>
-           <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
@@ -221,7 +215,6 @@
         <widget class="QLabel" name="label_lat_att">
          <property name="font">
           <font>
-           <weight>50</weight>
            <bold>false</bold>
           </font>
          </property>
@@ -489,6 +482,47 @@
        <string>Other</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="bool_play_time">
+         <property name="text">
+          <string>Play Time</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_clock_rate">
+         <property name="text">
+          <string>Clock Rate:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QColorBox" name="color_ecliptic_color">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="bool_ecliptic">
+         <property name="text">
+          <string>Show</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="label_precession_chart">
          <property name="text">
@@ -496,7 +530,17 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="valuetext_clock_rate"/>
+       </item>
+       <item row="1" column="2">
+        <widget class="QColorBox" name="color_precession_chart_color">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
         <spacer name="verticalSpacer_4">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -509,31 +553,10 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="1">
-        <widget class="QCheckBox" name="bool_ecliptic">
-         <property name="text">
-          <string>Show</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QColorBox" name="color_ecliptic_color">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="label_ecliptic_2">
          <property name="text">
           <string>Ecliptic:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QColorBox" name="color_precession_chart_color">
-         <property name="text">
-          <string/>
          </property>
         </widget>
        </item>
@@ -542,6 +565,142 @@
          <property name="text">
           <string>Show</string>
          </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="3">
+        <widget class="QWidget" name="widget" native="true">
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_min_time">
+            <property name="text">
+             <string>Min Time:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDateTimeEdit" name="datetime_max_time">
+            <property name="wrapping">
+             <bool>false</bool>
+            </property>
+            <property name="showGroupSeparator" stdset="0">
+             <bool>false</bool>
+            </property>
+            <property name="dateTime">
+             <datetime>
+              <hour>17</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>2000</year>
+              <month>1</month>
+              <day>2</day>
+             </datetime>
+            </property>
+            <property name="date">
+             <date>
+              <year>2000</year>
+              <month>1</month>
+              <day>2</day>
+             </date>
+            </property>
+            <property name="maximumDateTime">
+             <datetime>
+              <hour>16</hour>
+              <minute>59</minute>
+              <second>58</second>
+              <year>9999</year>
+              <month>12</month>
+              <day>31</day>
+             </datetime>
+            </property>
+            <property name="minimumDateTime">
+             <datetime>
+              <hour>23</hour>
+              <minute>0</minute>
+              <second>0</second>
+              <year>1752</year>
+              <month>9</month>
+              <day>15</day>
+             </datetime>
+            </property>
+            <property name="maximumTime">
+             <time>
+              <hour>16</hour>
+              <minute>59</minute>
+              <second>58</second>
+             </time>
+            </property>
+            <property name="minimumTime">
+             <time>
+              <hour>23</hour>
+              <minute>0</minute>
+              <second>0</second>
+             </time>
+            </property>
+            <property name="currentSection">
+             <enum>QDateTimeEdit::MonthSection</enum>
+            </property>
+            <property name="displayFormat">
+             <string>M/d/yyyy h:mm AP</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>false</bool>
+            </property>
+            <property name="timeSpec">
+             <enum>Qt::UTC</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QDateTimeEdit" name="datetime_min_time">
+            <property name="minimumDate">
+             <date>
+              <year>1752</year>
+              <month>10</month>
+              <day>14</day>
+             </date>
+            </property>
+            <property name="displayFormat">
+             <string>M/d/yyyy h:mm AP</string>
+            </property>
+            <property name="calendarPopup">
+             <bool>false</bool>
+            </property>
+            <property name="timeSpec">
+             <enum>Qt::UTC</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_max_time">
+            <property name="text">
+             <string>Max Time:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QWidget" name="widget_2" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0">
+             <item>
+              <widget class="QLabel" name="label_current_time">
+               <property name="text">
+                <string>Current Time:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QSlider" name="slider_current_time">
+               <property name="maximum">
+                <number>999</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>

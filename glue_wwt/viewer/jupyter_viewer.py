@@ -270,6 +270,9 @@ class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
         self._layout_tab.set_title(1, "Layers")
         self._layout = HBox([self.figure_widget, self._layout_tab], layout=Layout(height="400px"))
 
+    def __del__(self):
+        self._cleanup()
+
     def _initialize_wwt(self):
         self._wwt = WWTJupyterWidget()
 

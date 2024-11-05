@@ -41,13 +41,16 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
 
         self.set_status('NOTE ON ZOOMING: use the z/x keys to zoom in/out if scrolling does not work')
 
+    def __del__(self):
+        self._cleanup()
+
     def _initialize_wwt(self):
         from pywwt.qt import WWTQtClient
         self._wwt = WWTQtClient()
 
     def closeEvent(self, event):
-        self._wwt.widget.close()
         self._cleanup()
+        self._wwt.widget.close()
         return super(WWTQtViewer, self).closeEvent(event)
 
     def _on_wwt_ready(self):

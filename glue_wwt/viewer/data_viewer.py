@@ -19,6 +19,12 @@ from .viewer_state import WWTDataViewerState
 __all__ = ['WWTDataViewerBase']
 
 
+class RepeatTimer(Timer):
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
+
+
 class WWTDataViewerBase(object):
     LABEL = 'Earth/Planet/Sky Viewer (WWT)'
     _wwt = None
@@ -59,7 +65,7 @@ class WWTDataViewerBase(object):
         # which contains information about WWT's internal time. But we only get those messages when something
         # changes with the WWT view, so we can't rely on that here.
         # This just kicks off the first timer; the method repeatedly time-calls itself
-        self._current_time_timer = Timer(1.0, self._update_time)
+        self._current_time_timer = RepeatTimer(1.0, self._update_time)
         self._current_time_timer.start()
 
         self.state.add_global_callback(self._update_wwt)
@@ -69,7 +75,10 @@ class WWTDataViewerBase(object):
     # NB: Specific frontend implementations need to call this
     # We just consolidate the logic here
     def _cleanup(self):
-        self._current_time_timer.cancel()
+        try:
+            self._current_time_timer.cancel()
+        except RuntimeError:
+            pass
 
     def _initialize_wwt(self):
         raise NotImplementedError('subclasses should set _wwt here')
@@ -176,6 +185,3 @@ class WWTDataViewerBase(object):
             self.state.current_time = datetime64(self._wwt.get_current_time().to_string())
         except ViewerNotAvailableError:
             pass
-
-        self._current_time_timer = Timer(1.0, self._update_time)
-        self._current_time_timer.start()

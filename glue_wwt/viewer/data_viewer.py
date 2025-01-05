@@ -3,17 +3,26 @@
 from __future__ import absolute_import, division, print_function
 
 from astropy.coordinates import SkyCoord
+from astropy.time import Time
 import astropy.units as u
 from glue.core.coordinates import WCSCoordinates
 from glue.logger import logger
 from pywwt import ViewerNotAvailableError
 from pywwt.layers import guess_lon_lat_columns
+from threading import Timer
+from numpy import datetime64
 
 from .image_layer import WWTImageLayerArtist
 from .table_layer import WWTTableLayerArtist
 from .viewer_state import WWTDataViewerState
 
 __all__ = ['WWTDataViewerBase']
+
+
+class RepeatTimer(Timer):
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
 
 
 class WWTDataViewerBase(object):
@@ -28,6 +37,10 @@ class WWTDataViewerBase(object):
         "equatorial_grid_color": "grid_color",
         "equatorial_text": "grid_text"
     }
+
+    _CLOCK_SETTINGS = [
+        "play_time", "clock_rate"
+    ]
 
     _UPDATE_SETTINGS = [
         "equatorial_grid", "equatorial_grid_color", "equatorial_text",
@@ -48,8 +61,24 @@ class WWTDataViewerBase(object):
         self._wwt.actual_planet_scale = True
         self.state.imagery_layers = list(self._wwt.available_layers)
 
+        # The more obvious thing to do would be to listen to the WWT widget's "wwt_view_state" message,
+        # which contains information about WWT's internal time. But we only get those messages when something
+        # changes with the WWT view, so we can't rely on that here.
+        # This just kicks off the first timer; the method repeatedly time-calls itself
+        self._current_time_timer = RepeatTimer(1.0, self._update_time)
+        self._current_time_timer.start()
+
         self.state.add_global_callback(self._update_wwt)
+
         self._update_wwt(force=True)
+
+    # NB: Specific frontend implementations need to call this
+    # We just consolidate the logic here
+    def _cleanup(self):
+        try:
+            self._current_time_timer.cancel()
+        except RuntimeError:
+            pass
 
     def _initialize_wwt(self):
         raise NotImplementedError('subclasses should set _wwt here')
@@ -66,6 +95,18 @@ class WWTDataViewerBase(object):
         if force or 'constellation_boundaries' in kwargs:
             self._wwt.constellation_boundaries = self.state.constellation_boundaries != 'None'
             self._wwt.constellation_selection = self.state.constellation_boundaries == 'Selection only'
+
+        try:
+            if force or 'current_time' in kwargs:
+                self._wwt.set_current_time(Time(self.state.current_time))
+
+            if force or any(setting in kwargs for setting in self._CLOCK_SETTINGS):
+                if self.state.play_time:
+                    self._wwt.play_time(self.state.clock_rate)
+                else:
+                    self._wwt.pause_time()
+        except RuntimeError:
+            pass
 
         for setting in self._UPDATE_SETTINGS:
             if force or setting in kwargs:
@@ -138,3 +179,9 @@ class WWTDataViewerBase(object):
                 self.state.lon_att = data.id[lon]
                 self.state.lat_att = data.id[lat]
         return add
+
+    def _update_time(self):
+        try:
+            self.state.current_time = datetime64(self._wwt.get_current_time().to_string())
+        except ViewerNotAvailableError:
+            pass

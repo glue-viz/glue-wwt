@@ -7,6 +7,7 @@ from echo import (CallbackProperty, ListCallbackProperty,
 
 from glue.core.data_combo_helper import ComponentIDComboHelper
 from glue.viewers.common.state import ViewerState
+from numpy import datetime64, timedelta64
 
 MODES_BODIES = ['Sun', 'Mercury', 'Venus', 'Earth', 'Moon', 'Mars',
                 'Jupiter', 'Callisto', 'Europa', 'Ganymede', 'Io', 'Saturn',
@@ -67,6 +68,12 @@ class WWTDataViewerState(ViewerState):
     precession_chart = CallbackProperty(False)
     precession_chart_color = CallbackProperty("orange")
 
+    play_time = CallbackProperty(False)
+    clock_rate = CallbackProperty(1)
+    current_time = CallbackProperty(datetime64('now'))
+    min_time = CallbackProperty(datetime64("2000-01-01"))
+    max_time = CallbackProperty(datetime64("now"))
+
     layers = ListCallbackProperty()
 
     # For now we need to include this here otherwise when loading files, the
@@ -85,6 +92,10 @@ class WWTDataViewerState(ViewerState):
         WWTDataViewerState.constellation_boundaries.set_choices(self, ['None', 'All', 'Selection only'])
 
         self.add_callback('imagery_layers', self._update_imagery_layers)
+
+        self.add_callback('min_time', self._on_min_time_update)
+        self.add_callback('max_time', self._on_max_time_update)
+        self.add_callback('current_time', self._on_current_time_update)
 
         self.lon_att_helper = ComponentIDComboHelper(self, 'lon_att',
                                                      numeric=True,
@@ -126,3 +137,25 @@ class WWTDataViewerState(ViewerState):
             return 1
         else:
             return 0
+
+    # Unlike e.g. viewer bounds, there's no use case for min_time < max_time
+    # so we use the next few methods to ensure that min_time <= current_time <= max_time
+    def _on_min_time_update(self, time):
+        if self.max_time <= time:
+            self.max_time = time + timedelta64(1, 'D')
+        if self.current_time < time:
+            self.current_time = time
+
+    def _on_max_time_update(self, time):
+        if self.min_time >= time:
+            self.min_time = time - timedelta64(1, 'D')
+        if self.current_time > time:
+            self.current_time = time
+
+    def _on_current_time_update(self, time):
+        if time < self.min_time:
+            self.current_time = self.min_time
+            self.play_time = False
+        elif time > self.max_time:
+            self.current_time = self.max_time
+            self.play_time = False

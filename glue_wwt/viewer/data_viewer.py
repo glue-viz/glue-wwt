@@ -96,14 +96,17 @@ class WWTDataViewerBase(object):
             self._wwt.constellation_boundaries = self.state.constellation_boundaries != 'None'
             self._wwt.constellation_selection = self.state.constellation_boundaries == 'Selection only'
 
-        if force or 'current_time' in kwargs:
-            self._wwt.set_current_time(Time(self.state.current_time))
+        try:
+            if force or 'current_time' in kwargs:
+                self._wwt.set_current_time(Time(self.state.current_time))
 
-        if force or any(setting in kwargs for setting in self._CLOCK_SETTINGS):
-            if self.state.play_time:
-                self._wwt.play_time(self.state.clock_rate)
-            else:
-                self._wwt.pause_time()
+            if force or any(setting in kwargs for setting in self._CLOCK_SETTINGS):
+                if self.state.play_time:
+                    self._wwt.play_time(self.state.clock_rate)
+                else:
+                    self._wwt.pause_time()
+        except RuntimeError:
+            pass
 
         for setting in self._UPDATE_SETTINGS:
             if force or setting in kwargs:

@@ -84,22 +84,19 @@ class SaveTourTool(Tool):
         if not filename.endswith('.wtt'):
             filename = filename + '.wtt'
 
-        self.viewer._wwt.widget.page.runJavaScript("tourxml = '';", asynchronous=False)
-        tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;', asynchronous=False)
+        self.viewer._wwt.widget.page.runJavaScript("tourxml = '';")
+        tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;')
 
         self.viewer._wwt.widget.page.runJavaScript(SAVE_TOUR_CODE)
 
-        start = time.time()
         tourxml = None
-        while time.time() - start < 10:
-            time.sleep(0.1)
-            app.processEvents()
-            tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;', asynchronous=False)
-            if tourxml:
-                break
+        time.sleep(1)
+        app.processEvents()
+        time.sleep(1)
+        tourxml = self.viewer._wwt.widget.page.runJavaScript('tourxml;')
 
         if not tourxml:
-            raise Exception("Failed to save tour")
+            raise ChildProcessError(f"Failed to save tour: {tourxml}")
 
         # Patch the altUnit so that it is correct for the Windows client (since
         # the web client currently has other bugs with relation to loading tours).

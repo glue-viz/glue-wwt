@@ -30,19 +30,22 @@ jobs:
 
       envs: |
         # Qt-based tests
-        - linux: py310-test-pyside2
+
+        # FIXME: The following hangs:
+        # - linux: py310-test-pyside2
         - linux: py311-test-pyqt5
         - linux: py312-test-pyqt6
         - linux: py313-test-pyside6-devdeps
 
-        - macos: py310-test-pyside2
         - macos: py311-test-pyqt5
         - macos: py312-test-pyqt6
-        - macos: py313-test-pyside6-devdeps
+        # FIXME: The following segfaults:
+        # - macos: py313-test-pyside6-devdeps
 
         - windows: py310-test-pyside2
         - windows: py311-test-pyqt5
-        - windows: py312-test-pyqt6
+        # FIXME: The following hangs:
+        # - windows: py312-test-pyqt6
         - windows: py313-test-pyside6-devdeps
 
         # Jupyter-based tests

@@ -29,21 +29,40 @@ jobs:
           - hdf5
 
       envs: |
-        # Standard tests
-        - linux: py310-test
-        - linux: py311-test
-        - linux: py312-test
-        - linux: py313-test-devdeps
+        # Qt-based tests
 
-        - macos: py310-test
-        - macos: py311-test
-        - macos: py312-test
-        - macos: py313-test-devdeps
+        # FIXME: The following hangs:
+        # - linux: py310-test-pyside2
+        - linux: py311-test-pyqt5
+        - linux: py312-test-pyqt6
+        - linux: py313-test-pyside6-devdeps
 
-        - windows: py310-test
-        - windows: py311-test
-        - windows: py312-test
-        - windows: py313-test-devdeps
+        - macos: py311-test-pyqt5
+        - macos: py312-test-pyqt6
+        # FIXME: The following segfaults:
+        # - macos: py313-test-pyside6-devdeps
+
+        - windows: py310-test-pyside2
+        - windows: py311-test-pyqt5
+        # FIXME: The following hangs:
+        # - windows: py312-test-pyqt6
+        - windows: py313-test-pyside6-devdeps
+
+        # Jupyter-based tests
+        - linux: py310-test-jupyter
+        - linux: py311-test-jupyter
+        - linux: py312-test-jupyter
+        - linux: py313-test-jupyter-devdeps
+
+        - macos: py310-test-jupyter
+        - macos: py311-test-jupyter
+        - macos: py312-test-jupyter
+        - macos: py313-test-jupyter-devdeps
+
+        - windows: py310-test-jupyter
+        - windows: py311-test-jupyter
+        - windows: py312-test-jupyter
+        - windows: py313-test-jupyter-devdeps
 
   publish:
     needs: tests

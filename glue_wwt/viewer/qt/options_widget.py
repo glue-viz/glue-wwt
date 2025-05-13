@@ -6,8 +6,8 @@ from qtpy import QtWidgets
 from glue_qt.utils import load_ui
 from echo.qt import autoconnect_callbacks_to_qt
 
-from .qt_utils import enabled_if_combosel_in, set_enabled_from_checkbox
-from .viewer_state import MODES_BODIES
+from .utils import enabled_if_combosel_in, set_enabled_from_checkbox
+from ..viewer_state import MODES_BODIES
 
 __all__ = ['WWTOptionPanel']
 

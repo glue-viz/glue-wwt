@@ -1,39 +1,27 @@
+# Test class which is common to Qt and Jupyter
+
 from __future__ import absolute_import, division, print_function
 
-import io
 import os
-import sys
 
-import pytest
-from mock import MagicMock, patch
-
-from qtpy import compat
+from unittest.mock import MagicMock
 
 from glue.core import ComponentLink, Data, message
 from glue.core.tests.test_state import clone
-from glue_qt.app import GlueApplication
 
-from ..qt_data_viewer import WWTQtViewer
 from .test_utils import create_disabled_message
 
 DATA = os.path.join(os.path.dirname(__file__), 'data')
 
 
-class WWTQtViewerBlocking(WWTQtViewer):
-
-    def _initialize_wwt(self):
-        from pywwt.qt import WWTQtClient
-        self._wwt = WWTQtClient(block_until_ready=sys.platform != 'win32')
-
-
-class TestWWTDataViewer(object):
+class BaseTestWWTDataViewer(object):
 
     def setup_method(self, method):
         self.d = Data(x=[1, 2, 3], y=[2, 3, 4], z=[4, 5, 6])
         self.ra_dec_data = Data(ra=[-10, 0, 10], dec=[0, 10, 20])
         self.bad_data_short = Data(x=[-100, 100], y=[-10, 10])
         self.bad_data_long = Data(x=[-100, -90, -80, 80, 90, 100], y=[-10, -7, -3, 3, 7, 10])
-        self.application = GlueApplication()
+        self._create_new_application()
         self.dc = self.application.data_collection
         self.dc.append(self.d)
         self.dc.append(self.ra_dec_data)
@@ -42,7 +30,7 @@ class TestWWTDataViewer(object):
         self.dc.add_link(ComponentLink([self.d.id['x']], self.d.id['y']))
         self.hub = self.dc.hub
         self.session = self.application.session
-        self.viewer = self.application.new_data_viewer(WWTQtViewerBlocking)
+        self._create_new_viewer()
         self.options = self.viewer.options_widget()
 
     def teardown_method(self, method):
@@ -160,29 +148,6 @@ class TestWWTDataViewer(object):
         assert len(self.viewer.layers) == 1
         assert subset_layer.wwt_client.layers.add_table_layer.call_count == 0
         assert subset_layer.wwt_layer is None
-
-    # @pytest.mark.skipif(sys.platform == 'win32', reason="Test causes issues on Windows")
-    @pytest.mark.xfail(reason="'asynchronous' keyword unsupported by some JavaScript versions")
-    def test_save_tour(self, tmpdir):
-
-        filename = tmpdir.join('mytour.wtt').strpath
-        self.viewer.add_data(self.d)
-        with patch.object(compat, 'getsavefilename', return_value=(filename, None)):
-            self.viewer.toolbar.tools['save'].subtools[1].activate()
-
-        assert os.path.exists(filename)
-        with io.open(filename, newline='') as f:
-            assert f.read().startswith("<?xml version='1.0' encoding='UTF-8'?>\r\n<FileCabinet")
-
-    def test_load_session_back_compat(self):
-
-        # Make sure that old session files continue to work
-
-        app = GlueApplication.restore_session(os.path.join(DATA, 'wwt_simple.glu'))
-        viewer_state = app.viewers[0][0].state
-        assert viewer_state.lon_att.label == 'a'
-        assert viewer_state.lat_att.label == 'b'
-        assert viewer_state.frame == 'Galactic'
 
     def test_skycoord_exception_message_short(self):
         self.viewer.add_data(self.bad_data_short)

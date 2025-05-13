@@ -27,7 +27,7 @@ dynamic = ["version"]
 [tool.setuptools_scm]
 
 [project.entry-points]
-"glue.plugins" = {wwt = "glue_wwt:setup"}
+"glue.plugins" = {wwt-qt = "glue_wwt:setup_qt", wwt-jupyter = "glue_wwt:setup_jupyter"}
 
 [project.optional-dependencies]
 test = [

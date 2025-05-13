@@ -17,6 +17,7 @@ from ..image_layer import WWTImageLayerArtist
 from .utils import linked_checkbox, linked_color_picker, linked_float_text, set_enabled_from_checkbox
 from ..table_layer import WWTTableLayerArtist
 
+from glue_jupyter.registries import viewer_registry
 
 class JupterViewerOptions(VBox):
     def __init__(self, viewer_state, available_layers):
@@ -254,6 +255,7 @@ class RepeatTimer(Timer):
             self.function(*self.args, **self.kwargs)
 
 
+@viewer_registry("wwt")
 class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
     _layer_style_widget_cls = {
         WWTImageLayerArtist: JupyterImageLayerOptions,

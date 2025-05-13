@@ -20,6 +20,7 @@ dependencies = [
     "astropy",
     "pywwt>=0.24.1",
     "packaging",
+    "ipywidgets>=8",
 ]
 dynamic = ["version"]
 

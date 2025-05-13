@@ -1,6 +1,6 @@
 {
   "CallbackList": {
-    "_type": "glue.external.echo.list.CallbackList",
+    "_type": "echo.CallbackList",
     "values": [
       "st__2MASS: Catalog (Synthetic, Near Infrared)",
       "st__2MASS: Two Micron All Sky Survey (Synthetic, Near Infrared)",
@@ -99,7 +99,7 @@
     ]
   },
   "CallbackList_0": {
-    "_type": "glue.external.echo.list.CallbackList",
+    "_type": "echo.CallbackList",
     "values": [
       "WWTLayerState"
     ]

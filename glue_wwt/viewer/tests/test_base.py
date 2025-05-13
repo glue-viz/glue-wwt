@@ -4,7 +4,6 @@ from __future__ import absolute_import, division, print_function
 
 import io
 import os
-import sys
 
 import pytest
 from unittest.mock import MagicMock, patch
@@ -13,7 +12,6 @@ from qtpy import compat
 
 from glue.core import ComponentLink, Data, message
 from glue.core.tests.test_state import clone
-from glue_qt.app import GlueApplication
 
 from .test_utils import create_disabled_message
 

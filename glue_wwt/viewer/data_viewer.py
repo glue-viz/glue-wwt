@@ -15,6 +15,9 @@ from .image_layer import WWTImageLayerArtist
 from .table_layer import WWTTableLayerArtist
 from .viewer_state import WWTDataViewerState
 
+# We import the following to register the refresh tool
+from . import tools as wwt_tools  # noqa
+
 __all__ = ['WWTDataViewerBase']
 
 

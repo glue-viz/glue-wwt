@@ -32,8 +32,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 test = [
     "pytest",
-    "pytest-cov",
-    "mock",
+    "pytest-cov"
 ]
 qt = [
     "qtpy",
@@ -51,5 +50,6 @@ include-package-data = false
 find = {namespaces = false}
 
 [tool.setuptools.package-data]
-"glue_wwt.viewer" = ["*.ui", "*.html", "*.js", "*.png"]
-"glue_wwt.viewer.tests" = ["data/*.glu"]
+"glue_wwt.viewer" = ["*.html", "*.js", "*.png"]
+"glue_wwt.viewer.qt" = ["*.ui"]
+"glue_wwt.viewer.qt.tests" = ["data/*.glu"]

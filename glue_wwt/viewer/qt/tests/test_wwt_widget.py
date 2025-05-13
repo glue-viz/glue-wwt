@@ -5,7 +5,7 @@ import os
 import sys
 
 import pytest
-from mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from qtpy import compat
 
@@ -14,7 +14,7 @@ from glue.core.tests.test_state import clone
 from glue_qt.app import GlueApplication
 
 from ..qt_data_viewer import WWTQtViewer
-from .test_utils import create_disabled_message
+from ...tests.test_utils import create_disabled_message
 
 DATA = os.path.join(os.path.dirname(__file__), 'data')
 

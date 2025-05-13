@@ -40,6 +40,9 @@ qt = [
     'PyQt5;python_version>="3"',
     'PyQtWebEngine;python_version>="3"',
 ]
+jupyter = [
+    "glue-jupyter",
+]
 
 [tool.setuptools]
 zip-safe = false

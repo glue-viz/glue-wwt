@@ -1,5 +1,12 @@
+import io
 import os
 import sys
+
+import pytest
+
+from unittest.mock import patch
+
+from qtpy import compat
 
 from glue_qt.app import GlueApplication
 
@@ -17,7 +24,7 @@ class WWTQtViewerBlocking(WWTQtViewer):
         self._wwt = WWTQtClient(block_until_ready=sys.platform != 'win32')
 
 
-class TestWWTDataViewer(BaseTestWWTDataViewer):
+class TestQtWWTDataViewer(BaseTestWWTDataViewer):
 
     def _create_new_application(self):
         self.application = GlueApplication()
@@ -34,3 +41,16 @@ class TestWWTDataViewer(BaseTestWWTDataViewer):
         assert viewer_state.lon_att.label == 'a'
         assert viewer_state.lat_att.label == 'b'
         assert viewer_state.frame == 'Galactic'
+
+    # @pytest.mark.skipif(sys.platform == 'win32', reason="Test causes issues on Windows")
+    @pytest.mark.xfail(reason="'asynchronous' keyword unsupported by some JavaScript versions")
+    def test_save_tour(self, tmpdir):
+
+        filename = tmpdir.join('mytour.wtt').strpath
+        self.viewer.add_data(self.d)
+        with patch.object(compat, 'getsavefilename', return_value=(filename, None)):
+            self.viewer.toolbar.tools['save'].subtools[1].activate()
+
+        assert os.path.exists(filename)
+        with io.open(filename, newline='') as f:
+            assert f.read().startswith("<?xml version='1.0' encoding='UTF-8'?>\r\n<FileCabinet")

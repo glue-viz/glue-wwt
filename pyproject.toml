@@ -12,7 +12,7 @@ license = {text = "BSD 3-Clause License"}
 description = "Glue WorldWide Telescope plugin"
 readme = "README.rst"
 urls = {Homepage = "https://github.com/glue-viz/glue-wwt"}
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 dependencies = [
     "numpy",
     "glue-core>=1.13.1",

@@ -248,7 +248,6 @@ class JupyterTableLayerOptions(VBox):
         super().__init__([self.size_widgets, self.color_widgets, self.time_widgets])
 
 
-
 class RepeatTimer(Timer):
     def run(self):
         while not self.finished.wait(self.interval):
@@ -291,7 +290,7 @@ class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
     def figure_widget(self):
         return self._wwt
 
-   def _setup_time_timer(self):
+    def _setup_time_timer(self):
         self._current_time_timer = RepeatTimer(1.0, self._update_time)
         self._current_time_timer.start()
 

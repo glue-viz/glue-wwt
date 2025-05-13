@@ -1,5 +1,6 @@
 from __future__ import absolute_import, division, print_function
 from datetime import datetime
+from threading import Timer
 
 from glue_jupyter.view import IPyWidgetView
 from glue_jupyter.link import link, dlink
@@ -247,6 +248,13 @@ class JupyterTableLayerOptions(VBox):
         super().__init__([self.size_widgets, self.color_widgets, self.time_widgets])
 
 
+
+class RepeatTimer(Timer):
+    def run(self):
+        while not self.finished.wait(self.interval):
+            self.function(*self.args, **self.kwargs)
+
+
 class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
     _layer_style_widget_cls = {
         WWTImageLayerArtist: JupyterImageLayerOptions,
@@ -271,7 +279,7 @@ class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
         self._layout = HBox([self.figure_widget, self._layout_tab], layout=Layout(height="400px"))
 
     def __del__(self):
-        self._cleanup()
+        self._cleanup_time_timer()
 
     def _initialize_wwt(self):
         self._wwt = WWTJupyterWidget()
@@ -282,3 +290,10 @@ class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
     @property
     def figure_widget(self):
         return self._wwt
+
+   def _setup_time_timer(self):
+        self._current_time_timer = RepeatTimer(1.0, self._update_time)
+        self._current_time_timer.start()
+
+    def _cleanup_time_timer(self):
+        self._current_time_timer.cancel()

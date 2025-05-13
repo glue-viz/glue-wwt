@@ -9,7 +9,6 @@ from glue.core.coordinates import WCSCoordinates
 from glue.logger import logger
 from pywwt import ViewerNotAvailableError
 from pywwt.layers import guess_lon_lat_columns
-from threading import Timer
 from numpy import datetime64
 
 from .image_layer import WWTImageLayerArtist
@@ -17,12 +16,6 @@ from .table_layer import WWTTableLayerArtist
 from .viewer_state import WWTDataViewerState
 
 __all__ = ['WWTDataViewerBase']
-
-
-class RepeatTimer(Timer):
-    def run(self):
-        while not self.finished.wait(self.interval):
-            self.function(*self.args, **self.kwargs)
 
 
 class WWTDataViewerBase(object):
@@ -65,20 +58,11 @@ class WWTDataViewerBase(object):
         # which contains information about WWT's internal time. But we only get those messages when something
         # changes with the WWT view, so we can't rely on that here.
         # This just kicks off the first timer; the method repeatedly time-calls itself
-        self._current_time_timer = RepeatTimer(1.0, self._update_time)
-        self._current_time_timer.start()
+        self._setup_time_timer()
 
         self.state.add_global_callback(self._update_wwt)
 
         self._update_wwt(force=True)
-
-    # NB: Specific frontend implementations need to call this
-    # We just consolidate the logic here
-    def _cleanup(self):
-        try:
-            self._current_time_timer.cancel()
-        except RuntimeError:
-            pass
 
     def _initialize_wwt(self):
         raise NotImplementedError('subclasses should set _wwt here')

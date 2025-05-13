@@ -4,9 +4,9 @@ from qtpy import QtCore
 
 from glue_qt.viewers.common.data_viewer import DataViewer
 
-from .data_viewer import WWTDataViewerBase
-from .image_layer import WWTImageLayerArtist
-from .table_layer import WWTTableLayerArtist
+from ..data_viewer import WWTDataViewerBase
+from ..image_layer import WWTImageLayerArtist
+from ..table_layer import WWTTableLayerArtist
 from .options_widget import WWTOptionPanel
 from .image_style_editor import WWTImageStyleEditor
 from .table_style_editor import WWTTableStyleEditor
@@ -68,10 +68,12 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
         self._current_time_timer.start()
 
     def _cleanup_time_timer(self):
-        self._current_time_timer.stop()
-        self._current_time_timer = None
+        if self._current_time_timer is not None:
+            self._current_time_timer.stop()
+            self._current_time_timer = None
+
 
 # To ensure backward compatibility with old session files, we need to add the
 # Qt viewer to the data_viewer namespace
-from . import data_viewer  # noqa
+from .. import data_viewer  # noqa
 data_viewer.WWTDataViewer = WWTQtViewer

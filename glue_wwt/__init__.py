@@ -12,6 +12,6 @@ __version__ = importlib.metadata.version('glue-core')
 
 
 def setup():
-    from .viewer.qt_data_viewer import WWTQtViewer
+    from .viewer.qt.qt_data_viewer import WWTQtViewer
     from glue.config import qt_client
     qt_client.add(WWTQtViewer)

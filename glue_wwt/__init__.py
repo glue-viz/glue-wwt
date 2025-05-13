@@ -6,7 +6,9 @@ try:
 except ImportError:
     pass
 
-from .version import __version__  # noqa
+import importlib.metadata
+
+__version__ = importlib.metadata.version('glue-core')
 
 
 def setup():

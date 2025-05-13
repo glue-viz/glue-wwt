@@ -2,7 +2,6 @@ from __future__ import absolute_import, division, print_function
 
 import io
 import time
-from os.path import abspath, dirname, join
 from qtpy import compat
 
 from glue.viewers.common.tool import Tool

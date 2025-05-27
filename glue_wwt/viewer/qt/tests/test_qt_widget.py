@@ -10,7 +10,7 @@ from qtpy import compat
 
 from glue_qt.app import GlueApplication
 
-from ..qt_data_viewer import WWTQtViewer
+from ..viewer import WWTQtViewer
 
 from ...tests.test_base import BaseTestWWTDataViewer
 

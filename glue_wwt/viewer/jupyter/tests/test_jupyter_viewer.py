@@ -4,7 +4,7 @@ import pytest
 
 from glue_jupyter.app import JupyterApplication
 
-from ..jupyter_viewer import WWTJupyterViewer
+from ..viewer import WWTJupyterViewer
 
 from ...tests.test_base import BaseTestWWTDataViewer
 

@@ -1,2 +1,2 @@
 def setup():
-    from .jupyter_viewer import WWTJupyterViewer  # noqa
+    from .viewer import WWTJupyterViewer  # noqa

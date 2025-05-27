@@ -12,10 +12,12 @@ from ipywidgets import Accordion, GridBox, HBox, Label, Layout, Output, Tab, VBo
 from ipywidgets.widgets.widget_datetime import NaiveDatetimePicker
 from numpy import datetime64
 
-from .data_viewer import WWTDataViewerBase
-from .image_layer import WWTImageLayerArtist
-from .jupyter_utils import linked_checkbox, linked_color_picker, linked_float_text, set_enabled_from_checkbox
-from .table_layer import WWTTableLayerArtist
+from ..data_viewer import WWTDataViewerBase
+from ..image_layer import WWTImageLayerArtist
+from .utils import linked_checkbox, linked_color_picker, linked_float_text, set_enabled_from_checkbox
+from ..table_layer import WWTTableLayerArtist
+
+from glue_jupyter.registries import viewer_registry
 
 
 class JupterViewerOptions(VBox):
@@ -254,6 +256,7 @@ class RepeatTimer(Timer):
             self.function(*self.args, **self.kwargs)
 
 
+@viewer_registry("wwt")
 class WWTJupyterViewer(WWTDataViewerBase, IPyWidgetView):
     _layer_style_widget_cls = {
         WWTImageLayerArtist: JupyterImageLayerOptions,

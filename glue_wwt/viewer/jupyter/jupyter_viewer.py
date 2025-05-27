@@ -19,6 +19,7 @@ from ..table_layer import WWTTableLayerArtist
 
 from glue_jupyter.registries import viewer_registry
 
+
 class JupterViewerOptions(VBox):
     def __init__(self, viewer_state, available_layers):
 

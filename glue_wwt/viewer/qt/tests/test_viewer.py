@@ -42,6 +42,13 @@ class TestQtWWTDataViewer(BaseTestWWTDataViewer):
         assert viewer_state.lat_att.label == 'b'
         assert viewer_state.frame == 'Galactic'
 
+    def test_load_session_back_compat_pre_split(self):
+
+        # Make sure that old session files from before the Qt/Jupyter split work
+
+        app = GlueApplication.restore_session(os.path.join(DATA, 'wwt_pre_split.glu'))
+        assert isinstance(app.viewers[0][0], WWTQtViewer)
+
     # @pytest.mark.skipif(sys.platform == 'win32', reason="Test causes issues on Windows")
     @pytest.mark.xfail(reason="'asynchronous' keyword unsupported by some JavaScript versions")
     def test_save_tour(self, tmpdir):

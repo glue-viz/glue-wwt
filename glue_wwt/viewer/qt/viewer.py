@@ -71,9 +71,3 @@ class WWTQtViewer(WWTDataViewerBase, DataViewer):
         if self._current_time_timer is not None:
             self._current_time_timer.stop()
             self._current_time_timer = None
-
-
-# To ensure backward compatibility with old session files, we need to add the
-# Qt viewer to the data_viewer namespace
-from .. import data_viewer  # noqa
-data_viewer.WWTDataViewer = WWTQtViewer

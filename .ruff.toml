@@ -1,0 +1,6 @@
+lint.ignore = [
+    # NOTE: to find a good code to fix, run:
+    # ruff check --select="ALL" --statistics glue_wwt/<subpackage>
+]
+
+[lint.extend-per-file-ignores]

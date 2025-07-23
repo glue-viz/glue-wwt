@@ -2,12 +2,6 @@ ci:
   autofix_prs: false
   autoupdate_schedule: 'monthly'
 
-exclude:
-  "^(\
-    js/.*|\
-    docs/.*|\
-  )$"
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -55,8 +49,6 @@ repos:
       - id: rst-inline-touching-normal
         # Detect mistake of inline code touching normal text in rst.
       - id: text-unicode-replacement-char
-        # Forbid files which have a UTF-8 Unicode replacement character.
-        exclude: "docs/.*\\.(html|glb|gltf|usdz|obj|png|jpg|jpeg)"
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: "v0.11.4"

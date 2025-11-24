@@ -46,8 +46,8 @@ def pytest_unconfigure(config):
         app = None
 
 
-def pytest_ignore_collect(collection_path, path, config):
-    if path.isdir():
+def pytest_ignore_collect(collection_path, config):
+    if collection_path.is_dir():
         if "qt" in collection_path.parts:
             return not GLUEQT_INSTALLED
         if "jupyter" in collection_path.parts:

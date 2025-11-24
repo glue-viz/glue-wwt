@@ -1,5 +1,35 @@
 # Full changelog
 
+## v0.8.0 - 2025-11-24
+
+<!-- Release notes generated using configuration in .github/release.yml at main -->
+### What's Changed
+
+#### New Features
+
+* Save and restore camera parameters by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/95
+* Guess lat/lon columns for viewer when appropriate by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/110
+* Add tool for refreshing tile cache by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/113
+* Expose time functionality by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/103
+
+#### Bug Fixes
+
+* Fix galactic plane mode by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/115
+
+#### Other Changes
+
+* Remove checks for old pywwt versions by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/109
+* Bump minimum Python version to 3.10 by @astrofrog in https://github.com/glue-viz/glue-wwt/pull/117
+* Split out Qt- and Jupyter-specific code into sub-directories by @astrofrog in https://github.com/glue-viz/glue-wwt/pull/118
+* Add pre-commit and ruff codestyle check setup by @Carifio24 in https://github.com/glue-viz/glue-wwt/pull/119
+* [pre-commit.ci] pre-commit autoupdate by @pre-commit-ci[bot] in https://github.com/glue-viz/glue-wwt/pull/120
+
+### New Contributors
+
+* @pre-commit-ci[bot] made their first contribution in https://github.com/glue-viz/glue-wwt/pull/120
+
+**Full Changelog**: https://github.com/glue-viz/glue-wwt/compare/v0.7.2...v0.8.0
+
 ## v0.7.2 - 2024-03-21
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->

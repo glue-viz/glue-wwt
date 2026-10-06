@@ -154,8 +154,8 @@ class BaseTestWWTDataViewer(object):
         self.viewer.state.lat_att = self.bad_data_short.id['x']
         layer = self.viewer.layers[-1]
         assert not layer.enabled
-        disabled_reason = "Latitude angle(s) must be within -90 deg <= angle <= 90 deg, " \
-                          f"got {self.bad_data_short['x']}"
+        disabled_reason = ("Latitude angle(s) must be within -90 deg <= angle <= 90 deg, "
+                           f"got {self.bad_data_short['x']}")
         disabled_message = create_disabled_message(disabled_reason)
         assert layer.disabled_message == disabled_message
 
@@ -164,8 +164,8 @@ class BaseTestWWTDataViewer(object):
         self.viewer.state.lat_att = self.bad_data_long.id['x']
         layer = self.viewer.layers[-1]
         assert not layer.enabled
-        disabled_reason = "Latitude angle(s) must be within -90 deg <= angle <= 90 deg, " \
-                          "got -100 deg <= angle <= 100 deg"
+        disabled_reason = ("Latitude angle(s) must be within -90 deg <= angle <= 90 deg, "
+                           "got -100 deg <= angle <= 100 deg")
         disabled_message = create_disabled_message(disabled_reason)
         assert layer.disabled_message == disabled_message
 

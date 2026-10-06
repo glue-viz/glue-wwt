@@ -1,4 +1,3 @@
-import io
 import os
 import sys
 
@@ -59,5 +58,5 @@ class TestQtWWTDataViewer(BaseTestWWTDataViewer):
             self.viewer.toolbar.tools['save'].subtools[1].activate()
 
         assert os.path.exists(filename)
-        with io.open(filename, newline='') as f:
+        with open(filename, newline='') as f:
             assert f.read().startswith("<?xml version='1.0' encoding='UTF-8'?>\r\n<FileCabinet")

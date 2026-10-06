@@ -154,12 +154,10 @@ class JupterViewerOptions(VBox):
 
         self.widget_min_time = NaiveDatetimePicker(description="Min Time:")
         link((self.state, 'min_time'), (self.widget_min_time, 'value'),
-             lambda time: self._datetime64_to_utc_datetime(time),
-             lambda value: datetime64(value))
+             self._datetime64_to_utc_datetime, datetime64)
         self.widget_max_time = NaiveDatetimePicker(description="Max Time:")
         link((self.state, 'max_time'), (self.widget_max_time, 'value'),
-             lambda time: self._datetime64_to_utc_datetime(time),
-             lambda value: datetime64(value))
+             self._datetime64_to_utc_datetime, datetime64)
 
         self.other_settings = VBox(children=[
                                        GridBox(children=[self.widget_ecliptic_label, self.widget_ecliptic,

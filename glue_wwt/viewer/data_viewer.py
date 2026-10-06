@@ -110,7 +110,7 @@ class WWTDataViewerBase(object):
         setattr(self._wwt, wwt_attr, getattr(self.state, setting, None))
 
     def get_layer_artist(self, cls, **kwargs):
-        "In this package, we must override to append the wwt_client argument."
+        """In this package, we must override to append the wwt_client argument."""
         return cls(self.state, wwt_client=self._wwt, **kwargs)
 
     def get_data_layer_artist(self, layer=None, layer_state=None):

@@ -43,7 +43,6 @@ class WWTTableLayerState(LayerState):
     alpha = CallbackProperty()
 
     size_mode = SelectionCallbackProperty(default_index=0)
-    size = CallbackProperty()
     size_att = SelectionCallbackProperty()
     size_vmin = CallbackProperty()
     size_vmax = CallbackProperty()

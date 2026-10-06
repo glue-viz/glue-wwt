@@ -1,6 +1,111 @@
+extend = "pyproject.toml"
 lint.ignore = [
     # NOTE: to find a good code to fix, run:
     # ruff check --select="ALL" --statistics glue_wwt/<subpackage>
+
+    # flake8-unused-arguments (ARG)
+    "ARG001",  # unused-function-argument
+    "ARG002",  # unused-method-argument
+
+    # flake8-blind-except (BLE)
+    "BLE001",  # blind-except
+
+    # mccabe (C90) : code complexity
+    "C901",  # McCabeComplexity
+
+    # pydocstyle (D)
+    # Missing Docstrings
+    "D100",  # undocumented-public-module
+    "D101",  # undocumented-public-class
+    "D103",  # undocumented-public-function
+    "D104",  # undocumented-public-package
+    "D204",  # incorrect-blank-line-after-class
+
+    # pycodestyle (E, W)
+    "E501",  # line-too-long
+
+    # flake8-errmsg (EM)  : nicer error tracebacks
+    "EM101",   # raw-string-in-exception
+    "EM103",   # dot-format-in-exception
+
+    # eradicate (ERA)
+    # NOTE: be careful that developer notes are kept.
+    "ERA001",  # commented-out-code
+
+    # flake8-boolean-trap (FBT)  : boolean flags should be kwargs, not args
+    # NOTE: a good thing to fix, but changes API.
+    "FBT002",  # boolean-default-value-in-function-definition
+    "FBT003",  # boolean-positional-value-in-function-call
+
+    # flake8-fixme (FIX)
+    "FIX001",  # Line contains FIXME. This should be fixed or at least FIXME replaced with TODO
+
+    # isort (I)
+    "I001",  # unsorted imports
+
+    # pygrep-hooks (PGH)
+    "PGH004",  # Use specific rule codes when using `noqa`
+
+    # Pylint (PLC, PLE, PLR, PLW)
+    "PLR0911",  # too-many-return-statements
+    "PLR0912",  # too-many-branches
+    "PLR0915",  # too-many-statements
+    "PLR1730",  # if-stmt-min-max (would assign callback properties even when unchanged)
+    "PLR2004",  # MagicValueComparison
+    "PLR5501",  # collapsible-else-if
+    "PLW0603",  # global-statement
+    "PLW3301",  # nested-min-max (inner call reduces an array, flattening would splat it)
+
+    # flake8-use-pathlib (PTH)
+    "PTH100",  # os-path-abspath
+    "PTH110",  # os-path-exists
+    "PTH118",  # os-path-join
+    "PTH120",  # os-path-dirname
+    "PTH123",  # builtin-open
+
+    # flake8-quotes (Q)
+    "Q000",    # Single quotes found but double quotes preferred
+
+    # flake8-return (RET)
+    "RET503",  # implicit-return
+    "RET505",  # unnecessary-else-after-return
+
+    # flake8-bandit (S)
+    "S101",  # Use of `assert` detected
+    "S110",  # try-except-pass
+
+    # flake8-simplify (SIM)
+    "SIM102",  # NestedIfStatements
+    "SIM105",  # UseContextlibSuppress
+
+    # flake8-print (T20)
+    "T201",  # PrintUsed
+
+    # flake8-todos (TD)
+    "TD001",  # Invalid TODO tag
+    "TD003",  # Missing issue link on the line following this TODO
+
+    # flake8-tidy-imports (TID)
+    "TID252",  # Prefer absolute imports over relative imports from parent modules
+
+    # tryceratops (TRY)
+    "TRY002",  # raise-vanilla-class
+    "TRY003",  # raise-vanilla-args
+
+    # pyupgrade (UP)
+    "UP004",  # Class `{name}` inherits from `object`
+    "UP008",  # Use `super()` instead of `super(__class__, self)`
+    "UP010",  # Unnecessary `__future__` imports
+    "UP030",  # Use implicit references for positional format fields
+    "UP031",  # Use format specifiers instead of percent format
+    "UP032",  # Use f-string instead of `format` call
 ]
 
 [lint.extend-per-file-ignores]
+"__init__.py" = ["E402", "F401", "F403"]
+
+# `import` should be at the top-level of a file. These are deliberately lazy so that
+# the Qt viewer is only imported when the plugin is set up or the test runs.
+"glue_wwt/viewer/qt/__init__.py" = ["PLC0415"]
+"glue_wwt/viewer/qt/viewer.py" = ["N802", "PLC0415"]  # closeEvent is a Qt override
+"glue_wwt/viewer/qt/tests/test_viewer.py" = ["PLC0415"]

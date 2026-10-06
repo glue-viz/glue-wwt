@@ -1,6 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-import io
 import time
 from qtpy import compat
 
@@ -110,5 +109,5 @@ class SaveTourTool(Tool):
                 print('Changing {0} to {1} in {2}'.format(altunit_str, altunit_str_new, filename))
                 tourxml = tourxml.replace(altunit_str, altunit_str_new)
 
-        with io.open(filename, 'w', newline='') as f:
+        with open(filename, 'w', newline='') as f:
             f.write(tourxml)

@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function
 
 from .utils import center_fov
 from .viewer_state import MODES_3D
@@ -43,7 +42,6 @@ class WWTTableLayerState(LayerState):
     alpha = CallbackProperty()
 
     size_mode = SelectionCallbackProperty(default_index=0)
-    size = CallbackProperty()
     size_att = SelectionCallbackProperty()
     size_vmin = CallbackProperty()
     size_vmax = CallbackProperty()

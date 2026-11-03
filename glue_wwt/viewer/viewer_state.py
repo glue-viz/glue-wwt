@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function
 
 from astropy import units as u
 
@@ -143,14 +142,12 @@ class WWTDataViewerState(ViewerState):
     def _on_min_time_update(self, time):
         if self.max_time <= time:
             self.max_time = time + timedelta64(1, 'D')
-        if self.current_time < time:
-            self.current_time = time
+        self.current_time = max(self.current_time, time)
 
     def _on_max_time_update(self, time):
         if self.min_time >= time:
             self.min_time = time - timedelta64(1, 'D')
-        if self.current_time > time:
-            self.current_time = time
+        self.current_time = min(self.current_time, time)
 
     def _on_current_time_update(self, time):
         if time < self.min_time:

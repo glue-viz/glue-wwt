@@ -1,6 +1,5 @@
 # Test class which is common to Qt and Jupyter
 
-from __future__ import absolute_import, division, print_function
 
 import os
 

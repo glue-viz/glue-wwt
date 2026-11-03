@@ -1,6 +1,5 @@
 """Base WWT data viewer implementation, generic over Qt and Jupyter backends."""
 
-from __future__ import absolute_import, division, print_function
 
 from astropy.coordinates import SkyCoord
 from astropy.time import Time

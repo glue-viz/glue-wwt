@@ -1,6 +1,21 @@
 lint.ignore = [
     # NOTE: to find a good code to fix, run:
     # ruff check --select="ALL" --statistics glue_wwt/<subpackage>
+
+    # Ignore rules that are also ignored in glue-viz/glue
+    "BLE001",  # blind-except
+    "C408",  # Unnecessary `dict()` call (rewrite as a literal)
+    "I001",  # unsorted imports
+    "RUF012",  # Mutable class attributes should be annotated with `typing.ClassVar`
+    "RUF100",  # Unused blanket `noqa` directive
+    "S110",  # try-except-pass
+    "SIM102",  # NestedIfStatements
+    "TRY002",  # raise-vanilla-class
+    "UP004",  # Class `{name}` inherits from `object`
+    "UP008",  # Use `super()` instead of `super(__class__, self)`
+    "UP030",  # Use implicit references for positional format fields
+    "UP031",  # Use format specifiers instead of percent format
+    "UP032",  # Use f-string instead of `format` call
 ]
 
 [lint.extend-per-file-ignores]

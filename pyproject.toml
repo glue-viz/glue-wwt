@@ -18,7 +18,7 @@ dependencies = [
     "glue-core>=1.13.1",
     "echo",
     "astropy",
-    "pywwt>=0.24.1",
+    "pywwt>=0.26.1",
     "packaging",
     "ipywidgets>=8",
 ]
@@ -41,6 +41,7 @@ qt = [
     'PyQtWebEngine;python_version>="3"',
 ]
 jupyter = [
+    "pywwt[notebook]",
     "glue-jupyter",
 ]
 
